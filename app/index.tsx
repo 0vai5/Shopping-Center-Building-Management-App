@@ -36,7 +36,6 @@ const index = () => {
             </View>
 
             <View>
-              {/* <Link push href="./signin"> */}
               <CustomButton
                 title="Get Started"
                 styles="w-full mt-3"
@@ -44,7 +43,6 @@ const index = () => {
                   router.push("./signin");
                 }}
               />
-              {/* </Link> */}
             </View>
           </View>
         </ScrollView>
