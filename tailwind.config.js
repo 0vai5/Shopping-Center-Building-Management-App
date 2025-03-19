@@ -13,6 +13,10 @@ module.exports = {
         pmedium: ["Poppins-Medium", "sans-serif"],
         psemibold: ["Poppins-SemiBold", "sans-serif"],
         pbold: ["Poppins-Bold", "sans-serif"],
+        wsbold: ["WorkSans-Bold", "sans-serif"],
+        wsmedium: ["WorkSans-Medium", "sans-serif"],
+        wsregular: ["WorkSans-Regular", "sans-serif"],
+        wssemibold: ["WorkSans-SemiBold", "sans-serif"],
       }
     },
   },

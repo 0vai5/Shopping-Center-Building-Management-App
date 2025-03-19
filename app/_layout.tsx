@@ -9,6 +9,10 @@ export default function RootLayout() {
     "Poppins-SemiBold": require("../assets/fonts/Poppins-SemiBold.ttf"),
     "Poppins-Bold": require("../assets/fonts/Poppins-Bold.ttf"),
     "Poppins-Medium": require("../assets/fonts/Poppins-Medium.ttf"),
+    "WorkSans-Regular": require("../assets/fonts/WorkSans-Regular.ttf"),
+    "WorkSans-Bold": require("../assets/fonts/WorkSans-Bold.ttf"),
+    "WorkSans-Medium": require("../assets/fonts/WorkSans-Medium.ttf"),
+    "WorkSans-SemiBold": require("../assets/fonts/WorkSans-SemiBold.ttf"),
   });
   useEffect(() => {
     if (loaded || error) {
@@ -21,13 +25,13 @@ export default function RootLayout() {
   }
   return (
     <Stack>
-      {/* <Stack.Screen
+      <Stack.Screen
         name="(auth)"
         options={{
           headerShown: false,
         }}
       />
-      <Stack.Screen
+      {/* <Stack.Screen
         name="(tabs)"
         options={{
           headerShown: false,

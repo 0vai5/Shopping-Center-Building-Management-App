@@ -18,14 +18,14 @@ const index = () => {
             <View className="mb-0">
               <Image
                 source={require("@/assets/images/saffaenterprises.png")}
-                className="h-[300px]"
+                className="h-[275px]"
                 resizeMode="contain"
               />
             </View>
 
             <View>
               <Text className="text-3xl font-bold text-center font-pbold">
-                Welcome to {"\n"}Shopping Center Building App
+                Welcome to {"\n"} Shopping Center Building App
               </Text>
             </View>
 
@@ -38,7 +38,7 @@ const index = () => {
             <View>
               <CustomButton
                 title="Get Started"
-                styles="w-full mt-3"
+                containerStyles="w-full mt-7"
                 handlePress={() => {
                   router.push("./signin");
                 }}
