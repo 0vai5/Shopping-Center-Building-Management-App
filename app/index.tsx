@@ -14,11 +14,13 @@ const index = () => {
             height: "100%",
           }}
         >
-          <View className="flex items-center justify-center gap-0 h-full">
+          {/* {TODO: Work on the Image that will Show above the Get started} */}
+          
+          <View className="flex items-center flex-col justify-center gap-0 h-full">
             <View className="mb-0">
               <Image
-                source={require("@/assets/images/saffaenterprises.png")}
-                className="h-[275px]"
+                source={require("@/assets/images/building-logo-transparent.png")}
+                className="h-[325px]"
                 resizeMode="contain"
               />
             </View>

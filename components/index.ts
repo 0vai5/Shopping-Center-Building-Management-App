@@ -1,5 +1,7 @@
 import CustomButton from './CustomButton';
+import FormField from './FormField';
 
 export {
-    CustomButton
+    CustomButton,
+    FormField
 }
