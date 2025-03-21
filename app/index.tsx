@@ -8,15 +8,21 @@ import { CustomButton } from "@/components";
 const index = () => {
   return (
     <>
-      <SafeAreaView>
+      <SafeAreaView className="bg-primary">
         <ScrollView
           contentContainerStyle={{
             height: "100%",
           }}
+          className="relative"
         >
-          {/* {TODO: Work on the Image that will Show above the Get started} */}
-          
-          <View className="flex items-center flex-col justify-center gap-0 h-full">
+          <View className="flex items-center justify-center h-full">
+            <Image
+              source={require("@/assets/images/building.png")}
+              resizeMode="contain"
+            />
+          </View>
+
+          <View className="absolute flex bg-primary/70 justify-end items-center pb-4  gap-0 w-full h-full">
             <View className="mb-0">
               <Image
                 source={require("@/assets/images/building-logo-transparent.png")}
@@ -25,24 +31,24 @@ const index = () => {
               />
             </View>
 
-            <View>
-              <Text className="text-3xl font-bold text-center font-sbold">
+            <View className="w-full px-4">
+              <Text className="text-3xl font-bold text-center text-secondary-base font-sbold">
                 Welcome to {"\n"} Shopping Center Building App
               </Text>
             </View>
 
-            <View>
-              <Text className="text-center text-xl text-gray-400 font-medium">
-                A simple app to manage your shopping center building
+            <View className="w-full px-4">
+              <Text className="text-center text-base text-gray-400 font-medium">
+                A simple app to manage your shopping center building.
               </Text>
             </View>
 
-            <View>
+            <View className="w-full px-4">
               <CustomButton
                 title="Get Started"
                 containerStyles="w-full mt-7"
                 handlePress={() => {
-                  router.push("./signin");
+                  router.navigate("./(auth)/signin");
                 }}
                 textStyles="text-white"
               />
@@ -50,7 +56,7 @@ const index = () => {
           </View>
         </ScrollView>
       </SafeAreaView>
-      <StatusBar style="dark" />
+      {/* <StatusBar style="dark" /> */}
     </>
   );
 };

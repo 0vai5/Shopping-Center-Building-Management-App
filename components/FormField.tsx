@@ -18,7 +18,7 @@ const FormField = ({
   labelStyle,
   inputStyles,
   value,
-  handleChange
+  handleChange,
 }: {
   title?: string;
   keypad?: KeyboardTypeOptions;
@@ -30,9 +30,9 @@ const FormField = ({
   const [showPassword, setShowPassword] = useState(true);
   return (
     <View className="mt-3">
-      <Text className={`${labelStyle} text-black font-ssemibold`}>{title}</Text>
+      <Text className={`${labelStyle} text-white font-ssemibold`}>{title}</Text>
       <View
-        className={`mt-1 border-2 px-3 py-2 rounded-md flex flex-row justify-between items-center  border-yellowishgreen-200 ${inputStyles}`}
+        className={`mt-1 border-2 px-3 py-2 rounded-md flex flex-row justify-between items-center  border-secondary-100 ${inputStyles}`}
       >
         <TextInput
           placeholder={title}

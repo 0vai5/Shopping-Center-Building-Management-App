@@ -6,7 +6,7 @@ const CustomButton = ({
   handlePress,
   textStyles,
   containerStyles,
-  loader
+  loader,
 }: {
   title: string;
   handlePress?: () => void;

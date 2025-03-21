@@ -2,6 +2,7 @@ import { SplashScreen, Stack } from "expo-router";
 import "./global.css";
 import { useEffect } from "react";
 import { useFonts } from "expo-font";
+import { StatusBar } from "expo-status-bar";
 
 export default function RootLayout() {
   const [loaded, error] = useFonts({
@@ -24,21 +25,24 @@ export default function RootLayout() {
     return null;
   }
   return (
-    <Stack>
-      <Stack.Screen
-        name="(auth)"
-        options={{
-          headerShown: false,
-        }}
-      />
-      {/* <Stack.Screen
+    <>
+      <Stack>
+        <Stack.Screen
+          name="(auth)"
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
         name="(tabs)"
         options={{
           headerShown: false,
         }}
-      /> */}
-      <Stack.Screen name="index" options={{ headerShown: false }} />
-      <Stack.Screen name="signin" options={{ headerShown: false }} />
-    </Stack>
+      />
+        <Stack.Screen name="index" options={{ headerShown: false }} />
+        <Stack.Screen name="signin" options={{ headerShown: false }} />
+      </Stack>
+      <StatusBar style="light" />
+    </>
   );
 }
