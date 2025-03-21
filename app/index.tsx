@@ -26,7 +26,7 @@ const index = () => {
             </View>
 
             <View>
-              <Text className="text-3xl font-bold text-center font-pbold">
+              <Text className="text-3xl font-bold text-center font-sbold">
                 Welcome to {"\n"} Shopping Center Building App
               </Text>
             </View>
@@ -44,6 +44,7 @@ const index = () => {
                 handlePress={() => {
                   router.push("./signin");
                 }}
+                textStyles="text-white"
               />
             </View>
           </View>

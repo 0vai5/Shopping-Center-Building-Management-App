@@ -9,14 +9,20 @@ module.exports = {
   theme: {
     extend: {
       fontFamily:{
-        pregular: ["Poppins-Regular", "sans-serif"],
-        pmedium: ["Poppins-Medium", "sans-serif"],
-        psemibold: ["Poppins-SemiBold", "sans-serif"],
-        pbold: ["Poppins-Bold", "sans-serif"],
-        wsbold: ["WorkSans-Bold", "sans-serif"],
-        wsmedium: ["WorkSans-Medium", "sans-serif"],
-        wsregular: ["WorkSans-Regular", "sans-serif"],
-        wssemibold: ["WorkSans-SemiBold", "sans-serif"],
+        sregular: ["Satoshi-Regular","Poppins-Regular"],
+        smedium: ["Satoshi-Medium","Poppins-Medium"],
+        ssemibold: ["Satoshi-Variable","Poppins-SemiBold"],
+        sbold: ["Satoshi-Bold","Poppins-Bold"]
+      },
+      // Font color
+      colors: {
+        primary: "FEEC37",
+        secondary: "#FFF100",
+        yellowishgreen: {
+          100: "#D3EE98",
+          200: "#A0D683",
+          300: "#72BF78"
+        }
       }
     },
   },

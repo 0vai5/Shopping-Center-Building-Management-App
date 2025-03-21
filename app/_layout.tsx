@@ -9,10 +9,10 @@ export default function RootLayout() {
     "Poppins-SemiBold": require("../assets/fonts/Poppins-SemiBold.ttf"),
     "Poppins-Bold": require("../assets/fonts/Poppins-Bold.ttf"),
     "Poppins-Medium": require("../assets/fonts/Poppins-Medium.ttf"),
-    "WorkSans-Regular": require("../assets/fonts/WorkSans-Regular.ttf"),
-    "WorkSans-Bold": require("../assets/fonts/WorkSans-Bold.ttf"),
-    "WorkSans-Medium": require("../assets/fonts/WorkSans-Medium.ttf"),
-    "WorkSans-SemiBold": require("../assets/fonts/WorkSans-SemiBold.ttf"),
+    "Satoshi-Regular": require("../assets/fonts/Satoshi-Regular.ttf"),
+    "Satoshi-Medium": require("../assets/fonts/Satoshi-Medium.ttf"),
+    "Satoshi-Bold": require("../assets/fonts/Satoshi-Bold.ttf"),
+    "Satoshi-Variable": require("../assets/fonts/Satoshi-Variable.ttf"),
   });
   useEffect(() => {
     if (loaded || error) {
