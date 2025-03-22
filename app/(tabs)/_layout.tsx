@@ -3,7 +3,6 @@ import { Tabs } from "expo-router";
 import { Image, ImageSourcePropType, Text, View } from "react-native";
 import { icons } from "@/constants";
 
-
 const TabIcon = ({
   color,
   title,
@@ -16,19 +15,19 @@ const TabIcon = ({
   icon: ImageSourcePropType;
 }) => {
   return (
-    <View className="flex items-center justify-center gap-2">
+    <View className="flex items-center justify-center">
       <Image
         source={icon}
         resizeMode="contain"
         tintColor={color}
-        className="w-6 h-6"
+        className={`${focused && "transition-all transform " } w-6 h-6`}
       />
-      <Text
+      {/* <Text
         className={`${focused ? "font-ssemibold" : "font-sregular"} text-sm`}
         style={{ color: color }}
       >
         {title}
-      </Text>
+      </Text> */}
     </View>
   );
 };
@@ -47,6 +46,7 @@ const TabsLayout = () => {
           height: 90,
           paddingTop: 12,
         },
+        tabBarVariant: "uikit"
       }}
     >
       <Tabs.Screen
@@ -55,7 +55,12 @@ const TabsLayout = () => {
           title: "Home",
           headerShown: false,
           tabBarIcon: ({ color, focused }) => (
-            <TabIcon color={color} title="Home" focused={focused} icon={icons.home} />
+            <TabIcon
+              color={color}
+              title="Home"
+              focused={focused}
+              icon={icons.dashboard}
+            />
           ),
         }}
       />
@@ -65,7 +70,12 @@ const TabsLayout = () => {
           title: "Flats",
           headerShown: false,
           tabBarIcon: ({ color, focused }) => (
-            <TabIcon color={color} title="Flats" focused={focused} icon={icons.home} />
+            <TabIcon
+              color={color}
+              title="Flats"
+              focused={focused}
+              icon={icons.flats}
+            />
           ),
         }}
       />
@@ -75,7 +85,12 @@ const TabsLayout = () => {
           title: "Summary",
           headerShown: false,
           tabBarIcon: ({ color, focused }) => (
-            <TabIcon color={color} title="Summary" focused={focused} icon={icons.bookmark} />
+            <TabIcon
+              color={color}
+              title="Summary"
+              focused={focused}
+              icon={icons.summary}
+            />
           ),
         }}
       />
@@ -85,7 +100,27 @@ const TabsLayout = () => {
           title: "Expenses",
           headerShown: false,
           tabBarIcon: ({ color, focused }) => (
-            <TabIcon color={color} title="Expenses" focused={focused} icon={icons.plus} />
+            <TabIcon
+              color={color}
+              title="Expenses"
+              focused={focused}
+              icon={icons.expenses}
+            />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="account"
+        options={{
+          title: "Account",
+          headerShown: false,
+          tabBarIcon: ({ color, focused }) => (
+            <TabIcon
+              color={color}
+              title="Account"
+              focused={focused}
+              icon={icons.account}
+            />
           ),
         }}
       />
