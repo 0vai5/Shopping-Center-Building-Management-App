@@ -1,16 +1,9 @@
 import { View, Text, ScrollView, Image, TouchableOpacity } from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { icons } from "@/constants";
-import { router } from "expo-router";
-
+import { Header, SummaryCard } from "@/components";
+import { ProgressSummary } from "@/components";
 const home = () => {
-  const handleLogout = async () => {
-    // Add your logout logic here
-    console.log("Logout button clicked");
-    router.push("../(auth)/signin");
-  };
-
   return (
     <SafeAreaView className="bg-primary">
       <ScrollView
@@ -18,24 +11,22 @@ const home = () => {
           height: "100%",
         }}
       >
-        <View className="flex items-center flex-row px-4 py-7 justify-between">
+        <View>
+          <Header />
+        </View>
+        <View>
+          <SummaryCard />
+        </View>
+
+        <View className="flex flex-row justify-between w-full p-6">
           <View>
-            <Text className="text-white font-ssemibold text-2xl">
-              Hey There!{" "}
-            </Text>
-            <Text className="font-ssemibold text-2xl text-secondary-saturated">
-              Muhammad Ovais{" "}
-            </Text>
+            <ProgressSummary title={"Maintenance Received"} progress={50} />
           </View>
-          <View>
-            <TouchableOpacity onPress={handleLogout}>
-              <Image
-                source={icons.logout}
-                className="h-[24px]"
-                resizeMode="contain"
-                tintColor={"#4583FF"}
-              />
-            </TouchableOpacity>
+          <View className="w-1/2">
+            <ProgressSummary
+              title={"Expenses Cleared"}
+              progress={0}
+            />
           </View>
         </View>
       </ScrollView>

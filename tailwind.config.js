@@ -26,8 +26,9 @@ module.exports = {
           200: "#A0D683",
           300: "#72BF78",
         },
-        black: "#161616"
-      },
+        black: "#161616",
+        lessBlack: "#2C2C2E"
+      }
     },
   },
   plugins: [],

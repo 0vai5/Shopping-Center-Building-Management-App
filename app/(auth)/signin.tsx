@@ -70,7 +70,8 @@ const Signin = () => {
               </View>
               <CustomButton
                 title="Login"
-                containerStyles="mt-10 w-full bg-secondary-base py-3 rounded-md"
+                containerStyles="mt-10 bg-secondary-base py-3 rounded-md"
+                width="100%"
                 textStyles="text-black font-ssemibold text-base"
                 handlePress={handleLogin}
                 loader={loading}
