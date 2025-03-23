@@ -1,12 +1,18 @@
-import { View, Text } from "react-native";
+import { View, Text, Dimensions } from "react-native";
 import React from "react";
 import CustomButton from "./CustomButton";
 import { router } from "expo-router";
 
 const SummaryCard = () => {
   const month = new Date().toLocaleString("default", { month: "long" });
+  const screenHeight = Dimensions.get("window").height;
+  const screenWidth = Dimensions.get("window").width;
   return (
-    <View className="justify-between flex mx-5 rounded-xl bg-secondary-100 h-[25vh]">
+    <View
+      className={`justify-between flex mx-5 rounded-xl bg-secondary-100 h-[${
+        screenHeight * 0.25
+      }]`}
+    >
       <View className="p-6">
         <Text className="text-black font-smedium">
           Total Earning for {month}
