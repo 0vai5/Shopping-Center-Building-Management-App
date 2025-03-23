@@ -5,5 +5,6 @@ import SummaryCard from "./SummaryCard";
 import ProgressSummary from "./ProgressSummary";
 import MaintenanceCard from "./MaintenanceCard";
 import MaintenanceList from "./MaintenanceList";
+import ExpensesList from "./ExpensesList";
 
-export { CustomButton, FormField, Header, SummaryCard, ProgressSummary, MaintenanceCard, MaintenanceList };
+export { CustomButton, FormField, Header, SummaryCard, ProgressSummary, MaintenanceCard, MaintenanceList, ExpensesList };

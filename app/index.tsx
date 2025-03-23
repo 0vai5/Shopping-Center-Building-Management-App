@@ -45,6 +45,7 @@ const index = () => {
 
             <View className="w-full px-4">
               <CustomButton
+                width="w-full"
                 title="Get Started"
                 containerStyles="w-full mt-7"
                 handlePress={() => {
