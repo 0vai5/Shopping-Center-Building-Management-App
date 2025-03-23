@@ -109,21 +109,6 @@ const TabsLayout = () => {
           ),
         }}
       />
-      <Tabs.Screen
-        name="account"
-        options={{
-          title: "Account",
-          headerShown: false,
-          tabBarIcon: ({ color, focused }) => (
-            <TabIcon
-              color={color}
-              title="Account"
-              focused={focused}
-              icon={icons.account}
-            />
-          ),
-        }}
-      />
     </Tabs>
   );
 };

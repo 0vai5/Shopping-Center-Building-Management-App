@@ -1,6 +1,6 @@
 import { View, Text, FlatList } from "react-native";
 import React from "react";
-import ExpenseCard from "./ExpenseCard";
+import ExpenseCardHome from "./ExpenseCardHome";
 
 const MaintenanceList = () => {
 
@@ -38,7 +38,7 @@ const MaintenanceList = () => {
         data={expenseSlip}
         numColumns={1}
         renderItem={(expense) => (
-          <ExpenseCard
+          <ExpenseCardHome
             expense={expense.item.expense}
             salary={expense.item.salary}
             status={expense.item.status}
