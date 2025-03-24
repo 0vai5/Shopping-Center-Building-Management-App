@@ -1,6 +1,14 @@
-import { View, Text, FlatList } from "react-native";
+import {
+  View,
+  Text,
+  FlatList,
+  Dimensions,
+  TouchableOpacity,
+  Image,
+} from "react-native";
 import React from "react";
-import MaintenanceCard from "./MaintenanceCard";
+import { MaintenanceCardProps } from "@/types";
+import { icons } from "@/constants";
 
 const MaintenanceList = () => {
   const maintenanceSlip = [
@@ -72,22 +80,68 @@ const MaintenanceList = () => {
         className="p-6 mr-3 gap-3"
         data={maintenanceSlip}
         numColumns={1}
-        renderItem={(slip) => (
-          <MaintenanceCard
-            flat_id={slip.item.flat_id}
-            flat_number={slip.item.flat_number}
-            rooms={slip.item.rooms}
-            maintenance={slip.item.maintenance}
-            owner_no={slip.item.owner_no}
-            owner_name={slip.item.owner_name}
-            slip_no={slip.item.slip_no}
-            status={slip.item.status}
-          />
-        )}
+        renderItem={(slip) => <MaintenanceCard item={slip.item} />}
         horizontal
         showsHorizontalScrollIndicator={false}
         keyExtractor={(slip) => slip.flat_id.toString()}
       />
+    </View>
+  );
+};
+
+const MaintenanceCard: React.FC<MaintenanceCardProps> = ({ item }) => {
+  const screenHeight = Dimensions.get("window").height;
+  return (
+    <View
+      className={`bg-lessBlack p-5 mr-10 rounded-xl h-[${screenHeight * 0.4}]`}
+    >
+      <View className="flex justify-between gap-10 flex-row ">
+        <View>
+          <Text className="text-white font-ssemibold text-2xl">
+            {item.flat_number}
+          </Text>
+          <Text className="text-gray-300 font-sregular text-lg">
+            Slip No. {item.slip_no}
+          </Text>
+          <View
+            className={`${
+              item.status === "pending" ? "bg-red-600" : "bg-green-600"
+            } flex justify-center items-center rounded-full px-3 py-1 mt-2`}
+          >
+            <Text className="text-white font-sbold text-xs uppercase">
+              {item.status}
+            </Text>
+          </View>
+        </View>
+        <View>
+          <TouchableOpacity>
+            <Image
+              source={icons.menu}
+              className="h-[24px]"
+              tintColor={"#5889ec"}
+            />
+          </TouchableOpacity>
+        </View>
+      </View>
+      <View className="w-[95%] mt-7 mx-auto border-b border-gray-700"></View>
+      <View className="flex justify-between gap-10 flex-row mt-4">
+        <View>
+          <Text className="text-white font-smedium text-xl">
+            {item.owner_name}
+          </Text>
+          <Text className="text-gray-300 font-sregular text-lg">
+            {item.owner_no}
+          </Text>
+        </View>
+        <View>
+          <Text className="text-white font-sregular text-xl">
+            {item.rooms} Rooms
+          </Text>
+          <Text className="text-gray-300 font-smedium text-lg">
+            {item.maintenance * item.rooms} /-
+          </Text>
+        </View>
+      </View>
     </View>
   );
 };
