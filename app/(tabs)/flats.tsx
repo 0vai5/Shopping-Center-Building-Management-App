@@ -155,7 +155,6 @@ const flats = () => {
   );
 };
 
-
 const FlatCard: React.FC<FlatCardProps> = ({ item }) => {
   const screenHeight = Dimensions.get("window").height;
   return (
@@ -172,7 +171,7 @@ const FlatCard: React.FC<FlatCardProps> = ({ item }) => {
           </Text>
         </View>
         <View>
-            {/* TODO: This image or to TouchableOpacity will be responsible for opening a modal that will show a sheet that will have multiple options like edit and delete */}
+          {/* TODO: This image or to TouchableOpacity will be responsible for opening a modal that will show a sheet that will have multiple options like edit and delete */}
           <TouchableOpacity>
             <Image
               source={icons.menu}

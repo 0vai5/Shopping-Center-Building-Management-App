@@ -97,7 +97,6 @@ const expenses = () => {
   );
 };
 
-
 const ExpenseCard: React.FC<ExpenseCardProps> = ({ item }) => {
   const screenHeight = Dimensions.get("window").height;
   return (
@@ -136,5 +135,3 @@ const ExpenseCard: React.FC<ExpenseCardProps> = ({ item }) => {
 };
 
 export default expenses;
-
-

@@ -1,12 +1,17 @@
-import { View, Text, FlatList, TouchableOpacity, Image, Dimensions } from "react-native";
+import {
+  View,
+  Text,
+  FlatList,
+  TouchableOpacity,
+  Image,
+  Dimensions,
+} from "react-native";
 import React from "react";
 import { icons } from "@/constants";
 import { ExpenseCardHomeProps } from "@/types";
 
 const ExpenseList = () => {
-
-    // TODO: We will implement the expenses that are optional with a particular selection that for this month we map all here when it will be generated
-
+  // TODO: We will implement the expenses that are optional with a particular selection that for this month we map all here when it will be generated
 
   const expenseSlip = [
     {
@@ -47,8 +52,7 @@ const ExpenseList = () => {
   );
 };
 
-
-const ExpenseCardHome: React.FC<ExpenseCardHomeProps> = ({item}) => {
+const ExpenseCardHome: React.FC<ExpenseCardHomeProps> = ({ item }) => {
   const screenHeight = Dimensions.get("window").height;
 
   return (
@@ -57,8 +61,12 @@ const ExpenseCardHome: React.FC<ExpenseCardHomeProps> = ({item}) => {
     >
       <View className="flex justify-between gap-10 flex-row ">
         <View>
-          <Text className="text-white font-ssemibold text-2xl">{item.expense}</Text>
-          <Text className="text-gray-300 font-sregular text-l">{item.name}</Text>
+          <Text className="text-white font-ssemibold text-2xl">
+            {item.expense}
+          </Text>
+          <Text className="text-gray-300 font-sregular text-l">
+            {item.name}
+          </Text>
           <View
             className={`${
               item.status === "pending" ? "bg-red-600" : "bg-green-600"
