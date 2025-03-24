@@ -32,10 +32,9 @@ const FormField = ({
     <View className="mt-3">
       <Text className={`${labelStyle} text-white font-ssemibold`}>{title}</Text>
       <View
-        className={`mt-1 border-2 px-3 py-2 rounded-md flex flex-row justify-between items-center  border-secondary-100 ${inputStyles}`}
+        className={`mt-1 border-2 px-3 py-3 rounded-md flex flex-row justify-between items-center  border-secondary-100 ${inputStyles}`}
       >
         <TextInput
-          placeholder={title}
           keyboardType={keypad}
           secureTextEntry={showPassword && title === "Password"}
           value={value}

@@ -13,13 +13,15 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/building-logo-transparent.png",
         "backgroundColor": "#000"
-      }
+      },
+      "package": "com.btlnt.shoppingcenter"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/building-logo-transparent.png",
         "backgroundColor": "#000"
-      }
+      },
+      "package": "com.btlnt.shoppingcenter"
     },
     "web": {
       "bundler": "metro",

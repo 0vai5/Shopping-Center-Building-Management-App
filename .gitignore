@@ -2,6 +2,8 @@
 
 # Miscellaneous
 plan.*
+.env.*
+.env
 
 # dependencies
 node_modules/
