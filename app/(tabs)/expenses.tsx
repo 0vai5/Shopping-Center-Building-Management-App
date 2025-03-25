@@ -12,32 +12,12 @@ import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
 import { CustomButton } from "@/components";
-import { icons } from "@/constants";
+import { icons, expenses as expenseData } from "@/constants";
 import { ExpenseCardProps } from "@/types";
 
 const expenses = () => {
   const { height } = useWindowDimensions();
 
-  const expenses = [
-    {
-      expense_id: "1",
-      expense: "WaterBoy",
-      salary: 3000,
-      name: "Malik Zaada",
-    },
-    {
-      expense_id: "2",
-      expense: "Sweeper",
-      salary: 2200,
-      name: "Abdullah",
-    },
-    {
-      expense_id: "3",
-      expense: "Electricity Bill",
-      salary: 5000,
-      name: "K.Electric",
-    },
-  ];
 
   return (
     <SafeAreaView className="bg-primary" style={{ height }}>
@@ -83,7 +63,7 @@ const expenses = () => {
           <View className="flex justify-center items-center">
             <FlatList
               className="p-6 mr-3 gap-3"
-              data={expenses}
+              data={expenseData}
               numColumns={1}
               renderItem={(expense) => <ExpenseCard item={expense.item} />}
               horizontal

@@ -7,41 +7,19 @@ import {
   Dimensions,
 } from "react-native";
 import React from "react";
-import { icons } from "@/constants";
+import { icons, expenseSlips } from "@/constants";
 import { ExpenseCardHomeProps } from "@/types";
 
 const ExpenseList = () => {
   // TODO: We will implement the expenses that are optional with a particular selection that for this month we map all here when it will be generated
 
-  const expenseSlip = [
-    {
-      expense_id: "1",
-      expense: "WaterBoy",
-      amount: 3000,
-      status: "pending",
-      name: "Malik Zaada",
-    },
-    {
-      expense_id: "2",
-      expense: "Sweeper",
-      amount: 2200,
-      status: "pending",
-      name: "Abdullah",
-    },
-    {
-      expense_id: "3",
-      expense: "Electricity Bill",
-      amount: 5000,
-      status: "pending",
-      name: "K.Electric",
-    },
-  ];
+ 
 
   return (
     <View className="flex justify-center items-center">
       <FlatList
         className="p-6 mr-3 gap-3"
-        data={expenseSlip}
+        data={expenseSlips}
         numColumns={1}
         renderItem={(expense) => <ExpenseCardHome item={expense.item} />}
         horizontal

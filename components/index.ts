@@ -5,6 +5,7 @@ import SummaryCard from "./SummaryCard";
 import ProgressSummary from "./ProgressSummary";
 import MaintenanceList from "./MaintenanceList";
 import ExpensesList from "./ExpensesList";
+import CustomBottomSheetModal from "./CustomBottomSheetModal"
 
 export {
   CustomButton,
@@ -14,4 +15,5 @@ export {
   ProgressSummary,
   MaintenanceList,
   ExpensesList,
+  CustomBottomSheetModal
 };

@@ -13,8 +13,12 @@ import expenses from "../assets/icons/expenses.png";
 import flats from "../assets/icons/downtown.png";
 import summary from "../assets/icons/summary.png";
 import handWave from "../assets/icons/handWave.gif"
+import cross from "../assets/icons/cross.png"
+import download from "../assets/icons/download.png"
 
 export default {
+  download,
+  cross,
   handWave,
   dashboard,
   account,
