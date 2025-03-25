@@ -61,7 +61,6 @@ const expenses = () => {
                     New Expense?
                   </Text>
                 </View>
-                {/* TODO: This button will be responsible for opening a modal that will show a sheet that will have fields and a button to submit */}
                 <View>
                   <CustomButton
                     title="Add Expense"

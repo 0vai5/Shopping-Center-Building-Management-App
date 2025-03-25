@@ -21,7 +21,6 @@ const Signin = () => {
     //   setLoading(false);
     // }, 3000);
 
-    // TODO: Make Req to the server to login
 
     router.navigate("../(tabs)/home");
 
@@ -36,13 +35,6 @@ const Signin = () => {
       <SafeAreaView className="h-full bg-[#1C1C1E]">
         <ScrollView contentContainerStyle={{ height: "100%" }}>
           <View className=" p-3 flex flex-col justify-center gap-0 h-full">
-            {/* <View className="flex items-center justify-start w-[250px] h-[250px] ">
-              {TODO: Work on the Image that will Show above the Get started}
-              <Image
-                className="mix-blend-multiply"
-                source={require("@/assets/images/Building-Logo.png")}
-              />
-            </View> */}
             <View>
               <Text className="text-3xl font-sbold text-white">
                 Log into account

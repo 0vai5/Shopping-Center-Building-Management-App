@@ -61,7 +61,6 @@ const flats = () => {
                     New flat constructed?
                   </Text>
                 </View>
-                {/* TODO: This button will be responsible for opening a modal that will show a sheet that will have fields and a button to submit */}
                 <View>
                   <CustomButton
                     title="Add Flat"
@@ -187,7 +186,6 @@ const FlatCard: React.FC<FlatCardProps> = ({ item }) => {
             </View>
           </View>
           <View>
-            {/* TODO: This image or to TouchableOpacity will be responsible for opening a modal that will show a sheet that will have multiple options like edit and delete */}
             <TouchableOpacity
               onPress={() => bottomSheetModalRef.current?.present()}
             >
