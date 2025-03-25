@@ -1,6 +1,5 @@
 import { View, Text } from "react-native";
 import React from "react";
-// TODO: Fix this import
 import ProgressBar from "react-native-progress/Bar";
 
 const ProgressSummary = ({

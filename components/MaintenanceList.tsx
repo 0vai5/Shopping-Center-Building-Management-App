@@ -119,7 +119,6 @@ const MaintenanceCard: React.FC<MaintenanceCardProps> = ({ item }) => {
         </View>
       </View>
 
-
       <CustomBottomSheetModal ref={bottomSheetModalRef}>
         <BottomSheetView className="p-5">
           <Text className="text-white font-ssemibold text-2xl mb-4">

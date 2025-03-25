@@ -37,12 +37,8 @@ const CustomBottomSheetModal = forwardRef<BottomSheetModal, childrenProps>(
       <SafeAreaView>
         <BottomSheetModal
           backdropComponent={renderBackdrop}
-          backgroundStyle={{
-            backgroundColor: "#2c2c2e",
-          }}
-          handleIndicatorStyle={{
-            backgroundColor: "white",
-          }}
+          backgroundStyle={{ backgroundColor: "#2c2c2e" }}
+          handleIndicatorStyle={{ backgroundColor: "white" }}
           ref={ref}
           index={2}
           snapPoints={snapPoints}
