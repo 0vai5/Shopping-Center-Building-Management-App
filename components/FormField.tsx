@@ -36,6 +36,7 @@ const FormField = ({
       >
         <TextInput
           keyboardType={keypad}
+          className="text-white"
           secureTextEntry={showPassword && title === "Password"}
           value={value}
           onChangeText={handleChange}

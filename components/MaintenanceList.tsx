@@ -119,10 +119,50 @@ const MaintenanceCard: React.FC<MaintenanceCardProps> = ({ item }) => {
         </View>
       </View>
 
-      {/* TODO: Add a few more details about the flat and maintenance in the sheet */}
 
       <CustomBottomSheetModal ref={bottomSheetModalRef}>
-        <BottomSheetView>
+        <BottomSheetView className="p-5">
+          <Text className="text-white font-ssemibold text-2xl mb-4">
+            Maintenance Details
+          </Text>
+          <View className="flex-row gap-10 justify-between items-center">
+            <View>
+              <View className="flex-row justify-bewteen items-center gap-2">
+                <Image
+                  source={icons.house}
+                  tintColor={"#5889ec"}
+                  resizeMode="contain"
+                />
+                <Text className="text-white font-ssemibold text-xl relative">
+                  {item.flat_number}
+                </Text>
+              </View>
+              <Text className="text-gray-300 font-sregular text-lg">
+                Slip No. {item.slip_no}
+              </Text>
+            </View>
+            <View className="items-start">
+              <View className="flex-row gap-2">
+                <Image
+                  source={icons.dollar}
+                  resizeMode="contain"
+                  tintColor={"#5889ec"}
+                />
+                <Text className="text-gray-300 font-smedium text-lg">
+                  {item.maintenance * item.rooms} /-
+                </Text>
+              </View>
+              <View className="flex-row items-center justify-center gap-2">
+                <Image source={icons.rooms} tintColor={"#5889ec"} />
+                <Text className="text-white font-sregular text-xl">
+                  {item.rooms}
+                </Text>
+              </View>
+            </View>
+          </View>
+        </BottomSheetView>
+
+        <BottomSheetView className="p-5">
           <Text className="text-white font-ssemibold text-2xl mb-4">
             Update Maintenance Status
           </Text>
