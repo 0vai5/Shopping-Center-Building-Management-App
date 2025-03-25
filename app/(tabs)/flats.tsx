@@ -18,7 +18,6 @@ import { FlatCardProps } from "@/types";
 const flats = () => {
   const { height } = useWindowDimensions();
 
-  
   return (
     <SafeAreaView className="bg-primary" style={{ height }}>
       <ScrollView
@@ -39,7 +38,7 @@ const flats = () => {
           >
             <View className="flex justify-between flex-row items-center">
               <View>
-                <Text className="text-white font-ssemibold text-2xl">
+                <Text className="text-white font-ssemibold text-xl">
                   New flat constructed?
                 </Text>
               </View>
@@ -84,12 +83,22 @@ const FlatCard: React.FC<FlatCardProps> = ({ item }) => {
     >
       <View className="flex justify-between gap-10 flex-row ">
         <View>
-          <Text className="text-white font-ssemibold text-2xl">
-            {item.flat_number}
-          </Text>
-          <Text className="text-gray-400 font-medium text-lg">
-            {item.rooms} Rooms
-          </Text>
+          <View className="flex-row justify-bewteen items-center gap-2">
+            <Image
+              source={icons.house}
+              tintColor={"#5889ec"}
+              resizeMode="contain"
+            />
+            <Text className="text-white font-ssemibold text-xl relative">
+              {item.flat_number}
+            </Text>
+          </View>
+          <View className="flex-row justify-bewteen items-center gap-2">
+            <Image source={icons.rooms} tintColor={"#5889ec"} />
+            <Text className="text-gray-400 font-medium text-lg relative top-1">
+              {item.rooms}
+            </Text>
+          </View>
         </View>
         <View>
           {/* TODO: This image or to TouchableOpacity will be responsible for opening a modal that will show a sheet that will have multiple options like edit and delete */}
@@ -108,9 +117,12 @@ const FlatCard: React.FC<FlatCardProps> = ({ item }) => {
           <Text className="text-gray-300 font-smedium text-lg">
             {item.owner_name}
           </Text>
-          <Text className="text-gray-300 font-smedium text-lg">
-            {item.owner_no}
-          </Text>
+          <View className="flex-row justify-center items-center gap-2">
+            <Image source={icons.phone} tintColor={"#72BF78"} />
+            <Text className="text-gray-300 font-sregular text-lg">
+              {item.owner_no}
+            </Text>
+          </View>
         </View>
       </View>
     </View>

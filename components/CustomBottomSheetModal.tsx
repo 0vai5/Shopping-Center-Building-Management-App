@@ -6,6 +6,7 @@ import {
   BottomSheetView,
 } from "@gorhom/bottom-sheet";
 import { icons } from "@/constants";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 interface childrenProps {
   children: React.ReactNode;
@@ -33,7 +34,7 @@ const CustomBottomSheetModal = forwardRef<BottomSheetModal, childrenProps>(
     };
 
     return (
-      <View>
+      <SafeAreaView>
         <BottomSheetModal
           backdropComponent={renderBackdrop}
           backgroundStyle={{
@@ -47,14 +48,14 @@ const CustomBottomSheetModal = forwardRef<BottomSheetModal, childrenProps>(
           snapPoints={snapPoints}
           enablePanDownToClose
         >
-          <BottomSheetView className="px-3">
+          <BottomSheetView className="px-6">
             <TouchableOpacity onPress={handleClose}>
               <Image source={icons.cross} className="self-end" />
             </TouchableOpacity>
           </BottomSheetView>
           <BottomSheetView className="p-8">{children}</BottomSheetView>
         </BottomSheetModal>
-      </View>
+      </SafeAreaView>
     );
   }
 );

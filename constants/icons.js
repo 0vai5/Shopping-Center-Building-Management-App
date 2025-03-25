@@ -12,11 +12,19 @@ import account from "../assets/icons/account.png";
 import expenses from "../assets/icons/expenses.png";
 import flats from "../assets/icons/downtown.png";
 import summary from "../assets/icons/summary.png";
-import handWave from "../assets/icons/handWave.gif"
-import cross from "../assets/icons/cross.png"
-import download from "../assets/icons/download.png"
+import handWave from "../assets/icons/handWave.gif";
+import cross from "../assets/icons/cross.png";
+import download from "../assets/icons/download.png";
+import rooms from "../assets/icons/rooms.png";
+import phone from "../assets/icons/phone.png";
+import house from "../assets/icons/house.png"
+import dollar from "../assets/icons/dollar.png"
 
 export default {
+  dollar,
+  house,
+  rooms,
+  phone,
   download,
   cross,
   handWave,

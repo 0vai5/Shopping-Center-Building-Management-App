@@ -39,7 +39,7 @@ const expenses = () => {
           >
             <View className="flex justify-between flex-row items-center">
               <View>
-                <Text className="text-white font-ssemibold text-2xl">
+                <Text className="text-white font-ssemibold text-xl">
                   New Expense?
                 </Text>
               </View>
