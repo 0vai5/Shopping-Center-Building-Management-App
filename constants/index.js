@@ -174,19 +174,21 @@ const flats = [
     {
       expense_id: "1",
       expense: "WaterBoy",
-      salary: 3000,
+      amount: 3000,
+      variable: false,
       name: "Malik Zaada",
     },
     {
       expense_id: "2",
       expense: "Sweeper",
-      salary: 2200,
+      amount: 2200,
+      variable: false,
       name: "Abdullah",
     },
     {
       expense_id: "3",
       expense: "Electricity Bill",
-      salary: 5000,
+      variable: true,
       name: "K.Electric",
     },
   ];
