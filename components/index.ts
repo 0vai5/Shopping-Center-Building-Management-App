@@ -15,5 +15,5 @@ export {
   ProgressSummary,
   MaintenanceList,
   ExpensesList,
-  CustomBottomSheetModal
+  CustomBottomSheetModal,
 };

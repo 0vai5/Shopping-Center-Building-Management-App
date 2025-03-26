@@ -169,28 +169,58 @@ const flats = [
   },
 ];
 
+const expenses = [
+  {
+    expense_id: "1",
+    expense: "WaterBoy",
+    amount: 3000,
+    variable: false,
+    thisMonth: false,
+    name: "Malik Zaada",
+  },
+  {
+    expense_id: "2",
+    expense: "Sweeper",
+    amount: 2200,
+    variable: false,
+    thisMonth: false,
+    name: "Abdullah",
+  },
+  {
+    expense_id: "3",
+    expense: "Electricity Bill",
+    variable: true,
+    thisMonth: false,
+    name: "K.Electric",
+  },
+];
 
-  const expenses = [
-    {
-      expense_id: "1",
-      expense: "WaterBoy",
-      amount: 3000,
-      variable: false,
-      name: "Malik Zaada",
-    },
-    {
-      expense_id: "2",
-      expense: "Sweeper",
-      amount: 2200,
-      variable: false,
-      name: "Abdullah",
-    },
-    {
-      expense_id: "3",
-      expense: "Electricity Bill",
-      variable: true,
-      name: "K.Electric",
-    },
-  ];
+const summaryData = [
+  {
+    title: "Maintenance SF-10",
+    debit: 0,
+    credit: 300,
+  },
+  {
+    title: "Maintenance SF-11 & SF-12",
+    debit: 0,
+    credit: 600,
+  },
+  {
+    title: "WaterBoy",
+    debit: 3000,
+    credit: 0,
+  },
+  {
+    title: "Sweeper",
+    debit: 3000,
+    credit: 0,
+  },
+  {
+    title: "Electricity Bill",
+    debit: 3000,
+    credit: 0,
+  },
+];
 
-export { icons, maintenanceSlips, expenseSlips, flats, expenses };
+export { icons, maintenanceSlips, expenseSlips, flats, expenses, summaryData };
