@@ -9,8 +9,23 @@ import {
 } from "@/components";
 import { ProgressSummary } from "@/components";
 import { useWindowDimensions } from "react-native";
+import { StatsData } from "@/types";
 const home = () => {
   const { height } = useWindowDimensions();
+  const [stats, setStats] = useState<StatsData>({
+    amount: 0,
+    maintenanceReceived: 0,
+    expensesCleared: 0,
+  });
+
+  // TODO: On the Backend we will be calculating all the maintennence amount gotten and also the %es of expenses and maintenance recieved and cleard getStats()
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      console.log("statsFetched");
+    };
+    fetchStats()
+  }, []);
 
   return (
     <SafeAreaView className="bg-primary mb-10" style={{ height }}>
@@ -26,15 +41,15 @@ const home = () => {
           <Header />
         </View>
         <View>
-          <SummaryCard />
+          <SummaryCard amount={stats.amount} />
         </View>
 
         <View className="flex flex-row justify-between gap-2 w-full p-6">
           <View className="flex-1">
-            <ProgressSummary title={"Maintenance Received"} progress={50} />
+            <ProgressSummary title={"Maintenance Received"} progress={stats.maintenanceReceived} />
           </View>
           <View className="flex-1">
-            <ProgressSummary title={"Expenses Cleared"} progress={0} />
+            <ProgressSummary title={"Expenses Cleared"} progress={stats.expensesCleared} />
           </View>
         </View>
 

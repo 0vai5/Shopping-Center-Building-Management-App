@@ -2,7 +2,7 @@ import { View, Text } from "react-native";
 import React, { useState } from "react";
 import { DataTable as PaperDataTable } from "react-native-paper";
 
-// TODO: Fix the types
+// FIXME: Fix the types
 
 interface DataTableProps {
   data: any;
@@ -23,7 +23,7 @@ const DataTable: React.FC<DataTableProps> = ({ data }) => {
 
   const totalAmount = creditedAmount - debitedAmount;
 
-  // TODO: Fix the types and also add the total opening balance
+  // FIXME: Fix the types and also add the total opening balance
 
   const from = page * itemsPerPage;
   const to = Math.min((page + 1) * itemsPerPage, data.length);

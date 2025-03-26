@@ -3,7 +3,9 @@ import React from "react";
 import CustomButton from "./CustomButton";
 import { router } from "expo-router";
 
-const SummaryCard = () => {
+const SummaryCard = ({amount}: {
+  amount: number;
+}) => {
   const month = new Date().toLocaleString("default", { month: "long" });
   const screenHeight = Dimensions.get("window").height;
   return (
@@ -19,7 +21,7 @@ const SummaryCard = () => {
       </View>
 
       <View className="p-6 flex flex-row items-center">
-        <Text className="text-black font-sbold text-5xl">10,000</Text>
+        <Text className="text-black font-sbold text-5xl">{amount}</Text>
         <Text className="text-black font-smedium self-end">Rs</Text>
       </View>
 

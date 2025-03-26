@@ -12,23 +12,27 @@ import { icons } from "@/constants";
 import { CustomBottomSheetModal } from "@/components";
 import { BottomSheetModal, BottomSheetView } from "@gorhom/bottom-sheet";
 
-// TODO: Fix the Types after the Appwrite Integration
+// FIXME: Fix the Types after the Appwrite Integration
+// FIXME: When the status is updated there should be somthing that changes the button color in the bottom sheet.
 
 const MaintenanceList = () => {
   const [maintenanceSlips, setMaintenanceSlips] = useState([]);
   useEffect(() => {
     const fetchMaintenace = async () => {
-      console.log("Hello Items Fetched ....");
+      console.log("Hello Maintenance Slips Fetched ....");
     };
 
     fetchMaintenace();
   }, []);
   return (
     <View className="flex justify-center items-center">
+      {maintenanceSlips.length === 0 && (
+        <Text className="text-secondary-saturated font-ssemibold text-xl">
+          No Maintenance Slips Found
+        </Text>
+      )}
 
-     
-      {maintenanceSlips.length > 0 ? (
-        <FlatList
+      <FlatList
         className="p-6 mr-3 gap-3"
         data={maintenanceSlips}
         numColumns={1}
@@ -37,12 +41,6 @@ const MaintenanceList = () => {
         showsHorizontalScrollIndicator={false}
         keyExtractor={(item) => item.slip_no.toString()}
       />
-      ) : (
-        <Text className="text-white font-ssemibold text-2xl">
-          No Maintenance Slips Found
-        </Text>
-      )}
-      
     </View>
   );
 };
@@ -189,8 +187,7 @@ const MaintenanceCard: React.FC<MaintenanceCardProps> = ({ item }) => {
           </BottomSheetView>
         </BottomSheetView>
 
-      {/* TODO: When the Button is Pressed a pdf will be generated of the maintenance slip and then sent to the recipient. */}
-
+        {/* TODO: When the Button is Pressed a pdf will be generated of the maintenance slip and then sent to the recipient. */}
 
         {item.status === "paid" && (
           <BottomSheetView className="mt-10">

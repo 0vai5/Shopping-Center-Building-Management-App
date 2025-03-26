@@ -8,11 +8,11 @@ import {
   Image,
   Dimensions,
 } from "react-native";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { CustomBottomSheetModal, CustomButton } from "@/components";
 import { router } from "expo-router";
-import { icons, flats as flatData } from "@/constants";
+import { icons } from "@/constants";
 import { FlatCardProps } from "@/types";
 import {
   BottomSheetModal,
@@ -23,6 +23,7 @@ import {
 const flats = () => {
   const { height } = useWindowDimensions();
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
+  const [flatData, setFlatData] = useState([]);
   const [flatForm, setFlatForm] = useState({
     flat_number: "",
     rooms: "",
@@ -32,9 +33,16 @@ const flats = () => {
 
   const handleFlatCreation = () => {
     console.log("Flat Form", flatForm);
+    fetchFlats();
     bottomSheetModalRef.current?.dismiss();
     router.push("./flats");
-  }
+  };
+  const fetchFlats = async () => {
+    console.log("Hello Items flats ....");
+  };
+  useEffect(() => {
+    fetchFlats();
+  }, []);
 
   return (
     <>
@@ -76,6 +84,14 @@ const flats = () => {
                 Flats
               </Text>
             </View>
+
+            {flatData.length === 0 && (
+              <Text className="text-secondary-saturated font-ssemibold text-xl">
+                No Flats Found
+              </Text>
+            )}
+
+            {/* FIXME: Fix the types after appwrite integration */}
 
             <View className="flex justify-center items-center">
               <FlatList
@@ -155,8 +171,6 @@ const flats = () => {
     </>
   );
 };
-
-// TODO: Fix the types after appwrite integration
 
 const FlatCard: React.FC<FlatCardProps> = ({ item }) => {
   const screenHeight = Dimensions.get("window").height;

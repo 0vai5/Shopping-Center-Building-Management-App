@@ -1,5 +1,5 @@
 import { View, Text, ScrollView, Dimensions, Button } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { CustomButton, DataTable } from "@/components";
@@ -11,6 +11,8 @@ const summary = () => {
   const [fromDate, setFromDate] = useState(new Date().toDateString());
   const [toDate, setToDate] = useState(new Date().toDateString());
   const [isToDatePickerVisible, setToDatePickerVisibility] = useState(false);
+
+
   const [summaryData, setSummaryData] = useState([]);
 
   const handleConfirmFromDate = (date: any) => {
@@ -24,7 +26,16 @@ const summary = () => {
     setToDate(date.toDateString());
     setToDatePickerVisibility(false);
   };
-  const searchHandler = () => {};
+
+  useEffect(()=> {
+    searchHandler() 
+  }, [])
+
+  const searchHandler = () => {
+    console.log("Searching for data");
+  };
+
+  const handleExport = () => {};
 
 
   return (
@@ -87,7 +98,7 @@ const summary = () => {
         </View>
 
         <View className="mt-10">
-          <CustomButton title="Export" textStyles="text-white" width="50%" />
+          <CustomButton title="Export" handlePress={handleExport} textStyles="text-white" width="50%" />
         </View>
 
         <View>

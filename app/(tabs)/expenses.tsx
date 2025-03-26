@@ -8,11 +8,11 @@ import {
   Image,
   Dimensions,
 } from "react-native";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
 import { CustomBottomSheetModal, CustomButton } from "@/components";
-import { icons, expenses as expenseData } from "@/constants";
+import { icons } from "@/constants";
 import { ExpenseCardProps } from "@/types";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import {
@@ -31,10 +31,20 @@ const expenses = () => {
     amount: "",
     thisMonth: false,
   });
+  const [expenseData, setExpenseData] = useState([]);
 
   const handleExpenseCreation = () => {
     console.log(expenseForm, "ExpenseForm");
+    fetchExpenses();
+    bottomSheetModalRef.current?.dismiss();
+    router.push("./expenses");
   };
+  const fetchExpenses = async () => {
+    console.log("Hello Items expenses ....");
+  };
+  useEffect(() => {
+    fetchExpenses();
+  }, []);
 
   return (
     <>
@@ -77,11 +87,18 @@ const expenses = () => {
               </Text>
             </View>
 
+            {expenseData.length === 0 && (
+              <Text className="text-secondary-saturated font-ssemibold text-xl">
+                No Expenses Found
+              </Text>
+            )}
+
+            {/* FIXME: Fix the types after appwrite integration */}
+
             <View className="flex justify-center items-center">
               <FlatList
                 className="p-6 mr-3 gap-3"
                 data={expenseData}
-                numColumns={1}
                 renderItem={(expense) => <ExpenseCard item={expense.item} />}
                 horizontal
                 showsHorizontalScrollIndicator={false}
@@ -126,7 +143,10 @@ const expenses = () => {
                 text="This Month Only"
                 iconStyle={{ borderColor: "#5889ec" }}
                 innerIconStyle={{ borderWidth: 2 }}
-                textStyle={{ fontFamily: "JosefinSans-Regular", textDecorationLine: "none" }}
+                textStyle={{
+                  fontFamily: "JosefinSans-Regular",
+                  textDecorationLine: "none",
+                }}
                 onPress={(isChecked: boolean) => {
                   setExpenseForm({ ...expenseForm, thisMonth: isChecked });
                 }}
@@ -140,7 +160,10 @@ const expenses = () => {
                 text="Variable"
                 iconStyle={{ borderColor: "#5889ec" }}
                 innerIconStyle={{ borderWidth: 2 }}
-                textStyle={{ fontFamily: "JosefinSans-Regular", textDecorationLine: "none" }}
+                textStyle={{
+                  fontFamily: "JosefinSans-Regular",
+                  textDecorationLine: "none",
+                }}
                 onPress={(isChecked: boolean) => {
                   setExpenseForm({ ...expenseForm, variable: isChecked });
                 }}
@@ -175,9 +198,6 @@ const expenses = () => {
     </>
   );
 };
-
-// TODO: Fix the types after appwrite integration
-
 
 const ExpenseCard: React.FC<ExpenseCardProps> = ({ item }) => {
   const screenHeight = Dimensions.get("window").height;

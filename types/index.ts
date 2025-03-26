@@ -42,3 +42,9 @@ export interface ProgressSummaryProps {
   title: string;
   progress: number;
 }
+
+export interface StatsData {
+  amount: number;
+  maintenanceReceived: number;
+  expensesCleared: number;
+}

@@ -6,7 +6,7 @@ import {
   Image,
   Dimensions,
 } from "react-native";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { icons, expenseSlips } from "@/constants";
 import { ExpenseCardHomeProps } from "@/types";
 import {
@@ -16,9 +16,25 @@ import {
 } from "@gorhom/bottom-sheet";
 import CustomBottomSheetModal from "./CustomBottomSheetModal";
 
+// FIXME: Fix the Types after the Appwrite Integration
+// FIXME: When the status is updated there should be somthing that changes the button color in the bottom sheet.
+
 const ExpenseList = () => {
+  const [expenseSlips, setExpenseSlips] = useState([]);
+    useEffect(() => {
+      const fetchExpenseSlips = async () => {
+        console.log("Hello Expense Slips Fetched ....");
+      };
+  
+      fetchExpenseSlips();
+    }, []);
   return (
     <View className="flex justify-center items-center">
+      {expenseSlips.length === 0 && (
+        <Text className="text-secondary-saturated font-ssemibold text-xl">
+          No Expenses Found
+        </Text>
+      )}
       <FlatList
         className="p-6 mr-3 gap-3"
         data={expenseSlips}
@@ -32,7 +48,6 @@ const ExpenseList = () => {
   );
 };
 
-// TODO: Fix the Types after the Appwrite Integration
 
 const ExpenseCardHome: React.FC<ExpenseCardHomeProps> = ({ item }) => {
   const screenHeight = Dimensions.get("window").height;
