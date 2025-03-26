@@ -156,6 +156,8 @@ const flats = () => {
   );
 };
 
+// TODO: Fix the types after appwrite integration
+
 const FlatCard: React.FC<FlatCardProps> = ({ item }) => {
   const screenHeight = Dimensions.get("window").height;
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);

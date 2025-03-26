@@ -9,23 +9,16 @@ import {
 } from "react-native";
 import React, { useState } from "react";
 
-import { KeyboardTypeOptions } from "react-native";
 import { icons } from "../constants";
+import { FormFieldProps } from "@/types";
 
-const FormField = ({
+const FormField: React.FC<FormFieldProps> = ({
   title,
   keypad = "default",
   labelStyle,
   inputStyles,
   value,
   handleChange,
-}: {
-  title?: string;
-  keypad?: KeyboardTypeOptions;
-  labelStyle?: string;
-  inputStyles?: string;
-  value: string;
-  handleChange?: (e: any) => void;
 }) => {
   const [showPassword, setShowPassword] = useState(true);
   return (

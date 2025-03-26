@@ -1,13 +1,11 @@
 import { View, Text } from "react-native";
 import React from "react";
 import ProgressBar from "react-native-progress/Bar";
+import { ProgressSummaryProps } from "@/types";
 
-const ProgressSummary = ({
+const ProgressSummary: React.FC<ProgressSummaryProps> = ({
   title,
   progress,
-}: {
-  title: string;
-  progress: number;
 }) => {
   return (
     <View className="flex w-full h-[25vh] justify-between bg-lessBlack p-5 rounded-2xl">

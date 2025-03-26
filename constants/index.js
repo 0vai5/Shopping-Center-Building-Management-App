@@ -195,32 +195,5 @@ const expenses = [
   },
 ];
 
-const summaryData = [
-  {
-    title: "Maintenance SF-10",
-    debit: 0,
-    credit: 300,
-  },
-  {
-    title: "Maintenance SF-11 & SF-12",
-    debit: 0,
-    credit: 600,
-  },
-  {
-    title: "WaterBoy",
-    debit: 3000,
-    credit: 0,
-  },
-  {
-    title: "Sweeper",
-    debit: 3000,
-    credit: 0,
-  },
-  {
-    title: "Electricity Bill",
-    debit: 3000,
-    credit: 0,
-  },
-];
 
-export { icons, maintenanceSlips, expenseSlips, flats, expenses, summaryData };
+export { icons, maintenanceSlips, expenseSlips, flats, expenses };

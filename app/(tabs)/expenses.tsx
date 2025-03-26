@@ -176,6 +176,9 @@ const expenses = () => {
   );
 };
 
+// TODO: Fix the types after appwrite integration
+
+
 const ExpenseCard: React.FC<ExpenseCardProps> = ({ item }) => {
   const screenHeight = Dimensions.get("window").height;
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);

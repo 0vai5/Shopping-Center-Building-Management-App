@@ -1,26 +1,20 @@
 import { View, Text, TouchableOpacity, ActivityIndicator } from "react-native";
 import React from "react";
+import { CustomButtonProps } from "@/types";
 
-const CustomButton = ({
+const CustomButton: React.FC<CustomButtonProps> = ({
   title,
   handlePress,
   textStyles,
   containerStyles,
   loader,
   width,
-}: {
-  title: string;
-  handlePress?: () => void;
-  textStyles?: string;
-  containerStyles?: string;
-  loader?: boolean;
-  width: string;
 }) => {
   return (
     <TouchableOpacity
       onPress={handlePress}
       activeOpacity={0.7}
-      className={`${containerStyles} bg-black w-[${width}] py-4 px-10 rounded-lg `}
+      className={`${containerStyles} bg-black w-[${width || "100%"}] py-4 px-10 rounded-lg `}
       disabled={loader}
     >
       <View className="flex flex-row-reverse gap-3 items-center justify-center">

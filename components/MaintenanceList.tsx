@@ -6,13 +6,16 @@ import {
   TouchableOpacity,
   Image,
 } from "react-native";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { MaintenanceCardProps } from "@/types";
-import { icons, maintenanceSlips } from "@/constants";
+import { icons } from "@/constants";
 import { CustomBottomSheetModal } from "@/components";
 import { BottomSheetModal, BottomSheetView } from "@gorhom/bottom-sheet";
 
+// TODO: Fix the Types after the Appwrite Integration
+
 const MaintenanceList = () => {
+  const [maintenanceSlips, setMaintenanceSlips] = useState([]);
   useEffect(() => {
     const fetchMaintenace = async () => {
       console.log("Hello Items Fetched ....");
@@ -22,15 +25,24 @@ const MaintenanceList = () => {
   }, []);
   return (
     <View className="flex justify-center items-center">
-      <FlatList
+
+     
+      {maintenanceSlips.length > 0 ? (
+        <FlatList
         className="p-6 mr-3 gap-3"
         data={maintenanceSlips}
         numColumns={1}
         renderItem={({ item }) => <MaintenanceCard item={item} />}
         horizontal
         showsHorizontalScrollIndicator={false}
-        keyExtractor={(item) => item.flat_id.toString()}
+        keyExtractor={(item) => item.slip_no.toString()}
       />
+      ) : (
+        <Text className="text-white font-ssemibold text-2xl">
+          No Maintenance Slips Found
+        </Text>
+      )}
+      
     </View>
   );
 };
@@ -176,6 +188,10 @@ const MaintenanceCard: React.FC<MaintenanceCardProps> = ({ item }) => {
             </TouchableOpacity>
           </BottomSheetView>
         </BottomSheetView>
+
+      {/* TODO: When the Button is Pressed a pdf will be generated of the maintenance slip and then sent to the recipient. */}
+
+
         {item.status === "paid" && (
           <BottomSheetView className="mt-10">
             <View className="flex justify-between items-center gap-3 flex-row">

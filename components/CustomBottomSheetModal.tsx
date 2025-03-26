@@ -7,14 +7,12 @@ import {
 } from "@gorhom/bottom-sheet";
 import { icons } from "@/constants";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { CustomBottomSheetModalProps } from "@/types";
 
-interface childrenProps {
-  children: React.ReactNode;
-}
 
 const snapPoints = ["50%", "75%"];
 
-const CustomBottomSheetModal = forwardRef<BottomSheetModal, childrenProps>(
+const CustomBottomSheetModal = forwardRef<BottomSheetModal, CustomBottomSheetModalProps>(
   ({ children }, ref) => {
     const renderBackdrop = useCallback(
       (props: any) => (
