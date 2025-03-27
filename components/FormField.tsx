@@ -29,6 +29,7 @@ const FormField: React.FC<FormFieldProps> = ({
       >
         <TextInput
           keyboardType={keypad}
+          autoCapitalize="none"
           className="text-white flex-1 p-2"
           secureTextEntry={showPassword && title === "Password"}
           value={value}

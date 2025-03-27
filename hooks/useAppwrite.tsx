@@ -1,5 +1,5 @@
 import react from "react";
-import { database, account, client, config } from "../lib/appwrite";
+import { database, account, client, config, ID } from "../lib/appwrite";
 import { Query } from "react-native-appwrite";
 
 const useAppwrite = () => {
@@ -46,8 +46,50 @@ const useAppwrite = () => {
   };
 
   // Flats
-  const createFlat = async (data: any) => {};
-  const getFlats = async () => {};
+  const createFlat = async (data: any) => {
+    try {
+      const {flatNumber, rooms, ownerName, ownerNo} = data;
+
+      if(!flatNumber || !rooms || !ownerName || !ownerNo) {
+        throw Error;
+        return
+      }
+
+      const response = await database.createDocument(
+        config.database!,
+        config.flatsCollection!,
+        ID.unique(),
+        {
+          flatNumber,
+          rooms: parseInt(rooms),
+          ownerName,
+          ownerNo,
+        }
+      )
+
+      if(!response) throw Error;
+
+      return response;
+
+
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const getFlats = async () => {
+    try {
+      const response = await database.listDocuments(
+        config.database!,
+        config.flatsCollection!,
+      );
+
+      if(!response) throw Error;
+
+      return response.documents;
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   // Expenses
   const createExpense = async (data: any) => {};

@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Image,
   Dimensions,
+  Alert,
 } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -18,31 +19,59 @@ import {
   BottomSheetTextInput,
   BottomSheetView,
 } from "@gorhom/bottom-sheet";
+import useAppwrite from "@/hooks/useAppwrite";
+import { router } from "expo-router";
 
 const flats = () => {
   const { height } = useWindowDimensions();
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
+  const { createFlat, getFlats } = useAppwrite();
   const [creating, setCreating] = useState(false);
   const [flatData, setFlatData] = useState<any | null>([]);
   const [flatForm, setFlatForm] = useState({
-    flat_number: "",
+    flatNumber: "",
     rooms: "",
-    owner_name: "",
-    owner_no: "",
+    ownerName: "",
+    ownerNo: "",
   });
 
-  const handleFlatCreation = () => {
+  const handleFlatCreation = async () => {
     setCreating(true);
 
-    setTimeout(() => {
-      setCreating(false);
-      console.log("Flat Created", flatForm);
+    try {
+      const response = await createFlat(flatForm);
+      console.log("response", response);
+
+      if (response) {
+        Alert.alert("Success", "Flat created successfully");
+      }
+
       bottomSheetModalRef.current?.close();
-    }, 3000);
-    fetchFlats();
+      router.push("./flats");
+      fetchFlats();
+    } catch (error: any) {
+      Alert.alert("Error", error.message);
+    } finally {
+      setCreating(false);
+      setFlatForm({
+        flatNumber: "",
+        rooms: "",
+        ownerName: "",
+        ownerNo: "",
+      });
+    }
   };
   const fetchFlats = async () => {
-    console.log("Hello Items flats ....");
+    try {
+      const response = await getFlats();
+      console.log("response", response);
+      setFlatData(response);
+    } catch (error: any) {
+      Alert.alert("Error", error.message);
+    } finally {
+      setCreating(false);
+    }
+
   };
   useEffect(() => {
     fetchFlats();
@@ -104,7 +133,7 @@ const flats = () => {
                 renderItem={(flat) => <FlatCard item={flat.item} />}
                 horizontal
                 showsHorizontalScrollIndicator={false}
-                keyExtractor={(flat) => flat.flat_id.toString()}
+                keyExtractor={(flat) => flat.$id.toString()}
               />
             </View>
           </View>
@@ -123,9 +152,9 @@ const flats = () => {
               </Text>
               <BottomSheetTextInput
                 className="px-2 py-3 border-secondary-saturated bg-white rounded-lg text-primary"
-                value={flatForm.flat_number}
+                value={flatForm.flatNumber}
                 onChangeText={(e) =>
-                  setFlatForm({ ...flatForm, flat_number: e })
+                  setFlatForm({ ...flatForm, flatNumber: e })
                 }
               />
             </View>
@@ -144,10 +173,8 @@ const flats = () => {
               </Text>
               <BottomSheetTextInput
                 className="px-2 py-3 border-secondary-saturated bg-white rounded-lg text-primary"
-                value={flatForm.owner_name}
-                onChangeText={(e) =>
-                  setFlatForm({ ...flatForm, owner_name: e })
-                }
+                value={flatForm.ownerName}
+                onChangeText={(e) => setFlatForm({ ...flatForm, ownerName: e })}
               />
             </View>
             <View>
@@ -156,9 +183,9 @@ const flats = () => {
               </Text>
               <BottomSheetTextInput
                 className="px-2 py-3 border-secondary-saturated bg-white rounded-lg text-primary"
-                value={flatForm.owner_no}
+                value={flatForm.ownerNo}
                 keyboardType="phone-pad"
-                onChangeText={(e) => setFlatForm({ ...flatForm, owner_no: e })}
+                onChangeText={(e) => setFlatForm({ ...flatForm, ownerNo: e })}
               />
             </View>
             <View className="mt-5">
@@ -166,6 +193,7 @@ const flats = () => {
                 title="Create Flat"
                 textStyles="text-white"
                 width="150px"
+                loader={creating}
                 handlePress={handleFlatCreation}
               />
             </View>
@@ -195,7 +223,7 @@ const FlatCard: React.FC<FlatCardProps> = ({ item }) => {
                 resizeMode="contain"
               />
               <Text className="text-white font-ssemibold text-xl relative">
-                {item.flat_number}
+                {item.flatNumber}
               </Text>
             </View>
             <View className="flex-row justify-bewteen items-center gap-2">
@@ -221,12 +249,12 @@ const FlatCard: React.FC<FlatCardProps> = ({ item }) => {
         <View className="flex justify-between gap-10 flex-row mt-4">
           <View>
             <Text className="text-gray-300 font-smedium text-lg">
-              {item.owner_name}
+              {item.ownerName}
             </Text>
             <View className="flex-row justify-center items-center gap-2">
               <Image source={icons.phone} tintColor={"#72BF78"} />
               <Text className="text-gray-300 font-sregular text-lg">
-                {item.owner_no}
+                {item.ownerNo}
               </Text>
             </View>
           </View>
@@ -247,7 +275,7 @@ const FlatCard: React.FC<FlatCardProps> = ({ item }) => {
                   resizeMode="contain"
                 />
                 <Text className="text-white font-ssemibold text-xl relative">
-                  {item.flat_number}
+                  {item.flatNumber}
                 </Text>
               </View>
               <View className="flex-row items-center justify-center gap-2">
@@ -260,7 +288,7 @@ const FlatCard: React.FC<FlatCardProps> = ({ item }) => {
             <View className="items-start">
               <View className="flex-row gap-2">
                 <Text className="text-gray-300 font-smedium text-lg">
-                  {item.owner_name}
+                  {item.ownerName}
                 </Text>
               </View>
               <View className="flex-row justify-bewteen items-center gap-2">
@@ -270,7 +298,7 @@ const FlatCard: React.FC<FlatCardProps> = ({ item }) => {
                   resizeMode="contain"
                 />
                 <Text className="text-white font-ssemibold text-xl relative">
-                  {item.owner_no}
+                  {item.ownerNo}
                 </Text>
               </View>
             </View>
