@@ -1,10 +1,14 @@
 import { Alert, Image, ScrollView, Text, TextInput, View } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { CustomButton, FormField } from "@/components";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Link, Redirect, router } from "expo-router";
+import { useGlobalContext } from "@/context/GlobalContext";
 
 const Signin = () => {
+   const { isLoading, isLoggedIn } = useGlobalContext();
+  
+    
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
     email: "",
@@ -12,14 +16,14 @@ const Signin = () => {
   });
 
   const handleLogin = async () => {
-    // if (!form.email || !form.password) {
-    //   Alert.alert("Error", "Please fill in all fields");
-    //   return;
-    // }
-    // setLoading(true);
-    // setTimeout(() => {
-    //   setLoading(false);
-    // }, 3000);
+    if (!form.email || !form.password) {
+      Alert.alert("Error", "Please fill in all fields");
+      return;
+    }
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+    }, 3000);
 
 
     router.navigate("../(tabs)/home");
@@ -29,6 +33,12 @@ const Signin = () => {
       password: "",
     });
   };
+
+  useEffect(() => {
+    if (!isLoading && isLoggedIn) {
+      router.push("../(tabs)/home");
+    }
+  }, [isLoading, isLoggedIn]);
 
   return (
     <>

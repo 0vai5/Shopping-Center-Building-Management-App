@@ -1,11 +1,19 @@
-import { View, Text, ScrollView, Image, TouchableOpacity } from "react-native";
-import { StatusBar } from "expo-status-bar";
-import React from "react";
+import { View, Text, ScrollView, Image } from "react-native";
+import React, { useEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Link, router } from "expo-router";
+import { Redirect, router } from "expo-router";
 import { CustomButton } from "@/components";
+import { useGlobalContext } from "@/context/GlobalContext";
 
-const index = () => {
+const index: React.FC = () => {
+  const { isLoading, isLoggedIn } = useGlobalContext();
+
+  useEffect(() => {
+    if (!isLoading && isLoggedIn) {
+      router.push("./(tabs)/home");
+    }
+  }, [isLoading, isLoggedIn]);
+
   return (
     <>
       <SafeAreaView className="bg-primary">
@@ -22,7 +30,7 @@ const index = () => {
             />
           </View>
 
-          <View className="absolute flex bg-primary/70 justify-end items-center pb-4  gap-0 w-full h-full">
+          <View className="absolute flex bg-primary/70 justify-end items-center pb-4 gap-0 w-full h-full">
             <View className="mb-0">
               <Image
                 source={require("@/assets/images/building-logo-transparent.png")}
@@ -49,7 +57,7 @@ const index = () => {
                 title="Get Started"
                 containerStyles="w-full mt-7"
                 handlePress={() => {
-                  router.navigate("./(auth)/signin");
+                  router.push("./(auth)/signin");
                 }}
                 textStyles="text-white"
               />
@@ -57,7 +65,6 @@ const index = () => {
           </View>
         </ScrollView>
       </SafeAreaView>
-      {/* <StatusBar style="dark" /> */}
     </>
   );
 };

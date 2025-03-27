@@ -6,6 +6,7 @@ import { StatusBar } from "expo-status-bar";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { PaperProvider } from "react-native-paper";
+import GlobalContextProvider from "@/context/GlobalContext";
 
 export default function RootLayout() {
   const [loaded, error] = useFonts({
@@ -29,28 +30,30 @@ export default function RootLayout() {
   }
   return (
     <>
-      <PaperProvider>
-        <GestureHandlerRootView>
-          <BottomSheetModalProvider>
-            <Stack>
-              <Stack.Screen
-                name="(auth)"
-                options={{
-                  headerShown: false,
-                }}
-              />
-              <Stack.Screen
-                name="(tabs)"
-                options={{
-                  headerShown: false,
-                }}
-              />
-              <Stack.Screen name="index" options={{ headerShown: false }} />
-            </Stack>
-            <StatusBar style="light" />
-          </BottomSheetModalProvider>
-        </GestureHandlerRootView>
-      </PaperProvider>
+      <GlobalContextProvider>
+        <PaperProvider>
+          <GestureHandlerRootView>
+            <BottomSheetModalProvider>
+              <Stack>
+                <Stack.Screen
+                  name="(auth)"
+                  options={{
+                    headerShown: false,
+                  }}
+                />
+                <Stack.Screen
+                  name="(tabs)"
+                  options={{
+                    headerShown: false,
+                  }}
+                />
+                <Stack.Screen name="index" options={{ headerShown: false }} />
+              </Stack>
+              <StatusBar style="light" />
+            </BottomSheetModalProvider>
+          </GestureHandlerRootView>
+        </PaperProvider>
+      </GlobalContextProvider>
     </>
   );
 }

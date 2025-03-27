@@ -23,7 +23,8 @@ import {
 const flats = () => {
   const { height } = useWindowDimensions();
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
-  const [flatData, setFlatData] = useState([]);
+  const [creating, setCreating] = useState(false);
+  const [flatData, setFlatData] = useState<any | null>([]);
   const [flatForm, setFlatForm] = useState({
     flat_number: "",
     rooms: "",
@@ -32,10 +33,14 @@ const flats = () => {
   });
 
   const handleFlatCreation = () => {
-    console.log("Flat Form", flatForm);
+    setCreating(true);
+
+    setTimeout(() => {
+      setCreating(false);
+      console.log("Flat Created", flatForm);
+      bottomSheetModalRef.current?.close();
+    }, 3000);
     fetchFlats();
-    bottomSheetModalRef.current?.dismiss();
-    router.push("./flats");
   };
   const fetchFlats = async () => {
     console.log("Hello Items flats ....");

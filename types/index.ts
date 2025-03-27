@@ -48,3 +48,17 @@ export interface StatsData {
   maintenanceReceived: number;
   expensesCleared: number;
 }
+
+export interface GlobalContextType {
+    isLoading: boolean;
+    setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
+    user: any;
+    setUser: React.Dispatch<React.SetStateAction<any>>;
+    isLoggedIn: boolean;
+    setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+export interface GlobalContextProviderProps {
+    children: React.ReactNode;
+}
+

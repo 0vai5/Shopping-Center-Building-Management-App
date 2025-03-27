@@ -18,7 +18,7 @@ const CustomButton: React.FC<CustomButtonProps> = ({
       disabled={loader}
     >
       <View className="flex flex-row-reverse gap-3 items-center justify-center">
-        {loader && <ActivityIndicator color="black" />}
+        {loader && <ActivityIndicator color="white" />}
         <Text className={`${textStyles} text-center font-smedium`}>
           {title}
         </Text>

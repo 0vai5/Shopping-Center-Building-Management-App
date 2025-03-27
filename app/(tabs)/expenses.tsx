@@ -24,6 +24,7 @@ import {
 const expenses = () => {
   const { height } = useWindowDimensions();
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
+  const [creating, setCreating] = useState(false);
   const [expenseForm, setExpenseForm] = useState({
     variable: false,
     expense: "",
@@ -31,13 +32,20 @@ const expenses = () => {
     amount: "",
     thisMonth: false,
   });
-  const [expenseData, setExpenseData] = useState([]);
+
+  const [expenseData, setExpenseData] = useState<any | null>([]);
 
   const handleExpenseCreation = () => {
-    console.log(expenseForm, "ExpenseForm");
-    fetchExpenses();
-    bottomSheetModalRef.current?.dismiss();
-    router.push("./expenses");
+    setCreating(true);
+
+    setTimeout(() => {
+      setCreating(false);
+      console.log("Expense Created", expenseForm);
+      bottomSheetModalRef.current?.close();
+    }, 3000);
+    fetchExpenses()
+
+
   };
   const fetchExpenses = async () => {
     console.log("Hello Items expenses ....");
@@ -95,14 +103,14 @@ const expenses = () => {
 
             {/* FIXME: Fix the types after appwrite integration */}
 
-            <View className="flex justify-center items-center">
+            <View className="flex">
               <FlatList
                 className="p-6 mr-3 gap-3"
                 data={expenseData}
                 renderItem={(expense) => <ExpenseCard item={expense.item} />}
                 horizontal
                 showsHorizontalScrollIndicator={false}
-                keyExtractor={(expense) => expense.expense_id.toString()}
+                keyExtractor={(expense) => expense.id.toString()}
               />
             </View>
           </View>
@@ -190,6 +198,7 @@ const expenses = () => {
                 textStyles="text-white"
                 width="150px"
                 handlePress={handleExpenseCreation}
+                loader={creating}
               />
             </View>
           </View>
