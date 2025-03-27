@@ -4,9 +4,11 @@ import { CustomButton, FormField } from "@/components";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Link, Redirect, router } from "expo-router";
 import { useGlobalContext } from "@/context/GlobalContext";
+import useAppwrite from "@/hooks/useAppwrite";
 
 const Signin = () => {
-  const { isLoggedIn, isLoading } = useGlobalContext();
+  const { isLoggedIn, isLoading, setIsLoggedIn, setUser } = useGlobalContext();
+  const { loginUser, getCurrentUser } = useAppwrite();
 
   useEffect(() => {
     if (!isLoading && isLoggedIn) router.push("../(tabs)/home");
@@ -19,21 +21,25 @@ const Signin = () => {
   });
 
   const handleLogin = async () => {
-    if (!form.email || !form.password) {
-      Alert.alert("Error", "Please fill in all fields");
-      return;
-    }
     setLoading(true);
-    setTimeout(() => {
+    try {
+      const response = await loginUser(form.email, form.password);
+      const currentUser = await getCurrentUser();
+      console.log("currentUser", currentUser);
+
+      setIsLoggedIn(true);
+      setUser(currentUser);
+
+      Alert.alert("Success", "User signed in successfully");
+
+      if (response) {
+        router.push("../(tabs)/home");
+      }
+    } catch (error: any) {
+      Alert.alert("Error", error.message);
+    } finally {
       setLoading(false);
-    }, 3000);
-
-    router.navigate("../(tabs)/home");
-
-    setForm({
-      email: "",
-      password: "",
-    });
+    }
   };
 
   return (

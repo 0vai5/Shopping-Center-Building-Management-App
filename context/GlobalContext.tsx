@@ -1,3 +1,4 @@
+import useAppwrite from "@/hooks/useAppwrite";
 import { GlobalContextProviderProps, GlobalContextType } from "@/types";
 import React, { createContext, useEffect, useState, useContext } from "react";
 
@@ -17,20 +18,25 @@ const GlobalProvider: React.FC<GlobalContextProviderProps> = ({ children }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [user, setUser] = useState<any>(null);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const {getCurrentUser} = useAppwrite();
 
 //   TODO: The user will be updated after calling getCurrentUser() method from appwrite hook
 
   useEffect(() => {
     setIsLoading(true);
-    setTimeout(() => {
-      const mockUser = {
-        id: 1,
-        name: "John Doe",
-      };
-      setUser(mockUser);
-      setIsLoggedIn(true);
-      setIsLoading(false);
-    }, 1000);
+    const response = getCurrentUser().then((res) => {
+      if (res) {
+        setIsLoggedIn(true);
+        setUser(res);
+      } else {
+        setIsLoggedIn(false);
+        setUser(null);
+      }
+    }).catch((error) => {
+      console.error(error);
+    })
+
+    setIsLoading(false);
   }, []);
 
   return (

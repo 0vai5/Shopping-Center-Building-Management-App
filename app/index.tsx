@@ -8,6 +8,7 @@ import { useGlobalContext } from "@/context/GlobalContext";
 const index: React.FC = () => {
   const { isLoggedIn, isLoading } = useGlobalContext();
 
+
   useEffect(() => {
     if (!isLoading && isLoggedIn) router.push("./(tabs)/home");
   }, [isLoading, isLoggedIn]);

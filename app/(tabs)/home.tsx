@@ -24,6 +24,7 @@ const home = () => {
     const fetchStats = async () => {
       console.log("statsFetched");
     };
+
     fetchStats()
   }, []);
 
