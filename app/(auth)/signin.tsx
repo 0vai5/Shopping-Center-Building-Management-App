@@ -6,9 +6,12 @@ import { Link, Redirect, router } from "expo-router";
 import { useGlobalContext } from "@/context/GlobalContext";
 
 const Signin = () => {
-   const { isLoading, isLoggedIn } = useGlobalContext();
-  
-    
+  const { isLoggedIn, isLoading } = useGlobalContext();
+
+  useEffect(() => {
+    if (!isLoading && isLoggedIn) router.push("../(tabs)/home");
+  }, [isLoading, isLoggedIn]);
+
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
     email: "",
@@ -25,7 +28,6 @@ const Signin = () => {
       setLoading(false);
     }, 3000);
 
-
     router.navigate("../(tabs)/home");
 
     setForm({
@@ -33,12 +35,6 @@ const Signin = () => {
       password: "",
     });
   };
-
-  useEffect(() => {
-    if (!isLoading && isLoggedIn) {
-      router.push("../(tabs)/home");
-    }
-  }, [isLoading, isLoggedIn]);
 
   return (
     <>

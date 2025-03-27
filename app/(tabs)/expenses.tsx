@@ -10,7 +10,6 @@ import {
 } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { router } from "expo-router";
 import { CustomBottomSheetModal, CustomButton } from "@/components";
 import { icons } from "@/constants";
 import { ExpenseCardProps } from "@/types";

@@ -11,7 +11,6 @@ import {
 import React, { useEffect, useRef, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { CustomBottomSheetModal, CustomButton } from "@/components";
-import { router } from "expo-router";
 import { icons } from "@/constants";
 import { FlatCardProps } from "@/types";
 import {
