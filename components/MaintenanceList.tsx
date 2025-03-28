@@ -18,22 +18,8 @@ import { router } from "expo-router";
 // FIXME: Fix the Types after the Appwrite Integration
 // FIXME: When the status is updated there should be somthing that changes the button color in the bottom sheet.
 
-const MaintenanceList = ({ onRefresh }: { onRefresh: () => void }) => {
-  const [maintenanceSlips, setMaintenanceSlips] = useState<any>([]);
-  const { getMaintenancesSlips } = useAppwrite();
-  useEffect(() => {
-    const fetchMaintenace = async () => {
-      try {
-        const response = await getMaintenancesSlips();
-        setMaintenanceSlips(response);
-        onRefresh(); 
-      } catch (error) {
-        Alert.alert("Error Occured", "Error Fetching Maintenance");
-      }
-    };
+const MaintenanceList = ({ maintenanceSlips }: { maintenanceSlips: any }) => {
 
-    fetchMaintenace();
-  }, []);
   return (
     <View className="flex p-6">
       {maintenanceSlips && maintenanceSlips.length === 0 && (
@@ -46,7 +32,7 @@ const MaintenanceList = ({ onRefresh }: { onRefresh: () => void }) => {
         className="p-6 mr-3 gap-3"
         data={maintenanceSlips}
         numColumns={1}
-        renderItem={({ item }) => <MaintenanceCard item={item} onRefresh={onRefresh} />}
+        renderItem={({ item }) => <MaintenanceCard item={item} />}
         horizontal
         showsHorizontalScrollIndicator={false}
         keyExtractor={(item) => item.$id.toString()}
@@ -55,7 +41,7 @@ const MaintenanceList = ({ onRefresh }: { onRefresh: () => void }) => {
   );
 };
 
-const MaintenanceCard: React.FC<MaintenanceCardProps> = ({ item, onRefresh }) => {
+const MaintenanceCard: React.FC<MaintenanceCardProps> = ({ item }) => {
   const screenHeight = Dimensions.get("window").height;
   const cardHeight = screenHeight * 0.4;
   const statusColor = item.status === "pending" ? "bg-red-600" : "bg-green-600";

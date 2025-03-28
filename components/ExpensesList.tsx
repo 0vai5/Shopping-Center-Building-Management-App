@@ -21,22 +21,7 @@ import useAppwrite from "@/hooks/useAppwrite";
 // FIXME: Fix the Types after the Appwrite Integration
 // FIXME: When the status is updated there should be somthing that changes the button color in the bottom sheet.
 
-const ExpenseList = ({ onRefresh }: { onRefresh: () => void }) => {
-  const [expenseSlips, setExpenseSlips] = useState<any>([]);
-  const { getExpenseSlips } = useAppwrite();
-  useEffect(() => {
-    const fetchExpenseSlips = async () => {
-      try {
-        const response = await getExpenseSlips();
-        setExpenseSlips(response);
-        onRefresh(); // Notify parent after refresh
-      } catch (error: any) {
-        Alert.alert("Error Occured", "Faild fetching Expense Slips");
-      }
-    };
-
-    fetchExpenseSlips();
-  }, []);
+const ExpenseList = ({expenseSlips}: {expenseSlips: any}) => {
   return (
     <View className="flex justify-center items-center">
       {expenseSlips.length === 0 && (
@@ -48,7 +33,7 @@ const ExpenseList = ({ onRefresh }: { onRefresh: () => void }) => {
         className="p-6 mr-3 gap-3"
         data={expenseSlips}
         numColumns={1}
-        renderItem={(expense) => <ExpenseCardHome item={expense.item} onRefresh={onRefresh} />}
+        renderItem={(expense) => <ExpenseCardHome item={expense.item} />}
         horizontal
         showsHorizontalScrollIndicator={false}
         keyExtractor={(expense) => expense.$id.toString()}
@@ -57,7 +42,7 @@ const ExpenseList = ({ onRefresh }: { onRefresh: () => void }) => {
   );
 };
 
-const ExpenseCardHome: React.FC<ExpenseCardHomeProps> = ({ item, onRefresh }) => {
+const ExpenseCardHome: React.FC<ExpenseCardHomeProps> = ({ item }) => {
   const screenHeight = Dimensions.get("window").height;
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
   const cardHeight = screenHeight * 0.4;

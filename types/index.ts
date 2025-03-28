@@ -2,11 +2,9 @@ import { KeyboardTypeOptions } from "react-native";
 
 export interface MaintenanceCardProps {
   item: any;
-  onRefresh: () => void;
 }
 
 export interface ExpenseCardHomeProps {
-  onRefresh: () => void;
   item: any;
 }
 

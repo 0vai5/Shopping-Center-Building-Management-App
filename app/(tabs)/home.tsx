@@ -1,5 +1,13 @@
-import { View, ScrollView, FlatList, Image, Text, RefreshControl } from "react-native";
-import react, {useEffect, useState, } from "react"
+import {
+  View,
+  ScrollView,
+  FlatList,
+  Image,
+  Text,
+  RefreshControl,
+  Alert,
+} from "react-native";
+import react, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {
   Header,
@@ -10,8 +18,13 @@ import {
 import { ProgressSummary } from "@/components";
 import { useWindowDimensions } from "react-native";
 import { StatsData } from "@/types";
+import useAppwrite from "@/hooks/useAppwrite";
 const home = () => {
   const { height } = useWindowDimensions();
+  const { getExpenseSlips, getMaintenancesSlips, getMonthlyStats } =
+    useAppwrite();
+  const [maintenanceSlips, setMaintenanceSlips] = useState<any>([]);
+  const [expenseSlips, setExpenseSlips] = useState<any>([]);
   const [stats, setStats] = useState<StatsData>({
     amount: 0,
     maintenanceReceived: 0,
@@ -21,17 +34,39 @@ const home = () => {
 
   const fetchStats = async () => {
     console.log("statsFetched");
-    // Simulate fetching stats
   };
 
   const onRefresh = async () => {
     setRefreshing(true);
     await fetchStats();
+    await fetchExpenseSlips();
+    await fetchMaintenanceSlips();
     setRefreshing(false);
+  };
+
+  const fetchExpenseSlips = async () => {
+    try {
+      const response = await getExpenseSlips();
+
+      setExpenseSlips(response);
+    } catch (error) {
+      Alert.alert("Error Occured", "Error Fetching Expense Slips");
+    }
+  };
+  const fetchMaintenanceSlips = async () => {
+    try {
+      const response = await getMaintenancesSlips();
+
+      setMaintenanceSlips(response);
+    } catch (error) {
+      Alert.alert("Error Occured", "Error Fetching Maintenance Slips");
+    }
   };
 
   useEffect(() => {
     fetchStats();
+    fetchExpenseSlips();
+    fetchMaintenanceSlips();
   }, []);
 
   return (
@@ -56,10 +91,16 @@ const home = () => {
 
         <View className="flex flex-row justify-between gap-2 w-full p-6">
           <View className="flex-1">
-            <ProgressSummary title={"Maintenance Received"} progress={stats.maintenanceReceived} />
+            <ProgressSummary
+              title={"Maintenance Received"}
+              progress={stats.maintenanceReceived}
+            />
           </View>
           <View className="flex-1">
-            <ProgressSummary title={"Expenses Cleared"} progress={stats.expensesCleared} />
+            <ProgressSummary
+              title={"Expenses Cleared"}
+              progress={stats.expensesCleared}
+            />
           </View>
         </View>
 
@@ -69,14 +110,14 @@ const home = () => {
               Maintenance
             </Text>
           </View>
-          <MaintenanceList onRefresh={onRefresh} />
+          <MaintenanceList maintenanceSlips={maintenanceSlips} />
         </View>
 
         <View>
           <View className="flex justify-center p-6">
             <Text className="text-white text-3xl font-ssemibold">Expenses</Text>
           </View>
-          <ExpensesList onRefresh={onRefresh} />
+          <ExpensesList expenseSlips={expenseSlips} />
         </View>
       </ScrollView>
     </SafeAreaView>
