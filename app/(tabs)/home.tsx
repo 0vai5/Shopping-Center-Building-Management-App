@@ -1,5 +1,5 @@
 import { View, ScrollView, FlatList, Image, Text, RefreshControl } from "react-native";
-import React, { useEffect, useState } from "react";
+import react, {useEffect, useState, } from "react"
 import { SafeAreaView } from "react-native-safe-area-context";
 import {
   Header,

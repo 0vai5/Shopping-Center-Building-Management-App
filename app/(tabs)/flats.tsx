@@ -28,7 +28,7 @@ const flats = () => {
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
   const { createFlat, getFlats } = useAppwrite();
   const [creating, setCreating] = useState(false);
-  const [flatData, setFlatData] = useState<any | null>([]);
+  const [flatData, setFlatData] = useState<any>([]);
   const [flatForm, setFlatForm] = useState({
     flatNumber: "",
     rooms: "",
@@ -127,7 +127,7 @@ const flats = () => {
               </Text>
             </View>
 
-            {flatData.length === 0 && (
+            {flatData && flatData.length === 0 && (
               <Text className="text-secondary-saturated font-ssemibold text-xl">
                 No Flats Found
               </Text>
@@ -135,7 +135,7 @@ const flats = () => {
 
             {/* FIXME: Fix the types after appwrite integration */}
 
-            <View className="flex justify-center items-center">
+            <View className="flex">
               <FlatList
                 className="p-6 mr-3 gap-3 w-[100%]"
                 data={flatData}
