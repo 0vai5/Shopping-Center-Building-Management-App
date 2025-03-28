@@ -1,8 +1,9 @@
-import { View, Text, ScrollView, Dimensions, Button } from "react-native";
+import { View, Text, ScrollView, Dimensions, Button, RefreshControl } from "react-native";
 import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { CustomButton, DataTable } from "@/components";
+import { router } from "expo-router";
 
 
 const summary = () => {
@@ -11,6 +12,7 @@ const summary = () => {
   const [fromDate, setFromDate] = useState(new Date().toDateString());
   const [toDate, setToDate] = useState(new Date().toDateString());
   const [isToDatePickerVisible, setToDatePickerVisibility] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
 
 
   const [summaryData, setSummaryData] = useState([]);
@@ -31,8 +33,15 @@ const summary = () => {
     searchHandler() 
   }, [])
 
-  const searchHandler = () => {
+  const searchHandler = async () => {
     console.log("Searching for data");
+    // Simulate fetching summary data
+  };
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await searchHandler();
+    setRefreshing(false);
   };
 
   const handleExport = () => {};
@@ -41,6 +50,9 @@ const summary = () => {
   return (
     <SafeAreaView className="bg-primary" style={{ height }}>
       <ScrollView
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
         showsHorizontalScrollIndicator={false}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{
@@ -93,6 +105,8 @@ const summary = () => {
             minimumDate={new Date(2025, 2, 26)} // March 26, 2025
           />
         </View>
+                <Text onPress={()=> router.navigate("./home")} className="text-white">Go to Home</Text>
+        
         <View className="mt-5">
           <CustomButton title="Search" textStyles="text-white" handlePress={searchHandler} width="w-full" />
         </View>

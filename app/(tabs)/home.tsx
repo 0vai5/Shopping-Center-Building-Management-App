@@ -1,4 +1,4 @@
-import { View, ScrollView, FlatList, Image, Text } from "react-native";
+import { View, ScrollView, FlatList, Image, Text, RefreshControl } from "react-native";
 import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {
@@ -17,20 +17,29 @@ const home = () => {
     maintenanceReceived: 0,
     expensesCleared: 0,
   });
+  const [refreshing, setRefreshing] = useState(false);
 
-  // TODO: On the Backend we will be calculating all the maintennence amount gotten and also the %es of expenses and maintenance recieved and cleard getStats()
+  const fetchStats = async () => {
+    console.log("statsFetched");
+    // Simulate fetching stats
+  };
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await fetchStats();
+    setRefreshing(false);
+  };
 
   useEffect(() => {
-    const fetchStats = async () => {
-      console.log("statsFetched");
-    };
-
-    fetchStats()
+    fetchStats();
   }, []);
 
   return (
     <SafeAreaView className="bg-primary mb-10" style={{ height }}>
       <ScrollView
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
         showsHorizontalScrollIndicator={false}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{
@@ -60,14 +69,14 @@ const home = () => {
               Maintenance
             </Text>
           </View>
-          <MaintenanceList />
+          <MaintenanceList onRefresh={onRefresh} />
         </View>
 
         <View>
           <View className="flex justify-center p-6">
             <Text className="text-white text-3xl font-ssemibold">Expenses</Text>
           </View>
-          <ExpensesList />
+          <ExpensesList onRefresh={onRefresh} />
         </View>
       </ScrollView>
     </SafeAreaView>

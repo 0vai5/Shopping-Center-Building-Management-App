@@ -10,28 +10,24 @@ const Signin = () => {
   const { isLoggedIn, isLoading, setIsLoggedIn, setUser } = useGlobalContext();
   const { loginUser, getCurrentUser } = useAppwrite();
 
-  useEffect(() => {
-    if (!isLoading && isLoggedIn) router.push("../(tabs)/home");
-  }, [isLoading, isLoggedIn]);
-
+  
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
     email: "",
     password: "",
   });
-
+  
   const handleLogin = async () => {
     setLoading(true);
     try {
       const response = await loginUser(form.email, form.password);
       const currentUser = await getCurrentUser();
-      console.log("currentUser", currentUser);
-
+      
       setIsLoggedIn(true);
       setUser(currentUser);
-
+      
       Alert.alert("Success", "User signed in successfully");
-
+      
       if (response) {
         router.push("../(tabs)/home");
       }
@@ -41,6 +37,11 @@ const Signin = () => {
       setLoading(false);
     }
   };
+  
+
+  if (!isLoading && isLoggedIn) {
+    return <Redirect href={"../(tabs)/home"} />
+  }
 
   return (
     <>

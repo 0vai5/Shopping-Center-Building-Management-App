@@ -5,28 +5,38 @@ import {
   Dimensions,
   TouchableOpacity,
   Image,
+  Alert,
 } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
 import { MaintenanceCardProps } from "@/types";
 import { icons } from "@/constants";
 import { CustomBottomSheetModal } from "@/components";
 import { BottomSheetModal, BottomSheetView } from "@gorhom/bottom-sheet";
+import useAppwrite from "@/hooks/useAppwrite";
+import { router } from "expo-router";
 
 // FIXME: Fix the Types after the Appwrite Integration
 // FIXME: When the status is updated there should be somthing that changes the button color in the bottom sheet.
 
-const MaintenanceList = () => {
-  const [maintenanceSlips, setMaintenanceSlips] = useState([]);
+const MaintenanceList = ({ onRefresh }: { onRefresh: () => void }) => {
+  const [maintenanceSlips, setMaintenanceSlips] = useState<any>([]);
+  const { getMaintenancesSlips } = useAppwrite();
   useEffect(() => {
     const fetchMaintenace = async () => {
-      console.log("Hello Maintenance Slips Fetched ....");
+      try {
+        const response = await getMaintenancesSlips();
+        setMaintenanceSlips(response);
+        onRefresh(); 
+      } catch (error) {
+        Alert.alert("Error Occured", "Error Fetching Maintenance");
+      }
     };
 
     fetchMaintenace();
   }, []);
   return (
-    <View className="flex justify-center items-center">
-      {maintenanceSlips.length === 0 && (
+    <View className="flex p-6">
+      {maintenanceSlips && maintenanceSlips.length === 0 && (
         <Text className="text-secondary-saturated font-ssemibold text-xl">
           No Maintenance Slips Found
         </Text>
@@ -36,16 +46,16 @@ const MaintenanceList = () => {
         className="p-6 mr-3 gap-3"
         data={maintenanceSlips}
         numColumns={1}
-        renderItem={({ item }) => <MaintenanceCard item={item} />}
+        renderItem={({ item }) => <MaintenanceCard item={item} onRefresh={onRefresh} />}
         horizontal
         showsHorizontalScrollIndicator={false}
-        keyExtractor={(item) => item.slip_no.toString()}
+        keyExtractor={(item) => item.$id.toString()}
       />
     </View>
   );
 };
 
-const MaintenanceCard: React.FC<MaintenanceCardProps> = ({ item }) => {
+const MaintenanceCard: React.FC<MaintenanceCardProps> = ({ item, onRefresh }) => {
   const screenHeight = Dimensions.get("window").height;
   const cardHeight = screenHeight * 0.4;
   const statusColor = item.status === "pending" ? "bg-red-600" : "bg-green-600";
@@ -68,11 +78,11 @@ const MaintenanceCard: React.FC<MaintenanceCardProps> = ({ item }) => {
                 resizeMode="contain"
               />
               <Text className="text-white font-ssemibold text-xl relative">
-                {item.flat_number}
+                {item.flatNumber}
               </Text>
             </View>
             <Text className="text-gray-300 font-sregular text-lg">
-              Slip No. {item.slip_no}
+              Slip No. {item.slipNo}
             </Text>
             <View
               className={`${statusColor} flex justify-center items-center rounded-full px-3 py-1 mt-2`}
@@ -99,12 +109,12 @@ const MaintenanceCard: React.FC<MaintenanceCardProps> = ({ item }) => {
         <View className="flex justify-between gap-10 flex-row mt-4">
           <View>
             <Text className="text-white font-smedium text-xl">
-              {item.owner_name}
+              {item.ownerName}
             </Text>
             <View className="flex-row justify-center items-center gap-2">
               <Image source={icons.phone} tintColor={"#72BF78"} />
               <Text className="text-gray-300 font-sregular text-lg">
-                {item.owner_no}
+                {item.ownerNo}
               </Text>
             </View>
           </View>
@@ -143,11 +153,11 @@ const MaintenanceCard: React.FC<MaintenanceCardProps> = ({ item }) => {
                   resizeMode="contain"
                 />
                 <Text className="text-white font-ssemibold text-xl relative">
-                  {item.flat_number}
+                  {item.flatNumber}
                 </Text>
               </View>
               <Text className="text-gray-300 font-sregular text-lg">
-                Slip No. {item.slip_no}
+                Slip No. {item.slipNo}
               </Text>
             </View>
             <View className="items-start">

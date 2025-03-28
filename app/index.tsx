@@ -1,7 +1,7 @@
 import { View, Text, ScrollView, Image } from "react-native";
 import React, { useEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { router } from "expo-router";
+import { Redirect, router } from "expo-router";
 import { CustomButton } from "@/components";
 import { useGlobalContext } from "@/context/GlobalContext";
 
@@ -9,9 +9,9 @@ const index: React.FC = () => {
   const { isLoggedIn, isLoading } = useGlobalContext();
 
 
-  useEffect(() => {
-    if (!isLoading && isLoggedIn) router.push("./(tabs)/home");
-  }, [isLoading, isLoggedIn]);
+  if(!isLoading && isLoggedIn) {
+    return <Redirect href={"./(tabs)/home"} />
+  }
 
   return (
     <>

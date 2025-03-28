@@ -7,6 +7,8 @@ import {
   TouchableOpacity,
   Image,
   Dimensions,
+  Alert,
+  RefreshControl,
 } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -19,10 +21,13 @@ import {
   BottomSheetTextInput,
   BottomSheetView,
 } from "@gorhom/bottom-sheet";
+import useAppwrite from "@/hooks/useAppwrite";
+import { router } from "expo-router";
 
 const expenses = () => {
   const { height } = useWindowDimensions();
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
+  const { createExpense, getExpenses } = useAppwrite();
   const [creating, setCreating] = useState(false);
   const [expenseForm, setExpenseForm] = useState({
     variable: false,
@@ -32,23 +37,46 @@ const expenses = () => {
     thisMonth: false,
   });
 
-  const [expenseData, setExpenseData] = useState<any | null>([]);
+  const [expenseData, setExpenseData] = useState<any>([]);
+  const [refreshing, setRefreshing] = useState(false);
 
-  const handleExpenseCreation = () => {
+  const handleExpenseCreation = async () => {
     setCreating(true);
+    try {
+      const response = await createExpense(expenseForm);
 
-    setTimeout(() => {
-      setCreating(false);
-      console.log("Expense Created", expenseForm);
       bottomSheetModalRef.current?.close();
-    }, 3000);
-    fetchExpenses()
-
-
+      router.push("./expenses");
+      fetchExpenses();
+    } catch (error: any) {
+      Alert.alert("Error", error.message);
+    } finally {
+      setCreating(false);
+      setExpenseForm({
+        variable: false,
+        expense: "",
+        name: "",
+        amount: "",
+        thisMonth: false,
+      });
+    }
   };
   const fetchExpenses = async () => {
-    console.log("Hello Items expenses ....");
+    try {
+      const response = await getExpenses();
+
+      setExpenseData(response);
+    } catch (error: any) {
+      Alert.alert("Error Occured", error.message);
+    }
   };
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await fetchExpenses();
+    setRefreshing(false);
+  };
+
   useEffect(() => {
     fetchExpenses();
   }, []);
@@ -57,6 +85,9 @@ const expenses = () => {
     <>
       <SafeAreaView className="bg-primary" style={{ height }}>
         <ScrollView
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
           showsHorizontalScrollIndicator={false}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{
@@ -94,7 +125,7 @@ const expenses = () => {
               </Text>
             </View>
 
-            {expenseData.length === 0 && (
+            {expenseData && expenseData.length === 0 && (
               <Text className="text-secondary-saturated font-ssemibold text-xl">
                 No Expenses Found
               </Text>
@@ -105,11 +136,11 @@ const expenses = () => {
             <View className="flex">
               <FlatList
                 className="p-6 mr-3 gap-3"
-                data={expenseData}
+                data={expenseData || []} // Ensure data is always an array
                 renderItem={(expense) => <ExpenseCard item={expense.item} />}
                 horizontal
                 showsHorizontalScrollIndicator={false}
-                keyExtractor={(expense) => expense.id.toString()}
+                keyExtractor={(expense) => expense.$id.toString()}
               />
             </View>
           </View>
@@ -119,7 +150,7 @@ const expenses = () => {
       <CustomBottomSheetModal ref={bottomSheetModalRef}>
         <BottomSheetView className="p-5 gap-2">
           <Text className="text-white font-ssemibold text-2xl mb-4">
-            Create Flat
+            Create Expense
           </Text>
           <View>
             <View className="mb-5">

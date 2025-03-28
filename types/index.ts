@@ -2,9 +2,11 @@ import { KeyboardTypeOptions } from "react-native";
 
 export interface MaintenanceCardProps {
   item: any;
+  onRefresh: () => void;
 }
 
 export interface ExpenseCardHomeProps {
+  onRefresh: () => void;
   item: any;
 }
 
@@ -50,15 +52,14 @@ export interface StatsData {
 }
 
 export interface GlobalContextType {
-    isLoading: boolean;
-    setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
-    user: any;
-    setUser: React.Dispatch<React.SetStateAction<any>>;
-    isLoggedIn: boolean;
-    setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
+  isLoading: boolean;
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  user: any;
+  setUser: React.Dispatch<React.SetStateAction<any>>;
+  isLoggedIn: boolean;
+  setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export interface GlobalContextProviderProps {
-    children: React.ReactNode;
+  children: React.ReactNode;
 }
-

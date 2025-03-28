@@ -8,6 +8,7 @@ import {
   Image,
   Dimensions,
   Alert,
+  RefreshControl,
 } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -34,13 +35,13 @@ const flats = () => {
     ownerName: "",
     ownerNo: "",
   });
+  const [refreshing, setRefreshing] = useState(false);
 
   const handleFlatCreation = async () => {
     setCreating(true);
 
     try {
       const response = await createFlat(flatForm);
-      console.log("response", response);
 
       if (response) {
         Alert.alert("Success", "Flat created successfully");
@@ -64,15 +65,20 @@ const flats = () => {
   const fetchFlats = async () => {
     try {
       const response = await getFlats();
-      console.log("response", response);
       setFlatData(response);
     } catch (error: any) {
       Alert.alert("Error", error.message);
     } finally {
       setCreating(false);
     }
-
   };
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await fetchFlats();
+    setRefreshing(false);
+  };
+
   useEffect(() => {
     fetchFlats();
   }, []);
@@ -81,6 +87,9 @@ const flats = () => {
     <>
       <SafeAreaView className="bg-primary" style={{ height }}>
         <ScrollView
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
           showsHorizontalScrollIndicator={false}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{
