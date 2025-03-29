@@ -14,7 +14,7 @@ import { CustomBottomSheetModal } from "@/components";
 import { BottomSheetModal, BottomSheetView } from "@gorhom/bottom-sheet";
 import useAppwrite from "@/hooks/useAppwrite";
 import { useGlobalContext } from "@/context/GlobalContext";
-import {generateHTML} from "@/utils/htmlGenerator"
+import { generateHTML } from "@/utils/htmlGenerator";
 import { printToFileAsync } from "expo-print"; // Fixed import
 import { shareAsync } from "expo-sharing";
 
@@ -22,7 +22,6 @@ import { shareAsync } from "expo-sharing";
 // FIXME: When the status is updated there should be somthing that changes the button color in the bottom sheet.
 
 const MaintenanceList = ({ maintenanceSlips }: { maintenanceSlips: any }) => {
-
   return (
     <View className="flex p-6">
       {maintenanceSlips && maintenanceSlips.length === 0 && (
@@ -49,28 +48,31 @@ const MaintenanceCard: React.FC<MaintenanceCardProps> = ({ item }) => {
   const cardHeight = screenHeight * 0.4;
   const statusColor = item.status === "pending" ? "bg-red-600" : "bg-green-600";
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
-  const {updateMaintenaceSlip} = useAppwrite();
-  const {setStatusUpdate, statusUpdate} = useGlobalContext()
+  const { updateMaintenaceSlip } = useAppwrite();
+  const { setStatusUpdate, statusUpdate } = useGlobalContext();
 
   const handleSharing = async () => {
     try {
-      const htmlContent = generateHTML(item);
+      const htmlContent = generateHTML({
+        ...item,
+        dues: item.dues ? item.dues : [],
+      });
 
       const { uri } = await printToFileAsync({
         html: htmlContent,
         base64: false,
-        height: 450
+        height: 450,
       });
-  
+
       console.log("PDF generated at: ", uri);
-  
+
       await shareAsync(uri, {
         UTI: "com.adobe.pdf",
         mimeType: "application/pdf",
         dialogTitle: "Share the maintenance slip",
       });
-    } catch (error:any) {
-      Alert.alert("Error Occured", error.message)
+    } catch (error: any) {
+      Alert.alert("Error Occured", error.message);
     }
   };
 
@@ -101,8 +103,11 @@ const MaintenanceCard: React.FC<MaintenanceCardProps> = ({ item }) => {
             <Text className="text-gray-300 font-sregular text-lg">
               Slip No. {item.slipNo}
             </Text>
+            <Text className="text-gray-300 font-sregular text-lg">
+              Month of {item.month}
+            </Text>
             <View
-              className={`${statusColor} flex justify-center items-center rounded-full px-3 py-1 mt-2`}
+              className={`${statusColor} flex items-center w-[100px] rounded-full px-3 py-1 mt-2`}
             >
               <Text className="text-white font-sbold text-xs uppercase">
                 {item.status}
@@ -176,6 +181,9 @@ const MaintenanceCard: React.FC<MaintenanceCardProps> = ({ item }) => {
               <Text className="text-gray-300 font-sregular text-lg">
                 Slip No. {item.slipNo}
               </Text>
+              <Text className="text-gray-300 font-sregular text-lg">
+                Month of {item.month}
+              </Text>
             </View>
             <View className="items-start">
               <View className="flex-row gap-2">
@@ -219,7 +227,10 @@ const MaintenanceCard: React.FC<MaintenanceCardProps> = ({ item }) => {
         {item.status === "paid" && (
           <BottomSheetView className="mt-10">
             <View className="flex justify-between items-center gap-3 flex-row">
-              <TouchableOpacity onPress={handleSharing} className="px-3 py-3 bg-blue-600 rounded-lg flex-row gap-2 items-center">
+              <TouchableOpacity
+                onPress={handleSharing}
+                className="px-3 py-3 bg-blue-600 rounded-lg flex-row gap-2 items-center"
+              >
                 <Image
                   source={icons.upload}
                   className="h-[24px] w-[24px]"

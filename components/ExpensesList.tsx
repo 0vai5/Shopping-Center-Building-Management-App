@@ -24,7 +24,7 @@ import { useGlobalContext } from "@/context/GlobalContext";
 
 const ExpenseList = ({ expenseSlips }: { expenseSlips: any }) => {
   return (
-    <View className="flex justify-center items-center">
+    <View className="flex p-6">
       {expenseSlips.length === 0 && (
         <Text className="text-secondary-saturated font-ssemibold text-xl">
           No Expenses Found

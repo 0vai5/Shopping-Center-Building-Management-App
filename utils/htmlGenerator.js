@@ -1,5 +1,5 @@
 export const generateHTML = (data) => {
-  const { ownerName, ownerNo, flatNumber, slipNo, maintenance, $updatedAt, rooms, dues = [] } = data;
+  const { ownerName, ownerNo, flatNumber, slipNo, maintenance, $updatedAt, rooms, dues, month } = data;
   const buildingName = "Dhoraji Housing Relief Trust";
   const subTitle = "Mohallah Committee Shopping Centre";
   const totalDues = dues.reduce((sum, due) => sum + due.maintenance, 0);
@@ -93,8 +93,8 @@ export const generateHTML = (data) => {
             </thead>
             <tbody>
               <tr>
-                <td>Maintenance Charges (Per Room Rs)</td>
-                <td>${maintenance} Rs.</td>
+                <td>Maintenance Charges - ${month}</td>
+                <td>${maintenance * rooms} Rs.</td>
               </tr>
               ${
                 dues.length > 0
@@ -102,8 +102,8 @@ export const generateHTML = (data) => {
                       .map(
                         (due) => `
                         <tr>
-                          <td>Month of ${due.month}</td>
-                          <td>${due.maintenance.toFixed(2)} Rs.</td>
+                          <td>Maintenance Charges - ${due.month}</td>
+                          <td>${due.maintenance * rooms} Rs.</td>
                         </tr>`
                       )
                       .join("")

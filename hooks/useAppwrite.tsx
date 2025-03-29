@@ -356,6 +356,7 @@ const useAppwrite = () => {
         id,
         {
           status: `${status === "pending" ? "paid" : "pending"}`,
+          dues: JSON.stringify([])
         }
       );
 
