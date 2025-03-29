@@ -17,11 +17,12 @@ import {
 } from "@gorhom/bottom-sheet";
 import CustomBottomSheetModal from "./CustomBottomSheetModal";
 import useAppwrite from "@/hooks/useAppwrite";
+import { useGlobalContext } from "@/context/GlobalContext";
 
 // FIXME: Fix the Types after the Appwrite Integration
 // FIXME: When the status is updated there should be somthing that changes the button color in the bottom sheet.
 
-const ExpenseList = ({expenseSlips}: {expenseSlips: any}) => {
+const ExpenseList = ({ expenseSlips }: { expenseSlips: any }) => {
   return (
     <View className="flex justify-center items-center">
       {expenseSlips.length === 0 && (
@@ -48,15 +49,28 @@ const ExpenseCardHome: React.FC<ExpenseCardHomeProps> = ({ item }) => {
   const cardHeight = screenHeight * 0.4;
   const statusColor = item.status === "pending" ? "bg-red-600" : "bg-green-600";
   const [variabeValue, setVariableValue] = useState("");
+  const { setStatusUpdate, statusUpdate } = useGlobalContext();
+  const { updateExpenseSlip } = useAppwrite();
 
-  const handleStatusUpdate = () => {
-    if (item.variable) {
-      console.log(`Amount of ${variabeValue} is paid.`);
-    } else {
-      console.log(`${item.expense} is paid.`);
+  const handleStatusUpdate = async () => {
+    try {
+      if (item.variable) {
+        const amount = parseInt(variabeValue);
+        if (isNaN(amount) || amount <= 0) {
+          Alert.alert("Invalid Amount", "Please enter a valid amount.");
+          return;
+        }
+        const response = await updateExpenseSlip(item.$id, item.status, amount);
+      } else {
+        const response = await updateExpenseSlip(item.$id, item.status);
+
+      }
+
+    } catch (error) {
+      Alert.alert("Error", "Something went wrong. Please try again later.");
+    } finally {
+      setStatusUpdate(!statusUpdate);
     }
-
-    bottomSheetModalRef.current?.dismiss();
   };
 
   return (

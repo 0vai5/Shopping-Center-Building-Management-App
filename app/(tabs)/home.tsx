@@ -19,21 +19,32 @@ import { ProgressSummary } from "@/components";
 import { useWindowDimensions } from "react-native";
 import { StatsData } from "@/types";
 import useAppwrite from "@/hooks/useAppwrite";
+import { useGlobalContext } from "@/context/GlobalContext";
 const home = () => {
   const { height } = useWindowDimensions();
+  const { setStatusUpdate, statusUpdate } = useGlobalContext();
   const { getExpenseSlips, getMaintenancesSlips, getMonthlyStats } =
     useAppwrite();
   const [maintenanceSlips, setMaintenanceSlips] = useState<any>([]);
   const [expenseSlips, setExpenseSlips] = useState<any>([]);
-  const [stats, setStats] = useState<StatsData>({
-    amount: 0,
-    maintenanceReceived: 0,
+  const [stats, setStats] = useState<StatsData | any>({
+    total: 0,
+    maintenancePaid: 0,
     expensesCleared: 0,
+    openingAmount: 0,
+    month: "",
   });
   const [refreshing, setRefreshing] = useState(false);
 
   const fetchStats = async () => {
-    console.log("statsFetched");
+    try {
+      const response = await getMonthlyStats();
+      console.log(response, "response");
+      setStats(response);
+      console.log("Hello");
+    } catch (error: any) {
+      Alert.alert("Error Occured", error.message);
+    }
   };
 
   const onRefresh = async () => {
@@ -52,6 +63,7 @@ const home = () => {
     } catch (error) {
       Alert.alert("Error Occured", "Error Fetching Expense Slips");
     }
+    console.log("Fetched Expense Slips");
   };
   const fetchMaintenanceSlips = async () => {
     try {
@@ -61,13 +73,14 @@ const home = () => {
     } catch (error) {
       Alert.alert("Error Occured", "Error Fetching Maintenance Slips");
     }
+    console.log("Fetched Maintenance Slips");
   };
 
   useEffect(() => {
-    fetchStats();
     fetchExpenseSlips();
     fetchMaintenanceSlips();
-  }, []);
+    fetchStats();
+  }, [statusUpdate]);
 
   return (
     <SafeAreaView className="bg-primary mb-10" style={{ height }}>
@@ -86,14 +99,14 @@ const home = () => {
           <Header />
         </View>
         <View>
-          <SummaryCard amount={stats.amount} />
+          <SummaryCard amount={stats.total} month={stats.month} />
         </View>
 
         <View className="flex flex-row justify-between gap-2 w-full p-6">
           <View className="flex-1">
             <ProgressSummary
               title={"Maintenance Received"}
-              progress={stats.maintenanceReceived}
+              progress={stats.maintenancePaid}
             />
           </View>
           <View className="flex-1">

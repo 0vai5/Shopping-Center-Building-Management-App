@@ -44,9 +44,11 @@ export interface ProgressSummaryProps {
 }
 
 export interface StatsData {
-  amount: number;
-  maintenanceReceived: number;
+  month: string
+  total: number;
+  maintenancePaid: number;
   expensesCleared: number;
+  openingAmount: number
 }
 
 export interface GlobalContextType {
@@ -56,6 +58,8 @@ export interface GlobalContextType {
   setUser: React.Dispatch<React.SetStateAction<any>>;
   isLoggedIn: boolean;
   setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
+  statusUpdate: boolean;
+  setStatusUpdate: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 export interface GlobalContextProviderProps {

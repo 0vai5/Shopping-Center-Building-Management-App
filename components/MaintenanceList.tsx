@@ -14,6 +14,7 @@ import { CustomBottomSheetModal } from "@/components";
 import { BottomSheetModal, BottomSheetView } from "@gorhom/bottom-sheet";
 import useAppwrite from "@/hooks/useAppwrite";
 import { router } from "expo-router";
+import { useGlobalContext } from "@/context/GlobalContext";
 
 // FIXME: Fix the Types after the Appwrite Integration
 // FIXME: When the status is updated there should be somthing that changes the button color in the bottom sheet.
@@ -46,11 +47,18 @@ const MaintenanceCard: React.FC<MaintenanceCardProps> = ({ item }) => {
   const cardHeight = screenHeight * 0.4;
   const statusColor = item.status === "pending" ? "bg-red-600" : "bg-green-600";
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
+  const {updateMaintenaceSlip} = useAppwrite();
+  const {setStatusUpdate, statusUpdate} = useGlobalContext()
 
-  const handleStatusUpdate = () => {
-    setTimeout(() => {
-      console.log(`${item.flat_number} paid the maintenance.`);
-    }, 3000);
+  const handleStatusUpdate = async () => {
+    try {
+      const response = await updateMaintenaceSlip(item.$id, item.status);
+      
+    } catch (error: any) {
+      Alert.alert("Error occured", error.message)
+    } finally {
+      setStatusUpdate(!statusUpdate);
+    }
   };
   return (
     <>

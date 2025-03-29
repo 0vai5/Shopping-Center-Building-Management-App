@@ -3,6 +3,10 @@ import { database, account, client, config, ID } from "../lib/appwrite";
 import { Query } from "react-native-appwrite";
 
 const useAppwrite = () => {
+  const month = new Date().toLocaleDateString("default", {
+    month: "long",
+  });
+  const year = new Date().getFullYear();
   // User
   const loginUser = async (email: string, password: string) => {
     try {
@@ -191,9 +195,6 @@ const useAppwrite = () => {
   // ExpenseSlips
   const createExpenseSlip = async (data: any) => {
     try {
-      const month = new Date().toLocaleString("default", { month: "long" });
-      const year = new Date().getFullYear();
-
       const expense = await database.listDocuments(
         config.database!,
         config.expenseSlipsCollection!,
@@ -236,7 +237,7 @@ const useAppwrite = () => {
       const response = await database.listDocuments(
         config.database!,
         config.expenseSlipsCollection!,
-        [Query.equal("status", ["pending"])]
+        [Query.equal("month", [`${month} ${year}`])]
       );
 
       if (!response) {
@@ -248,14 +249,35 @@ const useAppwrite = () => {
       console.log(error.message);
     }
   };
-  const updateExpenseSlip = async (id: string) => {};
+  const updateExpenseSlip = async (
+    id: string,
+    status: string,
+    amount?: number
+  ) => {
+    try {
+      const response = await database.updateDocument(
+        config.database!,
+        config.expenseSlipsCollection!,
+        id,
+        {
+          status: status === "pending" ? "paid" : "pending",
+          ...(amount !== undefined && { amount }),
+        }
+      );
+
+      if (!response) {
+        throw Error("Error Updating Expense Slip");
+      }
+
+      return response;
+    } catch (error: any) {
+      console.log("Error in updateExpenseSlip:", error.message);
+    }
+  };
 
   // MaintenanceSlips
   const createMaintenanceSlip = async (data: any) => {
     try {
-      const month = new Date().toLocaleString("default", { month: "long" });
-      const year = new Date().getFullYear();
-
       const slipNoDoc = await database.listDocuments(
         config.database!,
         config.miscCollection!
@@ -314,7 +336,7 @@ const useAppwrite = () => {
       const response = await database.listDocuments(
         config.database!,
         config.maintenanceCollection!,
-        [Query.equal("status", ["pending"])]
+        [Query.equal("month", [`${month} ${year}`])]
       );
 
       if (!response) {
@@ -326,10 +348,64 @@ const useAppwrite = () => {
       console.log(error);
     }
   };
-  const updateMaintenaceSlip = async (id: string) => {};
+  const updateMaintenaceSlip = async (id: string, status: string) => {
+    try {
+      const response = await database.updateDocument(
+        config.database!,
+        config.maintenanceCollection!,
+        id,
+        {
+          status: `${status === "pending" ? "paid" : "pending"}`,
+        }
+      );
+
+      return response
+    } catch (error) {
+      console.log("error");
+    }
+  };
 
   // Stats
-  const getMonthlyStats = async () => {};
+  const getMonthlyStats = async () => {
+    try {
+      const expenseSlips = await database.listDocuments(
+        config.database!,
+        config.expenseSlipsCollection!,
+        [Query.equal("month", [`${month} ${year}`])]
+      );
+
+      const paidExpenses = expenseSlips.documents.filter(
+        (expense) => expense.status === "paid"
+      );
+
+      const maintenanceSlips = await database.listDocuments(
+        config.database!,
+        config.maintenanceCollection!,
+        [Query.equal("month", [`${month} ${year}`])]
+      );
+
+      const paidMaintenance = maintenanceSlips.documents.filter(
+        (maintenance) => maintenance.status === "paid"
+      );
+
+      const recievedAmount = paidMaintenance.reduce(
+        (acc, slip) => acc + (slip.maintenance * slip.rooms || 0), 
+        0
+      );
+
+      return {
+        maintenancePaid:
+          (paidMaintenance.length / maintenanceSlips.total) * 100 || 0,
+        expensesCleared: Math.round(
+          (paidExpenses.length / expenseSlips.total) * 100
+        ),
+        month: `${month} ${year}`,
+        total: recievedAmount,
+      };
+    } catch (error: any) {
+      console.log("Error Occured", error.message);
+    }
+  };
 
   // Summary
 

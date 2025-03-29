@@ -3,10 +3,10 @@ import React from "react";
 import CustomButton from "./CustomButton";
 import { router } from "expo-router";
 
-const SummaryCard = ({amount}: {
+const SummaryCard = ({amount, month}: {
   amount: number;
+  month: string
 }) => {
-  const month = new Date().toLocaleString("default", { month: "long" });
   const screenHeight = Dimensions.get("window").height;
   return (
     <View
