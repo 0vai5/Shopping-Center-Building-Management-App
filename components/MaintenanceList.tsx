@@ -13,8 +13,10 @@ import { icons } from "@/constants";
 import { CustomBottomSheetModal } from "@/components";
 import { BottomSheetModal, BottomSheetView } from "@gorhom/bottom-sheet";
 import useAppwrite from "@/hooks/useAppwrite";
-import { router } from "expo-router";
 import { useGlobalContext } from "@/context/GlobalContext";
+import {generateHTML} from "@/utils/htmlGenerator"
+import { printToFileAsync } from "expo-print"; // Fixed import
+import { shareAsync } from "expo-sharing";
 
 // FIXME: Fix the Types after the Appwrite Integration
 // FIXME: When the status is updated there should be somthing that changes the button color in the bottom sheet.
@@ -50,12 +52,33 @@ const MaintenanceCard: React.FC<MaintenanceCardProps> = ({ item }) => {
   const {updateMaintenaceSlip} = useAppwrite();
   const {setStatusUpdate, statusUpdate} = useGlobalContext()
 
+  const handleSharing = async () => {
+    try {
+      const htmlContent = generateHTML(item);
+
+      const { uri } = await printToFileAsync({
+        html: htmlContent,
+        base64: false,
+        height: 450
+      });
+  
+      console.log("PDF generated at: ", uri);
+  
+      await shareAsync(uri, {
+        UTI: "com.adobe.pdf",
+        mimeType: "application/pdf",
+        dialogTitle: "Share the maintenance slip",
+      });
+    } catch (error:any) {
+      Alert.alert("Error Occured", error.message)
+    }
+  };
+
   const handleStatusUpdate = async () => {
     try {
       const response = await updateMaintenaceSlip(item.$id, item.status);
-      
     } catch (error: any) {
-      Alert.alert("Error occured", error.message)
+      Alert.alert("Error occurred", error.message);
     } finally {
       setStatusUpdate(!statusUpdate);
     }
@@ -196,7 +219,7 @@ const MaintenanceCard: React.FC<MaintenanceCardProps> = ({ item }) => {
         {item.status === "paid" && (
           <BottomSheetView className="mt-10">
             <View className="flex justify-between items-center gap-3 flex-row">
-              <TouchableOpacity className="px-3 py-3 bg-blue-600 rounded-lg flex-row gap-2 items-center">
+              <TouchableOpacity onPress={handleSharing} className="px-3 py-3 bg-blue-600 rounded-lg flex-row gap-2 items-center">
                 <Image
                   source={icons.upload}
                   className="h-[24px] w-[24px]"
@@ -204,16 +227,6 @@ const MaintenanceCard: React.FC<MaintenanceCardProps> = ({ item }) => {
                 />
                 <Text className="text-center text-white font-sbold">
                   Share Image
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity className="px-3 py-3 bg-green-600 rounded-lg flex-row gap-2 items-center">
-                <Image
-                  source={icons.download}
-                  className="h-[24px] w-[24px]"
-                  tintColor={"#ffffff"}
-                />
-                <Text className="text-center text-white font-sbold">
-                  Download Image
                 </Text>
               </TouchableOpacity>
             </View>
