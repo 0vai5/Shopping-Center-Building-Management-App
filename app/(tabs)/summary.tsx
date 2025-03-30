@@ -1,10 +1,9 @@
-import { View, Text, ScrollView, Dimensions, Button, RefreshControl } from "react-native";
+import { View, Text, ScrollView, Dimensions, RefreshControl } from "react-native";
 import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { CustomButton, DataTable } from "@/components";
-import { router } from "expo-router";
-
+import useAppwrite from "@/hooks/useAppwrite";
 
 const summary = () => {
   const { height } = Dimensions.get("window");
@@ -13,29 +12,69 @@ const summary = () => {
   const [toDate, setToDate] = useState(new Date().toDateString());
   const [isToDatePickerVisible, setToDatePickerVisibility] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
-
-
-  const [summaryData, setSummaryData] = useState([]);
+  const [summaryData, setSummaryData] = useState<any>([]);
+  const { getSummary } = useAppwrite();
+  const [search, setSearch] = useState({
+    fromDate: "",
+    toDate: "",
+  });
 
   const handleConfirmFromDate = (date: any) => {
     console.warn("A date has been picked: ", date);
+    setSearch({...search, fromDate: date});
     setFromDate(date.toDateString());
     setDatePickerVisibility(false);
   };
 
   const handleConfirmToDate = (date: any) => {
     console.warn("A date has been picked: ", date);
+    setSearch({...search, toDate: date});
+
     setToDate(date.toDateString());
     setToDatePickerVisibility(false);
   };
 
-  useEffect(()=> {
-    searchHandler() 
-  }, [])
+  useEffect(() => {
+    searchHandler();
+  }, []);
 
   const searchHandler = async () => {
-    console.log("Searching for data");
-    // Simulate fetching summary data
+    console.log("Searching for data between", fromDate, "and", toDate);
+    try {
+      const fromDateObj = new Date(fromDate);
+      const toDateObj = new Date(toDate);
+      
+      fromDateObj.setHours(0, 0, 0, 0);
+      toDateObj.setHours(23, 59, 59, 999);
+      
+      console.log("Using date objects:", fromDateObj, toDateObj);
+      
+      const summaryResult = await getSummary(fromDateObj, toDateObj);
+
+      if (summaryResult) {
+        const formattedData = [
+          ...summaryResult.credit.map((item: any) => ({
+            id: item.$id,
+            title: `Maintenance - Flat ${item.flatNumber}`,
+            credit: item.maintenance * item.rooms, 
+            debit: 0,
+          })),
+          ...summaryResult.debit.map((item: any) => ({
+            id: item.$id,
+            title: item.expense,
+            credit: 0,
+            debit: item.amount || 0,
+          })),
+        ];
+
+        setSummaryData(formattedData);
+      } else {
+        setSummaryData([]);
+      }
+    } catch (error) {
+      console.error("Error fetching summary:", error);
+      setSummaryData([]);
+    }
   };
 
   const onRefresh = async () => {
@@ -45,7 +84,6 @@ const summary = () => {
   };
 
   const handleExport = () => {};
-
 
   return (
     <SafeAreaView className="bg-primary" style={{ height }}>
@@ -80,7 +118,7 @@ const summary = () => {
             onConfirm={handleConfirmFromDate}
             onCancel={() => setDatePickerVisibility(false)}
             display="inline"
-            minimumDate={new Date(2025, 2, 26)} // March 26, 2025
+            minimumDate={new Date(2025, 2, 26)} 
             maximumDate={new Date()}
           />
         </View>
@@ -105,22 +143,27 @@ const summary = () => {
             minimumDate={new Date(2025, 2, 26)} // March 26, 2025
           />
         </View>
-                <Text onPress={()=> router.navigate("./home")} className="text-white">Go to Home</Text>
-        
         <View className="mt-5">
-          <CustomButton title="Search" textStyles="text-white" handlePress={searchHandler} width="w-full" />
+          <CustomButton
+            title="Search"
+            textStyles="text-white"
+            handlePress={searchHandler}
+            width="w-full"
+          />
         </View>
 
         <View className="mt-10">
-          <CustomButton title="Export" handlePress={handleExport} textStyles="text-white" width="50%" />
+          <CustomButton
+            title="Export"
+            handlePress={handleExport}
+            textStyles="text-white"
+            width="50%"
+          />
         </View>
 
         <View>
           <DataTable data={summaryData} />
         </View>
-
-        
-
       </ScrollView>
     </SafeAreaView>
   );

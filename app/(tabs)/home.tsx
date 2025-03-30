@@ -39,8 +39,19 @@ const home = () => {
   const fetchStats = async () => {
     try {
       const response = await getMonthlyStats();
-      console.log(response, "response");
-      setStats(response);
+      if (response) {
+        console.log(response, "response");
+        setStats(response);
+      } else {
+        // Set default values if response is undefined
+        setStats({
+          total: 0,
+          maintenancePaid: 0,
+          expensesCleared: 0,
+          openingAmount: 0,
+          month: "",
+        });
+      }
       console.log("Hello");
     } catch (error: any) {
       Alert.alert("Error Occured", error.message);

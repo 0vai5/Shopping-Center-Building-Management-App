@@ -356,11 +356,10 @@ const useAppwrite = () => {
         id,
         {
           status: `${status === "pending" ? "paid" : "pending"}`,
-          dues: JSON.stringify([])
         }
       );
 
-      return response
+      return response;
     } catch (error) {
       console.log("error");
     }
@@ -390,7 +389,7 @@ const useAppwrite = () => {
       );
 
       const recievedAmount = paidMaintenance.reduce(
-        (acc, slip) => acc + (slip.maintenance * slip.rooms || 0), 
+        (acc, slip) => acc + (slip.maintenance * slip.rooms || 0),
         0
       );
 
@@ -401,14 +400,64 @@ const useAppwrite = () => {
           (paidExpenses.length / expenseSlips.total) * 100
         ),
         month: `${month} ${year}`,
-        total: recievedAmount,
+        total: recievedAmount || 0,
+        openingAmount: 0,
       };
     } catch (error: any) {
       console.log("Error Occured", error.message);
+      // Return default values when an error occurs
+      return {
+        maintenancePaid: 0,
+        expensesCleared: 0,
+        month: `${month} ${year}`,
+        total: 0,
+        openingAmount: 0,
+      };
     }
   };
 
   // Summary
+  const getSummary = async (fromDate:any, toDate: any) => {
+    try {
+      // Appwrite uses $createdAt as the system field for document creation time
+      const debit = await database.listDocuments(
+        config.database!,
+        config.expenseSlipsCollection!,
+        [
+          Query.and([
+            Query.equal("month", [`${month} ${year}`]),
+            Query.equal("status", ["paid"]),
+            Query.greaterThanEqual("$createdAt", fromDate.toISOString()),
+            Query.lessThanEqual("$createdAt", toDate.toISOString()),
+          ]),
+        ]
+      );
+
+      const credit = await database.listDocuments(
+        config.database!,
+        config.maintenanceCollection!,
+        [
+          Query.and([
+            Query.equal("month", [`${month} ${year}`]),
+            Query.equal("status", ["paid"]),
+            Query.greaterThanEqual("$createdAt", fromDate.toISOString()),
+            Query.lessThanEqual("$createdAt", toDate.toISOString()),
+          ]),
+        ]
+      );
+
+      if (!debit || !credit) {
+        throw Error("Error Fetching Summary");
+      }
+
+      return {
+        debit: debit.documents,
+        credit: credit.documents,
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   return {
     loginUser,
@@ -417,6 +466,7 @@ const useAppwrite = () => {
     createFlat,
     getFlats,
     createExpense,
+    getSummary,
     getExpenses,
     createExpenseSlip,
     getExpenseSlips,

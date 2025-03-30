@@ -51,11 +51,13 @@ const MaintenanceCard: React.FC<MaintenanceCardProps> = ({ item }) => {
   const { updateMaintenaceSlip } = useAppwrite();
   const { setStatusUpdate, statusUpdate } = useGlobalContext();
 
+  console.log(item, "item");
+
   const handleSharing = async () => {
     try {
       const htmlContent = generateHTML({
         ...item,
-        dues: item.dues ? item.dues : [],
+        dues: item.dues ? JSON.parse(item.dues) : [],
       });
 
       const { uri } = await printToFileAsync({
