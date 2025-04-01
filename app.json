@@ -11,8 +11,8 @@
     "ios": {
       "supportsTablet": true,
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/building-logo-transparent.png",
-        "backgroundColor": "#000"
+        "foregroundImage": "./assets/images/Building-Logo.png",
+        "backgroundColor": "#fff"
       },
       "package": "com.btlnt.shoppingcenter"
     },
@@ -27,7 +27,7 @@
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "./assets/images/favicon.png"
+      "favicon": "./assets/images/building-logo-transparent.png"
     },
     "plugins": [
       "expo-router",
