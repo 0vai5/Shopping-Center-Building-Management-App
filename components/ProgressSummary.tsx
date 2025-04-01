@@ -15,10 +15,10 @@ const ProgressSummary: React.FC<ProgressSummaryProps> = ({
       </View>
       <View className="rounded-2xl w-full">
         <Text className="text-white font-smedium mb-3 text-3xl ">
-          {progress}%
+          {progress.toFixed(0)}%
         </Text>
         <ProgressBar
-          progress={progress / 100}
+          progress={(progress / 100)}
           width={null}
           height={7}
           borderRadius={7}

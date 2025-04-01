@@ -397,7 +397,7 @@ const useAppwrite = () => {
         maintenancePaid:
           (paidMaintenance.length / maintenanceSlips.total) * 100 || 0,
         expensesCleared: Math.round(
-          (paidExpenses.length / expenseSlips.total) * 100
+          (paidExpenses.length / expenseSlips.total) * 100 || 0
         ),
         month: `${month} ${year}`,
         total: recievedAmount || 0,

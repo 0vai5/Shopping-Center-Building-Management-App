@@ -7,7 +7,7 @@ import {
   Image,
   Alert,
 } from "react-native";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { MaintenanceCardProps } from "@/types";
 import { icons } from "@/constants";
 import { CustomBottomSheetModal } from "@/components";
@@ -23,7 +23,7 @@ import { shareAsync } from "expo-sharing";
 
 const MaintenanceList = ({ maintenanceSlips }: { maintenanceSlips: any }) => {
   return (
-    <View className="flex p-6">
+    <View className="flex p-6"> 
       {maintenanceSlips && maintenanceSlips.length === 0 && (
         <Text className="text-secondary-saturated font-ssemibold text-xl">
           No Maintenance Slips Found
@@ -34,10 +34,10 @@ const MaintenanceList = ({ maintenanceSlips }: { maintenanceSlips: any }) => {
         className="p-6 mr-3 gap-3"
         data={maintenanceSlips}
         numColumns={1}
-        renderItem={({ item }) => <MaintenanceCard item={item} />}
+        renderItem={({ item }: {item: any}) => <MaintenanceCard item={item} />}
         horizontal
         showsHorizontalScrollIndicator={false}
-        keyExtractor={(item) => item.$id.toString()}
+        keyExtractor={(item: any) => item.$id.toString()}
       />
     </View>
   );
@@ -51,13 +51,18 @@ const MaintenanceCard: React.FC<MaintenanceCardProps> = ({ item }) => {
   const { updateMaintenaceSlip } = useAppwrite();
   const { setStatusUpdate, statusUpdate } = useGlobalContext();
 
-  console.log(item, "item");
+  const totalDues = JSON.parse(item.dues || "[]").reduce(
+    (prev: number, due: any) => prev + due.maintenance * item.rooms,
+    0
+  );
+  const dues = item.dues ? JSON.parse(item.dues) : [];
+
 
   const handleSharing = async () => {
     try {
       const htmlContent = generateHTML({
         ...item,
-        dues: item.dues ? JSON.parse(item.dues) : [],
+        dues: dues,
       });
 
       const { uri } = await printToFileAsync({
@@ -66,7 +71,6 @@ const MaintenanceCard: React.FC<MaintenanceCardProps> = ({ item }) => {
         height: 450,
       });
 
-      console.log("PDF generated at: ", uri);
 
       await shareAsync(uri, {
         UTI: "com.adobe.pdf",
@@ -135,7 +139,7 @@ const MaintenanceCard: React.FC<MaintenanceCardProps> = ({ item }) => {
             <Text className="text-white font-smedium text-xl">
               {item.ownerName}
             </Text>
-            <View className="flex-row justify-center items-center gap-2">
+            <View className="flex-row gap-2">
               <Image source={icons.phone} tintColor={"#72BF78"} />
               <Text className="text-gray-300 font-sregular text-lg">
                 {item.ownerNo}
@@ -143,7 +147,7 @@ const MaintenanceCard: React.FC<MaintenanceCardProps> = ({ item }) => {
             </View>
           </View>
           <View className="items-start">
-            <View className="flex-row items-center justify-center gap-2">
+            <View className="flex-row gap-2">
               <Image source={icons.rooms} tintColor={"#5889ec"} />
               <Text className="text-white font-sregular text-xl">
                 {item.rooms}
@@ -156,7 +160,7 @@ const MaintenanceCard: React.FC<MaintenanceCardProps> = ({ item }) => {
                 tintColor={"#5889ec"}
               />
               <Text className="text-gray-300 font-smedium text-lg">
-                {item.maintenance * item.rooms} /-
+                {(item.maintenance * item.rooms) + totalDues} /-
               </Text>
             </View>
           </View>
