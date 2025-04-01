@@ -40,6 +40,7 @@ const home = () => {
     try {
       const response = await getMonthlyStats();
       if (response) {
+        console.log(response, "response");
         setStats(response);
       } else {
         // Set default values if response is undefined
@@ -51,6 +52,7 @@ const home = () => {
           month: "",
         });
       }
+      console.log("Hello");
     } catch (error: any) {
       Alert.alert("Error Occured", error.message);
     }
@@ -72,6 +74,7 @@ const home = () => {
     } catch (error) {
       Alert.alert("Error Occured", "Error Fetching Expense Slips");
     }
+    console.log("Fetched Expense Slips");
   };
   const fetchMaintenanceSlips = async () => {
     try {
@@ -81,6 +84,7 @@ const home = () => {
     } catch (error) {
       Alert.alert("Error Occured", "Error Fetching Maintenance Slips");
     }
+    console.log("Fetched Maintenance Slips");
   };
 
   useEffect(() => {
