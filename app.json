@@ -1,10 +1,10 @@
 {
   "expo": {
-    "name": "Shopping-Center-Building-Management-App",
-    "slug": "Shopping-Center-Building-Management-App",
-    "version": "1.0.0",
+    "name": "Shopping Center Building Management App",
+    "slug": "Shopping Center Building Management App",
+    "version": "1.0.1",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/Building-Logo.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -18,7 +18,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/building-logo-transparent.png",
+        "foregroundImage": "./assets/images/Building-Logo.png",
         "resizeMode": "contain"
         "backgroundColor": "#fff"
       },
@@ -54,3 +54,4 @@
     }
   }
 }
+
