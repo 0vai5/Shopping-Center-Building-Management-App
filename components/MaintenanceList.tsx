@@ -195,7 +195,7 @@ const MaintenanceCard: React.FC<MaintenanceCardProps> = ({ item }) => {
                   tintColor={"#5889ec"}
                 />
                 <Text className="text-gray-300 font-smedium text-lg">
-                  {item.maintenance * item.rooms} /-
+                  {(item.maintenance * item.rooms) + totalDues} /-
                 </Text>
               </View>
               <View className="flex-row items-center justify-center gap-2">
