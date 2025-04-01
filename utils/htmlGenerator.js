@@ -2,7 +2,7 @@ export const generateHTML = (data) => {
   const { ownerName, ownerNo, flatNumber, slipNo, maintenance, $updatedAt, rooms, dues, month } = data;
   const buildingName = "Dhoraji Housing Relief Trust";
   const subTitle = "Mohallah Committee Shopping Centre";
-  const totalDues = dues.reduce((sum, due) => sum + due.maintenance, 0);
+  const totalDues = dues.reduce((sum, due) => sum + (due.maintenance * rooms), 0);
   const total = maintenance * rooms + totalDues;
     const date = new Date($updatedAt).toLocaleDateString();
   const htmlContent = `
