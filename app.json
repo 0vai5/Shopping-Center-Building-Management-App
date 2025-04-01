@@ -19,7 +19,8 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/building-logo-transparent.png",
-        "backgroundColor": "#000"
+        "resizeMode": "contain"
+        "backgroundColor": "#fff"
       },
       "package": "com.btlnt.shoppingcenter"
     },
@@ -33,8 +34,8 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/building-logo-transparent.png",
-          "imageWidth": 200,
+          "image": "./assets/images/Building-Logo.png",
+          "imageWidth": 250,
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"
         }
