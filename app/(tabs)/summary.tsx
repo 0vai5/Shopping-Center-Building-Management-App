@@ -39,7 +39,6 @@ const summary = () => {
   }, []);
 
   const searchHandler = async () => {
-    console.log("Searching for data between", fromDate, "and", toDate);
     try {
       const fromDateObj = new Date(fromDate);
       const toDateObj = new Date(toDate);
@@ -47,7 +46,6 @@ const summary = () => {
       fromDateObj.setHours(0, 0, 0, 0);
       toDateObj.setHours(23, 59, 59, 999);
       
-      console.log("Using date objects:", fromDateObj, toDateObj);
       
       const summaryResult = await getSummary(fromDateObj, toDateObj);
 

@@ -50,14 +50,16 @@ const MaintenanceCard: React.FC<MaintenanceCardProps> = ({ item }) => {
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
   const { updateMaintenaceSlip } = useAppwrite();
   const { setStatusUpdate, statusUpdate } = useGlobalContext();
-
-  console.log(item, "item");
-
+  const totalDues = JSON.parse(item.dues || "[]").reduce(
+    (prev: number, due: any) => prev + due.maintenance * item.rooms,
+    0
+  );
+  const dues = item.dues ? JSON.parse(item.dues) : [];
   const handleSharing = async () => {
     try {
       const htmlContent = generateHTML({
         ...item,
-        dues: item.dues ? JSON.parse(item.dues) : [],
+        dues: dues,
       });
 
       const { uri } = await printToFileAsync({
@@ -65,8 +67,6 @@ const MaintenanceCard: React.FC<MaintenanceCardProps> = ({ item }) => {
         base64: false,
         height: 450,
       });
-
-      console.log("PDF generated at: ", uri);
 
       await shareAsync(uri, {
         UTI: "com.adobe.pdf",
@@ -135,7 +135,7 @@ const MaintenanceCard: React.FC<MaintenanceCardProps> = ({ item }) => {
             <Text className="text-white font-smedium text-xl">
               {item.ownerName}
             </Text>
-            <View className="flex-row justify-center items-center gap-2">
+            <View className="flex-row gap-2">
               <Image source={icons.phone} tintColor={"#72BF78"} />
               <Text className="text-gray-300 font-sregular text-lg">
                 {item.ownerNo}
@@ -156,7 +156,7 @@ const MaintenanceCard: React.FC<MaintenanceCardProps> = ({ item }) => {
                 tintColor={"#5889ec"}
               />
               <Text className="text-gray-300 font-smedium text-lg">
-                {item.maintenance * item.rooms} /-
+                {(item.maintenance * item.rooms) + totalDues} /-
               </Text>
             </View>
           </View>
