@@ -19,7 +19,7 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/Building-Logo.png",
-        "resizeMode": "contain"
+        "resizeMode": "contain",
         "backgroundColor": "#fff"
       },
       "package": "com.btlnt.shoppingcenter"
