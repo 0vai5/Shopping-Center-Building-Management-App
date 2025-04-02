@@ -1,9 +1,18 @@
-import { View, Text, ScrollView, Dimensions, RefreshControl } from "react-native";
+import {
+  View,
+  Text,
+  ScrollView,
+  Dimensions,
+  RefreshControl,
+} from "react-native";
 import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { CustomButton, DataTable } from "@/components";
 import useAppwrite from "@/hooks/useAppwrite";
+import { generateTableHTML } from "@/utils/summaryHtmlGenerator.js";
+import { printAsync, printToFileAsync } from "expo-print";
+import { shareAsync } from "expo-sharing";
 
 const summary = () => {
   const { height } = Dimensions.get("window");
@@ -20,15 +29,13 @@ const summary = () => {
   });
 
   const handleConfirmFromDate = (date: any) => {
-    console.warn("A date has been picked: ", date);
-    setSearch({...search, fromDate: date});
+    setSearch({ ...search, fromDate: date });
     setFromDate(date.toDateString());
     setDatePickerVisibility(false);
   };
 
   const handleConfirmToDate = (date: any) => {
-    console.warn("A date has been picked: ", date);
-    setSearch({...search, toDate: date});
+    setSearch({ ...search, toDate: date });
 
     setToDate(date.toDateString());
     setToDatePickerVisibility(false);
@@ -42,11 +49,10 @@ const summary = () => {
     try {
       const fromDateObj = new Date(fromDate);
       const toDateObj = new Date(toDate);
-      
+
       fromDateObj.setHours(0, 0, 0, 0);
       toDateObj.setHours(23, 59, 59, 999);
-      
-      
+
       const summaryResult = await getSummary(fromDateObj, toDateObj);
 
       if (summaryResult) {
@@ -54,7 +60,7 @@ const summary = () => {
           ...summaryResult.credit.map((item: any) => ({
             id: item.$id,
             title: `Maintenance - Flat ${item.flatNumber}`,
-            credit: item.maintenance * item.rooms, 
+            credit: item.maintenance * item.rooms,
             debit: 0,
           })),
           ...summaryResult.debit.map((item: any) => ({
@@ -81,7 +87,21 @@ const summary = () => {
     setRefreshing(false);
   };
 
-  const handleExport = () => {};
+  const handleExport = async () => {
+    const htmlContent = generateTableHTML(summaryData);
+    const { uri } = await printToFileAsync({
+      html: htmlContent,
+      base64: false,
+      height: 1000,
+      width: 1000,
+    });
+
+    await shareAsync(uri, {
+      dialogTitle: `Summary Report ${new Date().toDateString()}`,
+      UTI: "com.adobe.pdf",
+      mimeType: "application/pdf",
+    });
+  };
 
   return (
     <SafeAreaView className="bg-primary" style={{ height }}>
@@ -116,7 +136,7 @@ const summary = () => {
             onConfirm={handleConfirmFromDate}
             onCancel={() => setDatePickerVisibility(false)}
             display="inline"
-            minimumDate={new Date(2025, 3, 1)} 
+            minimumDate={new Date(2025, 3, 1)}
             maximumDate={new Date()}
           />
         </View>
@@ -156,6 +176,7 @@ const summary = () => {
             handlePress={handleExport}
             textStyles="text-white"
             width="50%"
+            background="bg-secondary-saturated"
           />
         </View>
 

@@ -7,7 +7,7 @@ import {
   Image,
   Alert,
 } from "react-native";
-import React, { useRef, useState } from "react";
+import React, { useRef } from "react";
 import { MaintenanceCardProps } from "@/types";
 import { icons } from "@/constants";
 import { CustomBottomSheetModal } from "@/components";
@@ -23,7 +23,7 @@ import { shareAsync } from "expo-sharing";
 
 const MaintenanceList = ({ maintenanceSlips }: { maintenanceSlips: any }) => {
   return (
-    <View className="flex p-6"> 
+    <View className="flex p-6">
       {maintenanceSlips && maintenanceSlips.length === 0 && (
         <Text className="text-secondary-saturated font-ssemibold text-xl">
           No Maintenance Slips Found
@@ -34,7 +34,9 @@ const MaintenanceList = ({ maintenanceSlips }: { maintenanceSlips: any }) => {
         className="p-6 mr-3 gap-3"
         data={maintenanceSlips}
         numColumns={1}
-        renderItem={({ item }: {item: any}) => <MaintenanceCard item={item} />}
+        renderItem={({ item }: { item: any }) => (
+          <MaintenanceCard item={item} />
+        )}
         horizontal
         showsHorizontalScrollIndicator={false}
         keyExtractor={(item: any) => item.$id.toString()}
@@ -57,7 +59,6 @@ const MaintenanceCard: React.FC<MaintenanceCardProps> = ({ item }) => {
   );
   const dues = item.dues ? JSON.parse(item.dues) : [];
 
-
   const handleSharing = async () => {
     try {
       const htmlContent = generateHTML({
@@ -70,7 +71,6 @@ const MaintenanceCard: React.FC<MaintenanceCardProps> = ({ item }) => {
         base64: false,
         height: 450,
       });
-
 
       await shareAsync(uri, {
         UTI: "com.adobe.pdf",
@@ -160,7 +160,7 @@ const MaintenanceCard: React.FC<MaintenanceCardProps> = ({ item }) => {
                 tintColor={"#5889ec"}
               />
               <Text className="text-gray-300 font-smedium text-lg">
-                {(item.maintenance * item.rooms) + totalDues} /-
+                {item.maintenance * item.rooms + totalDues} /-
               </Text>
             </View>
           </View>
@@ -199,7 +199,7 @@ const MaintenanceCard: React.FC<MaintenanceCardProps> = ({ item }) => {
                   tintColor={"#5889ec"}
                 />
                 <Text className="text-gray-300 font-smedium text-lg">
-                  {(item.maintenance * item.rooms) + totalDues} /-
+                  {item.maintenance * item.rooms + totalDues} /-
                 </Text>
               </View>
               <View className="flex-row items-center justify-center gap-2">
@@ -211,6 +211,34 @@ const MaintenanceCard: React.FC<MaintenanceCardProps> = ({ item }) => {
             </View>
           </View>
         </BottomSheetView>
+
+        {item.dues &&
+          item.dues.map((due: any) => (
+            <BottomSheetView className="p-5">
+              <Text className="text-white font-ssemibold text-2xl mb-4">
+                Dues Details
+              </Text>
+              <View className="flex-row gap-10 justify-between items-center">
+                <View>
+                  <Text className="text-gray-300 font-sregular text-lg">
+                    Month of {due.month}
+                  </Text>
+                </View>
+                <View className="items-start">
+                  <View className="flex-row gap-2">
+                    <Image
+                      source={icons.dollar}
+                      resizeMode="contain"
+                      tintColor={"#5889ec"}
+                    />
+                    <Text className="text-gray-300 font-smedium text-lg">
+                      {due.maintenance * item.rooms} /-
+                    </Text>
+                  </View>
+                </View>
+              </View>
+            </BottomSheetView>
+          ))}
 
         <BottomSheetView className="p-5">
           <Text className="text-white font-ssemibold text-2xl mb-4">

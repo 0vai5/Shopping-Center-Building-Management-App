@@ -2,25 +2,25 @@
   "expo": {
     "name": "Shopping Center Building Management App",
     "slug": "Shopping-Center-Building-Management-App",
-    "version": "1.0.1",
+    "version": "2.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/Building-Logo.png",
+    "icon": "./assets/images/building-icon.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/Building-Logo.png",
-        "backgroundColor": "#fff"
+        "foregroundImage": "./assets/images/building-icon.png",
+        "backgroundColor": "#000"
       },
       "package": "com.btlnt.shoppingcenter"
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/Building-Logo.png",
+        "foregroundImage": "./assets/images/building-icon.png",
         "resizeMode": "contain",
-        "backgroundColor": "#fff"
+        "backgroundColor": "#000"
       },
       "package": "com.btlnt.shoppingcenter"
     },
@@ -34,10 +34,10 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/Building-Logo.png",
+          "image": "./assets/images/building-icon.png",
           "imageWidth": 250,
           "resizeMode": "contain",
-          "backgroundColor": "#ffffff"
+          "backgroundColor": "#000"
         }
       ]
     ],

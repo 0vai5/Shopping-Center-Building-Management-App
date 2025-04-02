@@ -23,6 +23,7 @@ export interface CustomButtonProps {
   containerStyles?: string;
   loader?: boolean;
   width?: string;
+  background?: string;
 }
 
 export interface CustomBottomSheetModalProps {
