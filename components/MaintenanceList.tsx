@@ -212,9 +212,9 @@ const MaintenanceCard: React.FC<MaintenanceCardProps> = ({ item }) => {
           </View>
         </BottomSheetView>
 
-        {item.dues &&
-          item.dues.map((due: any) => (
-            <BottomSheetView className="p-5">
+        {dues.length > 0 &&
+          dues.map((due: any) => (
+            <BottomSheetView key={due.month} className="p-5">
               <Text className="text-white font-ssemibold text-2xl mb-4">
                 Dues Details
               </Text>

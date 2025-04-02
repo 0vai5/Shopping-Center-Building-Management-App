@@ -37,6 +37,7 @@ const SummaryCard = ({amount, month}: {
             title={"Take a Look"}
             textStyles="text-white"
             width="150px"
+            containerStyles="bg-black"
             handlePress={() => router.push("./summary")}
           />
         </View>

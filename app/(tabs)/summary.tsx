@@ -17,7 +17,7 @@ import { shareAsync } from "expo-sharing";
 const summary = () => {
   const { height } = Dimensions.get("window");
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
-  const [fromDate, setFromDate] = useState(new Date().toDateString());
+  const [fromDate, setFromDate] = useState(new Date(2025, 3, 1).toDateString());
   const [toDate, setToDate] = useState(new Date().toDateString());
   const [isToDatePickerVisible, setToDatePickerVisibility] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
@@ -88,7 +88,7 @@ const summary = () => {
   };
 
   const handleExport = async () => {
-    const htmlContent = generateTableHTML(summaryData);
+    const htmlContent = generateTableHTML(summaryData, fromDate, toDate);
     const { uri } = await printToFileAsync({
       html: htmlContent,
       base64: false,
@@ -132,7 +132,7 @@ const summary = () => {
           <DateTimePickerModal
             isVisible={isDatePickerVisible}
             mode="date"
-            date={new Date()}
+            date={new Date(2025, 3, 1)}
             onConfirm={handleConfirmFromDate}
             onCancel={() => setDatePickerVisibility(false)}
             display="inline"
@@ -158,7 +158,7 @@ const summary = () => {
             onCancel={() => setToDatePickerVisibility(false)}
             display="inline"
             maximumDate={new Date(new Date())}
-            minimumDate={new Date(2025, 3, 1)} // March 26, 2025
+            minimumDate={new Date(2025, 3, 1)} // April 3, 2025
           />
         </View>
         <View className="mt-5">
@@ -167,6 +167,7 @@ const summary = () => {
             textStyles="text-white"
             handlePress={searchHandler}
             width="w-full"
+            containerStyles="bg-secondary-saturated rounded-lg py-4 px-10"
           />
         </View>
 
@@ -174,9 +175,9 @@ const summary = () => {
           <CustomButton
             title="Export"
             handlePress={handleExport}
-            textStyles="text-white"
+            textStyles="text-white font-ssemibold"
             width="50%"
-            background="bg-secondary-saturated"
+            containerStyles="bg-secondary-saturated rounded-lg py-4 px-10"
           />
         </View>
 
