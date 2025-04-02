@@ -48,15 +48,15 @@ const ExpenseCardHome: React.FC<ExpenseCardHomeProps> = ({ item }) => {
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
   const cardHeight = screenHeight * 0.4;
   const statusColor = item.status === "pending" ? "bg-red-600" : "bg-green-600";
-  const [variabeValue, setVariableValue] = useState("");
+  const [variableValue, setVariableValue] = useState("");
   const { setStatusUpdate, statusUpdate } = useGlobalContext();
   const { updateExpenseSlip } = useAppwrite();
 
   const handleStatusUpdate = async () => {
     try {
       if (item.variable) {
-        const amount = parseInt(variabeValue);
-        if (isNaN(amount) || amount <= 0) {
+        const amount = parseInt(variableValue);
+        if ((isNaN(amount) || amount <= 0) && item.status == "pending") {
           Alert.alert("Invalid Amount", "Please enter a valid amount.");
           return;
         }
@@ -151,10 +151,10 @@ const ExpenseCardHome: React.FC<ExpenseCardHomeProps> = ({ item }) => {
           <Text className="text-white font-ssemibold text-2xl mb-4">
             Update Expense Status
           </Text>
-          {item.variable && (
+          {item.variable && item.status == "pending" && (
             <BottomSheetTextInput
               className="px-2 py-3 bg-gray-400 rounded-lg text-white"
-              value={variabeValue}
+              value={variableValue}
               keyboardType="numeric"
               placeholder="Enter the Amount"
               onChangeText={(e) => setVariableValue(e)}

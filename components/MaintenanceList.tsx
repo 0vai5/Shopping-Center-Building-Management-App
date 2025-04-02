@@ -69,7 +69,7 @@ const MaintenanceCard: React.FC<MaintenanceCardProps> = ({ item }) => {
       const { uri } = await printToFileAsync({
         html: htmlContent,
         base64: false,
-        height: 450,
+        height: Dimensions.get("window").height + 100,
       });
 
       await shareAsync(uri, {
@@ -211,34 +211,35 @@ const MaintenanceCard: React.FC<MaintenanceCardProps> = ({ item }) => {
             </View>
           </View>
         </BottomSheetView>
-
-        {dues.length > 0 &&
-          dues.map((due: any) => (
-            <BottomSheetView key={due.month} className="p-5">
-              <Text className="text-white font-ssemibold text-2xl mb-4">
-                Dues Details
-              </Text>
-              <View className="flex-row gap-10 justify-between items-center">
-                <View>
-                  <Text className="text-gray-300 font-sregular text-lg">
-                    Month of {due.month}
-                  </Text>
-                </View>
-                <View className="items-start">
-                  <View className="flex-row gap-2">
-                    <Image
-                      source={icons.dollar}
-                      resizeMode="contain"
-                      tintColor={"#5889ec"}
-                    />
-                    <Text className="text-gray-300 font-smedium text-lg">
-                      {due.maintenance * item.rooms} /-
+        <BottomSheetView className="px-6">
+          <Text className="text-white font-ssemibold text-2xl mb-4">
+            Dues Details
+          </Text>
+          {dues.length > 0 &&
+            dues.map((due: any) => (
+              <BottomSheetView key={due.month} className="p-5">
+                <View className="flex-row gap-10 justify-between items-center">
+                  <View>
+                    <Text className="text-gray-300 font-sregular text-lg">
+                      Month of {due.month}
                     </Text>
                   </View>
+                  <View className="items-start">
+                    <View className="flex-row gap-2">
+                      <Image
+                        source={icons.dollar}
+                        resizeMode="contain"
+                        tintColor={"#5889ec"}
+                      />
+                      <Text className="text-gray-300 font-smedium text-lg">
+                        {due.maintenance * item.rooms} /-
+                      </Text>
+                    </View>
+                  </View>
                 </View>
-              </View>
-            </BottomSheetView>
-          ))}
+              </BottomSheetView>
+            ))}
+        </BottomSheetView>
 
         <BottomSheetView className="p-5">
           <Text className="text-white font-ssemibold text-2xl mb-4">

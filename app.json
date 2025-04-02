@@ -2,7 +2,7 @@
   "expo": {
     "name": "Shopping Center Building Management App",
     "slug": "Shopping-Center-Building-Management-App",
-    "version": "2.0.0",
+    "version": "2.5.0",
     "orientation": "portrait",
     "icon": "./assets/images/building-icon.png",
     "scheme": "myapp",

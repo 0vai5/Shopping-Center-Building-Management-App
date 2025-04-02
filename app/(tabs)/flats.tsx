@@ -115,6 +115,7 @@ const flats = () => {
                   <CustomButton
                     title="Add Flat"
                     textStyles="text-white"
+                    containerStyles="bg-black"
                     width="150px"
                     handlePress={() => bottomSheetModalRef.current?.present()}
                   />
