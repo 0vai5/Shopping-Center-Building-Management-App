@@ -29,7 +29,7 @@ const Signin = () => {
       Alert.alert("Success", "User signed in successfully");
       
       if (response) {
-        router.push("../(tabs)/summary");
+        router.push("../(tabs)/home");
       }
     } catch (error: any) {
       Alert.alert("Error", error.message);

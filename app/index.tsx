@@ -54,7 +54,7 @@ const index: React.FC = () => {
               <CustomButton
                 width="w-full"
                 title="Get Started"
-                containerStyles="w-full mt-7"
+                containerStyles="w-full mt-7 bg-primary"
                 handlePress={() => {
                   router.push("./(auth)/signin");
                 }}
