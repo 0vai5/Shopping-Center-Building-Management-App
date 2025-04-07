@@ -50,8 +50,9 @@ const Signin = () => {
   };
   
   // If already logged in, redirect to home
+  // TODO: Change the Redirection
   if (!isLoading && isLoggedIn) {
-    return <Redirect href={"../(tabs)/home"} />
+    return <Redirect href={"../(tabs)/summary"} />
   }
 
   return (
