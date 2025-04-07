@@ -261,7 +261,7 @@ const useAppwrite = () => {
         id,
         {
           status: status === "pending" ? "paid" : "pending",
-          ...(amount !== undefined && { amount }),
+          ...(amount && { amount: parseInt(amount.toString()) }),
         }
       );
 
@@ -393,6 +393,28 @@ const useAppwrite = () => {
         0
       );
 
+      let dueAmount = 0;
+      if (paidMaintenance.length > 0) {
+        dueAmount = paidMaintenance.reduce((total: number, slip: any) => {
+          if (slip.dues) {
+            try {
+              const parsedDues = JSON.parse(slip.dues);
+              if (Array.isArray(parsedDues) && parsedDues.length > 0) {
+                const slipDues = parsedDues.reduce(
+                  (acc: number, dues: any) =>
+                    acc + (dues.maintenance * slip.rooms || 0),
+                  0
+                );
+                return total + slipDues;
+              }
+            } catch (error) {
+              console.log("Error parsing dues:", error);
+            }
+          }
+          return total;
+        }, 0);
+      }
+
       return {
         maintenancePaid:
           (paidMaintenance.length / maintenanceSlips.total) * 100 || 0,
@@ -400,8 +422,9 @@ const useAppwrite = () => {
           (paidExpenses.length / expenseSlips.total) * 100 || 0
         ),
         month: `${month} ${year}`,
-        total: recievedAmount || 0,
+        total: recievedAmount + dueAmount || 0,
         openingAmount: 0,
+        dueAmount: dueAmount || 0,
       };
     } catch (error: any) {
       console.log("Error Occured", error.message);
@@ -417,7 +440,7 @@ const useAppwrite = () => {
   };
 
   // Summary
-  const getSummary = async (fromDate:any, toDate: any) => {
+  const getSummary = async (fromDate: any, toDate: any) => {
     try {
       // Appwrite uses $createdAt as the system field for document creation time
       const debit = await database.listDocuments(
@@ -450,14 +473,25 @@ const useAppwrite = () => {
         throw Error("Error Fetching Summary");
       }
 
+      const parsedCreditDocs = credit.documents.map(doc => {
+        if (doc.dues) {
+          try {
+            doc.dues = JSON.parse(doc.dues);
+          } catch (error) {
+            console.log("Error parsing dues in summary:", error);
+          }
+        }
+        return doc;
+      });
+
       return {
         debit: debit.documents,
-        credit: credit.documents,
-      }
+        credit: parsedCreditDocs,
+      };
     } catch (error) {
       console.log(error);
     }
-  }
+  };
 
   return {
     loginUser,

@@ -54,15 +54,24 @@ const summary = () => {
       toDateObj.setHours(23, 59, 59, 999);
 
       const summaryResult = await getSummary(fromDateObj, toDateObj);
-
       if (summaryResult) {
         const formattedData = [
-          ...summaryResult.credit.map((item: any) => ({
-            id: item.$id,
-            title: `Maintenance - Flat ${item.flatNumber}`,
-            credit: item.maintenance * item.rooms,
-            debit: 0,
-          })),
+          ...summaryResult.credit.map((item: any) => {
+            let dueAmount = 0;
+            if (item.dues && item.dues.length > 0) {
+              dueAmount = item.dues.reduce((acc: number, due: any) => {
+                return acc + (due.maintenance * item.rooms);
+              }, 0)
+            }
+            
+            return {
+              id: item.$id,
+              title: `Maintenance - Flat ${item.flatNumber}`,
+              credit: (item.maintenance * item.rooms) + dueAmount,
+              debit: 0,
+              hasDues: item.dues && item.dues.length > 0,
+            };
+          }),
           ...summaryResult.debit.map((item: any) => ({
             id: item.$id,
             title: item.expense,

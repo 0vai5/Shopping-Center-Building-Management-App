@@ -113,6 +113,7 @@ const expenses = () => {
                   <CustomButton
                     title="Add Expense"
                     textStyles="text-white"
+                    containerStyles="bg-black"
                     width="150px"
                     handlePress={() => bottomSheetModalRef.current?.present()}
                   />

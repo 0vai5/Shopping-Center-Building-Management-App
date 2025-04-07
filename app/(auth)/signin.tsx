@@ -10,7 +10,6 @@ const Signin = () => {
   const { isLoggedIn, isLoading, setIsLoggedIn, setUser } = useGlobalContext();
   const { loginUser, getCurrentUser } = useAppwrite();
 
-  
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
     email: "",
@@ -18,27 +17,39 @@ const Signin = () => {
   });
   
   const handleLogin = async () => {
+    if (!form.email || !form.password) {
+      Alert.alert("Error", "Please enter both email and password");
+      return;
+    }
+    
     setLoading(true);
     try {
-      const response = await loginUser(form.email, form.password);
+      await loginUser(form.email, form.password);
+      
+      // After successful login, get the current user details
       const currentUser = await getCurrentUser();
+      
+      if (!currentUser) {
+        throw new Error("Could not retrieve user information");
+      }
       
       setIsLoggedIn(true);
       setUser(currentUser);
       
-      Alert.alert("Success", "User signed in successfully");
+      Alert.alert("Success", "Signed in successfully");
+      router.replace("../(tabs)/home");
       
-      if (response) {
-        router.push("../(tabs)/summary");
-      }
     } catch (error: any) {
-      Alert.alert("Error", error.message);
+      Alert.alert(
+        "Login Failed", 
+        error.message || "An error occurred during login. Please check your credentials and try again."
+      );
     } finally {
       setLoading(false);
     }
   };
   
-
+  // If already logged in, redirect to home
   if (!isLoading && isLoggedIn) {
     return <Redirect href={"../(tabs)/home"} />
   }

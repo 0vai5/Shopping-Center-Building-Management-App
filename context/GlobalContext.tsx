@@ -12,34 +12,36 @@ export const useGlobalContext = () => {
   return context;
 };
 
-// TODO: Fix the types after appwrite integration
-
 const GlobalProvider: React.FC<GlobalContextProviderProps> = ({ children }) => {
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [user, setUser] = useState<any>(null);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [statusUpdate, setStatusUpdate] = useState<boolean>(false);
   const { getCurrentUser } = useAppwrite();
 
-  //   TODO: The user will be updated after calling getCurrentUser() method from appwrite hook
-
   useEffect(() => {
-    setIsLoading(true);
-    const response = getCurrentUser()
-      .then((res) => {
-        if (res) {
+    const checkAuthStatus = async () => {
+      setIsLoading(true);
+      try {
+        const userData = await getCurrentUser();
+        
+        if (userData) {
           setIsLoggedIn(true);
-          setUser(res);
+          setUser(userData);
         } else {
           setIsLoggedIn(false);
           setUser(null);
         }
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+      } catch (error) {
+        console.error("Auth check error:", error);
+        setIsLoggedIn(false);
+        setUser(null);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-    setIsLoading(false);
+    checkAuthStatus();
   }, []);
 
   return (
