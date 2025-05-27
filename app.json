@@ -27,7 +27,7 @@
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "./assets/images/building-logo-transparent.png"
+      "favicon": "./assets/images/Building-Logo.png"
     },
     "plugins": [
       "expo-router",
@@ -39,7 +39,9 @@
           "resizeMode": "contain",
           "backgroundColor": "#000"
         }
-      ]
+      ],
+      "expo-font",
+      "expo-web-browser"
     ],
     "experiments": {
       "typedRoutes": true
@@ -54,4 +56,3 @@
     }
   }
 }
-

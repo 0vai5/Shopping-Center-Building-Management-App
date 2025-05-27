@@ -32,7 +32,7 @@ const index: React.FC = () => {
           <View className="absolute flex bg-primary/70 justify-end items-center pb-4 gap-0 w-full h-full">
             <View className="mb-0">
               <Image
-                source={require("@/assets/images/building-logo-transparent.png")}
+                source={require("@/assets/images/Building-Logo.png")}
                 className="h-[325px]"
                 resizeMode="contain"
               />
