@@ -1,0 +1,46 @@
+import flat from "../models/flats.model";
+import flatSchema from "../schema/flatSchema";
+import validateSchema from "../utils/schemaValidator";
+import CustomError from "../utils/CustomError";
+import ApiResponse from "../utils/ApiResponse";
+import { Request, Response } from "express";
+
+const flatsController = {
+  async createFlat(req: Request, res: Response) {
+    try {
+      const { success, data, error } = validateSchema(flatSchema, req.body);
+
+      if (!success) {
+        throw new CustomError(error.message, 400);
+      }
+
+      const newFlat = await flat.create(data);
+
+      return res
+        .status(201)
+        .json(new ApiResponse(201, "Flat created successfully", newFlat));
+    } catch (error: any) {
+      return res
+        .status(error.statusCode || 500)
+        .json(new ApiResponse(error.statusCode || 500, error.message));
+    }
+  },
+  async getFlats(req: Request, res: Response) {
+    try {
+      const flats = await flat.find();
+      if (!flats || flats.length === 0) {
+        throw new CustomError("No flats found", 404);
+      }
+
+      return res
+        .status(200)
+        .json(new ApiResponse(200, "Flats retrieved successfully", flats));
+    } catch (error: any) {
+      return res
+        .status(error.statusCode || 500)
+        .json(new ApiResponse(error.statusCode || 500, error.message));
+    }
+  },
+};
+
+export default flatsController;

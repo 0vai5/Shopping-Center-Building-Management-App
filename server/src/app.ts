@@ -1,6 +1,10 @@
-import express, { Request, Response } from 'express';
-import dotenv from 'dotenv';
-import { connectDB } from './config/connectDB';
+import express, { Request, Response } from "express";
+import dotenv from "dotenv";
+import { connectDB } from "./config/connectDB";
+import cookieParser from "cookie-parser";
+import cors from "cors";
+import UserRoutes from "./routes/userRoutes";
+import FlatRoutes from "./routes/flatRoutes";
 
 dotenv.config();
 connectDB();
@@ -10,10 +14,19 @@ const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
+app.use(
+  cors({
+    origin: "*",
+    credentials: true,
+  })
+);
+
+app.use("/api/v1/users", UserRoutes);
+app.use("/api/v1/flats", FlatRoutes);
 
 app.get("/", (req: Request, res: Response) => {
-    res.send("Hello, World!");
+  res.send("Hello, World!");
 });
-
 
 app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
