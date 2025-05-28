@@ -1,4 +1,5 @@
 import flat from "../models/flats.model";
+import MaintenanceSlip from "../models/maintenanceSlip.model";
 import flatSchema from "../schema/flatSchema";
 import validateSchema from "../utils/schemaValidator";
 import CustomError from "../utils/CustomError";
@@ -8,6 +9,7 @@ import { Request, Response } from "express";
 const flatsController = {
   async createFlat(req: Request, res: Response) {
     try {
+
       const { success, data, error } = validateSchema(flatSchema, req.body);
 
       if (!success) {
