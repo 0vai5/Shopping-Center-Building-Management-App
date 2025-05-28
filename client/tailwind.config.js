@@ -15,10 +15,10 @@ module.exports = {
       colors: {
         primary: "#1C1C1E",
         secondary: {
-          base: "#4583FF",
-          100: "#1e90ff",
-          200: "#1d60e6",
-          saturated: "#5889ec",
+          base: "#f7bc63",
+          100: "#f7bc63",
+          200: "#f7bc63",
+          saturated: "#f7bc63",
         },
         white: "#FDFDFE",
         yellowishgreen: {
