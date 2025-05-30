@@ -47,7 +47,21 @@ const userController = {
         .json(new ApiResponse(error.statusCode || 500, error.message));
     }
   },
-};
+  async deleteUser(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
 
+      const user = await User.findByIdAndDelete(id);
+
+      return res
+        .status(200)
+        .json(new ApiResponse(200, "User deleted successfully"));
+    } catch (error: any) {
+      return res
+        .status(error.statusCode || 500)
+        .json(new ApiResponse(error.statusCode || 500, error.message));
+    }
+  },
+};
 
 export default userController;

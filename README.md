@@ -32,12 +32,12 @@
 DONE:
 expenseController (editor,delete),
 flatsController (editor, delete),
-userController,
+userController (delete, get, create)
 
 LEFT:
-expenseController (editor,delete),
-flatsController (editor, delete),
-expenseSlip (Update, get)
-maintenanceController,(update, get)
+expenseController (delete),
+flatsController ( delete),
+expenseSlip (get)
+maintenanceController,(get)
 GenerationController, (create)
 Migration from appwroite to server
