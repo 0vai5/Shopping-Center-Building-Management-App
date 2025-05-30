@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import UserRoutes from "./routes/userRoutes";
 import FlatRoutes from "./routes/flatRoutes";
+import ExpenseRoutes from "./routes/expenseRoutes";
 
 dotenv.config();
 connectDB();
@@ -24,6 +25,7 @@ app.use(
 
 app.use("/api/v1/users", UserRoutes);
 app.use("/api/v1/flats", FlatRoutes);
+app.use("/api/v1/expenses", ExpenseRoutes)
 
 app.get("/", (req: Request, res: Response) => {
   res.send("Hello, World!");

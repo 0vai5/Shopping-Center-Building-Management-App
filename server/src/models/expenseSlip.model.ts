@@ -3,7 +3,7 @@ import mongoose, { Schema, Document } from "mongoose";
 export interface IExpenseSlip extends Document {
   month: string;
   status: "paid" | "pending" | "overdue";
-  expense_id: string;
+  expense_id: Schema.Types.ObjectId;
 }
 
 const expenseSlipSchema = new Schema<IExpenseSlip>(
@@ -14,7 +14,11 @@ const expenseSlipSchema = new Schema<IExpenseSlip>(
       enum: ["paid", "pending", "overdue"],
       required: true,
     },
-    expense_id: { type: String, required: true },
+    expense_id: {
+      type: Schema.Types.ObjectId,
+      ref: "Expense",
+      required: true,
+    },
   },
   {
     timestamps: {
@@ -24,5 +28,8 @@ const expenseSlipSchema = new Schema<IExpenseSlip>(
   }
 );
 
-const ExpenseSlip = mongoose.model<IExpenseSlip>("ExpenseSlip", expenseSlipSchema);
+const ExpenseSlip = mongoose.model<IExpenseSlip>(
+  "ExpenseSlip",
+  expenseSlipSchema
+);
 export default ExpenseSlip;

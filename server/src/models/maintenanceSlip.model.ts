@@ -1,14 +1,18 @@
 import mongoose, { Schema, Document } from 'mongoose';
 
 export interface IMaintenanceSlip extends Document {
-    flat_id: string;
+    flat_id: Schema.Types.ObjectId;
     month: string;
     slip_number: number;
     status: "paid" | "pending" | "overdue";
 };
 
 const maintenanceSlipSchema = new Schema<IMaintenanceSlip>({
-    flat_id: { type: String, required: true },
+    flat_id: { 
+        type: Schema.Types.ObjectId, 
+        ref: "Flat", 
+        required: true
+     },
     month: { type: String, required: true },
     slip_number: { type: Number, required: true },
     status: { type: String, enum: ["paid", "pending", "overdue"], required: true }

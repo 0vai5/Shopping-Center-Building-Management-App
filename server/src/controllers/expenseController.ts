@@ -4,8 +4,11 @@ import validateSchema from "../utils/schemaValidator";
 import CustomError from "../utils/CustomError";
 import ApiResponse from "../utils/ApiResponse";
 import { Request, Response } from "express";
+import expenseSlipSchema from "../schema/expenseSlipSchema";
+import ExpenseSlip from "../models/expenseSlip.model";
 
-// TODO: Generating a Expense Slip when expense is thisMonth ?
+const month = new Date().toLocaleString("default", { month: "long" });
+const year = new Date().getFullYear();
 
 const expenseController = {
   async createExpense(req: Request, res: Response) {
@@ -26,9 +29,30 @@ const expenseController = {
 
       const expense = await Expense.create(data);
 
-      return res
-        .status(201)
-        .json(new ApiResponse(201, "Expense Created Successfully", expense));
+      const expenseData = {
+        month: `${month} ${year}`,
+        status: "pending",
+        expense_id: expense._id,
+      };
+
+      const {
+        success: slipSuccess,
+        data: slipData,
+        error: slipError,
+      } = validateSchema(expenseSlipSchema, expenseData);
+
+      if (!slipSuccess) {
+        throw new CustomError(slipError.message, 400);
+      }
+
+      const expenseSlip = await ExpenseSlip.create(slipData);
+
+      return res.status(201).json(
+        new ApiResponse(201, "Expense Created Successfully", {
+          expense,
+          expenseSlip,
+        })
+      );
     } catch (error: any) {
       return res
         .status(error.statusCode || 500)
