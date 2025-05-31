@@ -1,12 +1,10 @@
 import flat from "../models/flats.model";
-import MaintenanceSlip from "../models/maintenanceSlip.model";
 import flatSchema from "../schema/flatSchema";
 import validateSchema from "../utils/schemaValidator";
 import CustomError from "../utils/CustomError";
 import ApiResponse from "../utils/ApiResponse";
 import { Request, Response } from "express";
 import getMonth from "../utils/getMonth";
-import Misc from "../models/misc.model";
 
 const month = getMonth("current");
 
@@ -20,29 +18,14 @@ const flatsController = {
       }
 
       const newFlat = await flat.create(data);
-      const slipNumber = await Misc.findByIdAndUpdate(
-        "683b35ba027b86d2b661bb83",
-        {
-          $inc: { slipNumber: 1 },
-        },
-        {
-          new: true,
-        }
-      );
 
-      const maintenanceSlipData = {
-        flat_id: newFlat._id,
-        month,
-        slip_number: slipNumber?.slip_number || 1,
-        status: "pending",
-      };
+     
 
-      const maintenanceSlip = await MaintenanceSlip.create(maintenanceSlipData);
+     
 
       return res.status(201).json(
         new ApiResponse(201, "Flat created successfully", {
           flat: newFlat,
-          maintenanceSlip: maintenanceSlip,
         })
       );
     } catch (error: any) {

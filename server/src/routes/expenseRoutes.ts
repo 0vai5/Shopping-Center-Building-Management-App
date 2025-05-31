@@ -7,6 +7,6 @@ const ExpenseRoutes = Router();
 console.log("Expense Routes Loaded");
 
 ExpenseRoutes.post("/create-expense", asyncHandler(expenseController.createExpense));
-ExpenseRoutes.get("/get-expenses", asyncHandler(expenseController.getExpenses));
+ExpenseRoutes.get("/expenses", asyncHandler(expenseController.getExpenses));
 
 export default ExpenseRoutes;

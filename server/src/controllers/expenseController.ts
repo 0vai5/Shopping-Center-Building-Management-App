@@ -19,14 +19,6 @@ const expenseController = {
         throw new CustomError(error.message, 400);
       }
 
-      const existingExpense = await Expense.findOne({
-        expense_name: data.expense_name,
-      });
-
-      if (existingExpense) {
-        throw new CustomError("Expense with this name already exists", 400);
-      }
-
       const expense = await Expense.create(data);
 
       const expenseData = {

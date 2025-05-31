@@ -6,7 +6,7 @@ export const flatSchema = z.object({
   flat_number: z.string().min(1, "Flat number is required"),
   rooms: z.number().min(2, "At least two rooms are required"),
   maintenance: z.number().min(0, "Maintenance fee must be positive").default(400),
-  dues: z.string().optional(),
+  dues: z.string().default("[]"),
 });
 
 export default flatSchema;

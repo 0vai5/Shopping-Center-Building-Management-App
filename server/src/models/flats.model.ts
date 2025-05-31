@@ -26,5 +26,5 @@ const flatSchema = new Schema<IFlat>(
   }
 );
 
-const flat = mongoose.model<IFlat>("Flat", flatSchema);
-export default flat;
+const Flat = mongoose.model<IFlat>("Flat", flatSchema);
+export default Flat;
