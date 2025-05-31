@@ -33,11 +33,11 @@ DONE:
 expenseController (editor,delete),
 flatsController (editor, delete),
 userController (delete, get, create)
-
-LEFT:
 expenseController (delete),
 flatsController ( delete),
 expenseSlip (get)
 maintenanceController,(get)
+
+LEFT:
 GenerationController, (create)
 Migration from appwrite to server
