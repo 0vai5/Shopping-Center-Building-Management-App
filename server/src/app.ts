@@ -6,6 +6,7 @@ import cors from "cors";
 import UserRoutes from "./routes/userRoutes";
 import FlatRoutes from "./routes/flatRoutes";
 import ExpenseRoutes from "./routes/expenseRoutes";
+import ExpenseSlipRoutes from "./routes/expenseSlipRoutes";
 
 dotenv.config();
 connectDB();
@@ -26,6 +27,7 @@ app.use(
 app.use("/api/v1/users", UserRoutes);
 app.use("/api/v1/flats", FlatRoutes);
 app.use("/api/v1/expenses", ExpenseRoutes)
+app.use("/api/v1/expensesslip", ExpenseSlipRoutes)
 
 app.get("/", (req: Request, res: Response) => {
   res.send("Hello, World!");

@@ -61,7 +61,7 @@ const expenseController = {
   },
   async getExpenses(req: Request, res: Response) {
     try {
-      const expense = await Expense.find();
+      const expense = await Expense.find({this_month: false});
 
       if (expense.length <= 0) {
         throw new CustomError("No Expenses Exists", 404);
