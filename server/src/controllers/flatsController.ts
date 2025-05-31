@@ -43,6 +43,24 @@ const flatsController = {
         .json(new ApiResponse(error.statusCode || 500, error.message));
     }
   },
+  async deleteFlat(req: Request, res: Response) {
+    try {
+      const {id} = req.params;
+      const flatToDelete = await flat.findByIdAndDelete(id);
+
+      if (!flatToDelete) {
+        throw new CustomError("Flat not found", 404);
+      }
+
+      return res
+        .status(200)
+        .json(new ApiResponse(200, "Flat deleted successfully", flatToDelete));
+
+    } catch (error:any) {
+      return res.status(error.statusCode || 500)
+        .json(new ApiResponse(error.statusCode || 500, error.message));
+    }
+  }
 };
 
 export default flatsController;

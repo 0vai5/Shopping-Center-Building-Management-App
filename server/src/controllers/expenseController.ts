@@ -76,6 +76,24 @@ const expenseController = {
         .json(new ApiResponse(error.statusCode, error.message));
     }
   },
+  async deleteExpense(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
+      const expense = await Expense.findByIdAndDelete(id);
+
+      if(!expense) {
+        throw new CustomError("Expense not found", 404);
+      }
+
+      return res
+        .status(200)
+        .json(new ApiResponse(200, "Expense Deleted Successfully", expense));
+    } catch (error: any) {
+      return res
+        .status(error.statusCode || 500)
+        .json(new ApiResponse(error.statusCode, error.message));
+    }
+  },
 };
 
 export default expenseController;

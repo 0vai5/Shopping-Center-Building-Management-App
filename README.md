@@ -40,4 +40,4 @@ flatsController ( delete),
 expenseSlip (get)
 maintenanceController,(get)
 GenerationController, (create)
-Migration from appwroite to server
+Migration from appwrite to server
