@@ -4,9 +4,9 @@ import validateSchema from "../utils/schemaValidator";
 import { Request, Response } from "express";
 import CustomError from "../utils/CustomError";
 import ApiResponse from "../utils/ApiResponse";
+import getMonth from "../utils/getMonth";
 
-const month = new Date().toLocaleString("default", { month: "long" });
-const year = new Date().getFullYear();
+const month = getMonth("current");
 
 const expenseSlipController = {
   async updateExpenseSlipStatus(req: Request, res: Response) {
@@ -46,7 +46,7 @@ const expenseSlipController = {
   async getExpenseSlips(req: Request, res: Response) {
     try {
       const expenseSlips = await ExpenseSlip.find({
-        month: `${month} ${year}`,
+        month,
       }).populate("expense_id");
 
       if (!expenseSlips || expenseSlips.length === 0) {
