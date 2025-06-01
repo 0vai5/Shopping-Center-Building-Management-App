@@ -20,9 +20,11 @@ import { useWindowDimensions } from "react-native";
 import { StatsData } from "@/types";
 import { useGlobalContext } from "@/context/GlobalContext";
 import axios from "axios";
+import { Redirect } from "expo-router";
 const home = () => {
   const { height } = useWindowDimensions();
   const { setStatusUpdate, statusUpdate } = useGlobalContext();
+  const { isLoggedIn, user } = useGlobalContext();
   const [maintenanceSlips, setMaintenanceSlips] = useState<any>([]);
   const [expenseSlips, setExpenseSlips] = useState<any>([]);
   const [stats, setStats] = useState<StatsData | any>({
@@ -70,6 +72,10 @@ const home = () => {
     fetchExpenseSlips();
     fetchMaintenanceSlips();
   }, [statusUpdate]);
+
+  if(!isLoggedIn && !user) {
+    return <Redirect href={"../"} />
+  }
 
   return (
     <SafeAreaView className="bg-primary mb-10" style={{ height }}>

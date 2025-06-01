@@ -4,6 +4,8 @@ import { CustomButton, FormField } from "@/components";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Link, Redirect, router } from "expo-router";
 import { useGlobalContext } from "@/context/GlobalContext";
+import { loginUser } from "@/lib/firebase";
+import axios from "axios";
 
 const Signin = () => {
   const { isLoggedIn, isLoading, setIsLoggedIn, setUser } = useGlobalContext();
@@ -15,8 +17,6 @@ const Signin = () => {
   });
   
   const handleLogin = async () => {
-    router.replace("../(tabs)/home"); // Redirect to home before login to avoid flicker
-    return 
     if (!form.email || !form.password) {
       Alert.alert("Error", "Please enter both email and password");
       return;
@@ -24,6 +24,17 @@ const Signin = () => {
     
     setLoading(true);
     try {
+
+      const response = await loginUser(form.email, form.password);
+
+      if (response) {
+        setUser(response);
+        setIsLoggedIn(true);
+        Alert.alert("Success", "You have successfully logged in!");
+        router.push("../(tabs)/home");
+      } else {
+        Alert.alert("Error", "Login failed. Please check your credentials.");
+      }
       
     } catch (error: any) {
       Alert.alert(
@@ -38,7 +49,7 @@ const Signin = () => {
   // If already logged in, redirect to home
   // TODO: Change the Redirection
   if (!isLoading && isLoggedIn) {
-    return <Redirect href={"../(tabs)/summary"} />
+    return <Redirect href={"../(tabs)/home"} />
   }
 
   return (

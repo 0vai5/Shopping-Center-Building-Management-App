@@ -3,13 +3,14 @@ import React from "react";
 import { icons } from "@/constants";
 import { router } from "expo-router";
 import { useGlobalContext } from "@/context/GlobalContext";
+import { logoutUser } from "@/lib/firebase";
 
 const Header = () => {
   const { user, setUser, setIsLoggedIn } = useGlobalContext();
 
   const handleLogout = async () => {
-    // Add your logout logic here
-   console.log("Logging out...");
+
+    const response = await logoutUser();
     setUser(null);
     setIsLoggedIn(false);
     router.push("../(auth)/signin");
@@ -21,7 +22,7 @@ const Header = () => {
           Hey There! 👋
         </Text>
         <Text className="font-ssemibold text-2xl text-secondary-saturated">
-          {user?.name}{" "}
+          {user?.name || "User"}
         </Text>
       </View>
       <View>
