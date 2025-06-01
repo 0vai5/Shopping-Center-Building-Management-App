@@ -9,6 +9,8 @@ import ExpenseRoutes from "./routes/expenseRoutes";
 import ExpenseSlipRoutes from "./routes/expenseSlipRoutes";
 import MaintenanceSlipRoutes from "./routes/maintenanceSlipRoutes";
 import generationRoutes from "./routes/generationRoutes";
+import statsRoutes from "./routes/statsRoutes";
+import summaryRoutes from "./routes/summaryRoutes";
 
 dotenv.config();
 connectDB();
@@ -32,6 +34,8 @@ app.use("/api/v1/expenses", ExpenseRoutes)
 app.use("/api/v1/expensesslip", ExpenseSlipRoutes)
 app.use("/api/v1/maintenanceslip", MaintenanceSlipRoutes)
 app.use("/api/v1/generation", generationRoutes);
+app.use("/api/v1/stats", statsRoutes);
+app.use("/api/v1/summary", summaryRoutes);
 
 app.get("/", (req: Request, res: Response) => {
   res.send("Hello, World!");
