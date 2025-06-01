@@ -18,42 +18,36 @@ import {
 import { ProgressSummary } from "@/components";
 import { useWindowDimensions } from "react-native";
 import { StatsData } from "@/types";
-import useAppwrite from "@/hooks/useAppwrite";
 import { useGlobalContext } from "@/context/GlobalContext";
+import axios from "axios";
 const home = () => {
   const { height } = useWindowDimensions();
   const { setStatusUpdate, statusUpdate } = useGlobalContext();
-  const { getExpenseSlips, getMaintenancesSlips, getMonthlyStats } =
-    useAppwrite();
   const [maintenanceSlips, setMaintenanceSlips] = useState<any>([]);
   const [expenseSlips, setExpenseSlips] = useState<any>([]);
   const [stats, setStats] = useState<StatsData | any>({
-    total: 0,
-    maintenancePaid: 0,
-    expensesCleared: 0,
-    openingAmount: 0,
-    month: "",
+    expenseSlipsPaid: {
+      paidDocuments: 0,
+      percentagePaid: 0,
+      totalDocuments: 0,
+    },
+    maintenanceSlipsPaid: {
+      _id: null,
+      paid: 0,
+      percentagePaid: 0,
+      total: 0,
+    },
   });
+
+  const month = new Date().toLocaleString("default", {
+    month: "long",
+  });
+  const year = new Date().getFullYear();
+
   const [refreshing, setRefreshing] = useState(false);
 
   const fetchStats = async () => {
-    try {
-      const response = await getMonthlyStats();
-      if (response) {
-        setStats(response);
-      } else {
-        // Set default values if response is undefined
-        setStats({
-          total: 0,
-          maintenancePaid: 0,
-          expensesCleared: 0,
-          openingAmount: 0,
-          month: "",
-        });
-      }
-    } catch (error: any) {
-      Alert.alert("Error Occured", error.message);
-    }
+   console.log("Fetching stats...");
   };
 
   const onRefresh = async () => {
@@ -65,28 +59,16 @@ const home = () => {
   };
 
   const fetchExpenseSlips = async () => {
-    try {
-      const response = await getExpenseSlips();
-
-      setExpenseSlips(response);
-    } catch (error) {
-      Alert.alert("Error Occured", "Error Fetching Expense Slips");
-    }
+  console.log("Fetching expense slips...");
   };
   const fetchMaintenanceSlips = async () => {
-    try {
-      const response = await getMaintenancesSlips();
-
-      setMaintenanceSlips(response);
-    } catch (error) {
-      Alert.alert("Error Occured", "Error Fetching Maintenance Slips");
-    }
+    console.log("Fetching maintenance slips...");
   };
 
   useEffect(() => {
+    fetchStats();
     fetchExpenseSlips();
     fetchMaintenanceSlips();
-    fetchStats();
   }, [statusUpdate]);
 
   return (
@@ -106,20 +88,20 @@ const home = () => {
           <Header />
         </View>
         <View>
-          <SummaryCard amount={stats.total} month={stats.month} />
+          <SummaryCard amount={stats.maintenanceSlipsPaid.paid} month={`${month} ${year}`} />
         </View>
 
         <View className="flex flex-row justify-between gap-2 w-full p-6">
           <View className="flex-1">
             <ProgressSummary
               title={"Maintenance Received"}
-              progress={stats.maintenancePaid}
+              progress={stats.maintenanceSlipsPaid.percentagePaid}
             />
           </View>
           <View className="flex-1">
             <ProgressSummary
               title={"Expenses Cleared"}
-              progress={stats.expensesCleared}
+              progress={stats.expenseSlipsPaid.percentagePaid}
             />
           </View>
         </View>

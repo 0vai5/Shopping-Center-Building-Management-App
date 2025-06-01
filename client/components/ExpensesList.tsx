@@ -16,7 +16,6 @@ import {
   BottomSheetView,
 } from "@gorhom/bottom-sheet";
 import CustomBottomSheetModal from "./CustomBottomSheetModal";
-import useAppwrite from "@/hooks/useAppwrite";
 import { useGlobalContext } from "@/context/GlobalContext";
 
 // FIXME: Fix the Types after the Appwrite Integration
@@ -37,7 +36,7 @@ const ExpenseList = ({ expenseSlips }: { expenseSlips: any }) => {
         renderItem={(expense) => <ExpenseCardHome item={expense.item} />}
         horizontal
         showsHorizontalScrollIndicator={false}
-        keyExtractor={(expense) => expense.$id.toString()}
+        keyExtractor={(expense) => expense._id}
       />
     </View>
   );
@@ -50,21 +49,10 @@ const ExpenseCardHome: React.FC<ExpenseCardHomeProps> = ({ item }) => {
   const statusColor = item.status === "pending" ? "bg-red-600" : "bg-green-600";
   const [variableValue, setVariableValue] = useState("");
   const { setStatusUpdate, statusUpdate } = useGlobalContext();
-  const { updateExpenseSlip } = useAppwrite();
 
   const handleStatusUpdate = async () => {
     try {
-      if (item.variable) {
-        const amount = parseInt(variableValue);
-        if ((isNaN(amount) || amount <= 0) && item.status == "pending") {
-          Alert.alert("Invalid Amount", "Please enter a valid amount.");
-          return;
-        }
-        const response = await updateExpenseSlip(item.$id, item.status, amount);
-      } else {
-        const response = await updateExpenseSlip(item.$id, item.status);
-
-      }
+      console.log("Updating status for:", item._id);
 
     } catch (error) {
       Alert.alert("Error", "Something went wrong. Please try again later.");
@@ -79,10 +67,10 @@ const ExpenseCardHome: React.FC<ExpenseCardHomeProps> = ({ item }) => {
         <View className="flex justify-between gap-10 flex-row">
           <View>
             <Text className="text-white font-ssemibold text-2xl">
-              {item.expense}
+              {item.name}
             </Text>
             <Text className="text-gray-300 font-sregular text-l">
-              {item.name}
+              {item.payee}
             </Text>
             <View
               className={`${statusColor} flex justify-center items-center rounded-full px-3 py-1 mt-2`}
@@ -99,7 +87,7 @@ const ExpenseCardHome: React.FC<ExpenseCardHomeProps> = ({ item }) => {
               <Image
                 source={icons.menu}
                 className="h-[24px]"
-                tintColor={"#5889ec"}
+                tintColor={"#f7bc63"}
               />
             </TouchableOpacity>
           </View>
@@ -110,7 +98,7 @@ const ExpenseCardHome: React.FC<ExpenseCardHomeProps> = ({ item }) => {
             <Image
               source={icons.dollar}
               resizeMode="contain"
-              tintColor={"#5889ec"}
+              tintColor={"#f7bc63"}
             />
             <Text className="text-gray-300 font-smedium text-lg">
               {item.amount || "Variable"} /-
@@ -126,10 +114,10 @@ const ExpenseCardHome: React.FC<ExpenseCardHomeProps> = ({ item }) => {
           </Text>
           <BottomSheetView className="p-6 mt-3">
             <Text className="text-gray-300 font-smedium text-lg">
-              {item.expense}
+              {item.name}
             </Text>
             <Text className="text-gray-300 font-smedium text-lg">
-              {item.name}
+              {item.payee}
             </Text>
 
             {!item.variable && (

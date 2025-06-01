@@ -45,9 +45,36 @@ const expenseSlipController = {
   },
   async getExpenseSlips(req: Request, res: Response) {
     try {
-      const expenseSlips = await ExpenseSlip.find({
-        month,
-      }).populate("expense_id");
+      const expenseSlips = await ExpenseSlip.aggregate([
+        {
+          $match: {
+            month,
+          }
+        },
+        {
+          $lookup: {
+            from : "expenses",
+            localField: "expense_id",
+            foreignField: "_id",
+            as: "expense"
+          }
+        },
+        {
+          $unwind: "$expense"
+        },
+        {
+          $project: {
+            _id: 1,
+            month: 1,
+            status: 1,
+            payee: "$expense.payee",
+            amount: "$expense.amount",
+            variable: "$expense.variable",
+            this_month: "$expense.this_month",
+            name: "$expense.expense_name",
+          }
+        }
+      ]);
 
       if (!expenseSlips || expenseSlips.length === 0) {
         throw new CustomError("No expense slips found for this month", 404);

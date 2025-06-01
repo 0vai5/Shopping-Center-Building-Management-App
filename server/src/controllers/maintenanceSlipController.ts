@@ -9,9 +9,38 @@ const month = getMonth("current");
 const maintenanceSlipController = {
   async getMaintenanceSlips(req: Request, res: Response) {
     try {
-      const MaintenanceSlips = await MaintenanceSlip.find({ month }).populate(
-        "flat_id"
-      );
+      const MaintenanceSlips = await MaintenanceSlip.aggregate([
+        {
+          $match: {
+            month
+          }
+        },
+        {
+          $lookup: {
+            from: "flats",
+            localField: "flat_id",
+            foreignField: "_id",
+            as: "flat"
+          }
+        },
+        {
+          $unwind: "$flat"
+        },
+        {
+          $project: {
+            _id: 1,
+            month: 1,
+            status: 1,
+            owner_name: "$flat.owner_name",
+            flat_number: "$flat.flat_number",
+            flat_id: "$flat._id",
+            createdAt: 1,
+            updatedAt: 1,
+            rooms: "$flat.rooms",
+            maintenance: "$flat.maintenance",
+          }
+        }
+      ])
 
       if (!MaintenanceSlips || MaintenanceSlips.length === 0) {
         throw new CustomError("No maintenance slips found for this month", 404);

@@ -1,4 +1,3 @@
-import useAppwrite from "@/hooks/useAppwrite";
 import { GlobalContextProviderProps, GlobalContextType } from "@/types";
 import React, { createContext, useEffect, useState, useContext } from "react";
 
@@ -17,21 +16,12 @@ const GlobalProvider: React.FC<GlobalContextProviderProps> = ({ children }) => {
   const [user, setUser] = useState<any>(null);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [statusUpdate, setStatusUpdate] = useState<boolean>(false);
-  const { getCurrentUser } = useAppwrite();
 
   useEffect(() => {
     const checkAuthStatus = async () => {
       setIsLoading(true);
       try {
-        const userData = await getCurrentUser();
-        
-        if (userData) {
-          setIsLoggedIn(true);
-          setUser(userData);
-        } else {
-          setIsLoggedIn(false);
-          setUser(null);
-        }
+       console.log("Checking authentication status...");
       } catch (error) {
         console.error("Auth check error:", error);
         setIsLoggedIn(false);

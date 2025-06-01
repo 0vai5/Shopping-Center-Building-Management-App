@@ -12,11 +12,11 @@ import { MaintenanceCardProps } from "@/types";
 import { icons } from "@/constants";
 import { CustomBottomSheetModal } from "@/components";
 import { BottomSheetModal, BottomSheetView } from "@gorhom/bottom-sheet";
-import useAppwrite from "@/hooks/useAppwrite";
 import { useGlobalContext } from "@/context/GlobalContext";
 import { generateHTML } from "@/utils/htmlGenerator";
 import { printToFileAsync } from "expo-print"; // Fixed import
 import { shareAsync } from "expo-sharing";
+import axios from "axios";
 
 // FIXME: Fix the Types after the Appwrite Integration
 // FIXME: When the status is updated there should be somthing that changes the button color in the bottom sheet.
@@ -39,7 +39,7 @@ const MaintenanceList = ({ maintenanceSlips }: { maintenanceSlips: any }) => {
         )}
         horizontal
         showsHorizontalScrollIndicator={false}
-        keyExtractor={(item: any) => item.$id.toString()}
+        keyExtractor={(item: any) => item._id}
       />
     </View>
   );
@@ -50,7 +50,6 @@ const MaintenanceCard: React.FC<MaintenanceCardProps> = ({ item }) => {
   const cardHeight = screenHeight * 0.4;
   const statusColor = item.status === "pending" ? "bg-red-600" : "bg-green-600";
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
-  const { updateMaintenaceSlip } = useAppwrite();
   const { setStatusUpdate, statusUpdate } = useGlobalContext();
 
   const totalDues = JSON.parse(item.dues || "[]").reduce(
@@ -84,7 +83,12 @@ const MaintenanceCard: React.FC<MaintenanceCardProps> = ({ item }) => {
 
   const handleStatusUpdate = async () => {
     try {
-      const response = await updateMaintenaceSlip(item.$id, item.status);
+      const { data } = await axios.post(
+        `http://localhost:5000/api/v1/maintenanceslip/update-maintenance-slip/${item._id}`,
+        {
+          status: item.status === "pending" ? "paid" : "pending",
+        }
+      );
     } catch (error: any) {
       Alert.alert("Error occurred", error.message);
     } finally {
@@ -99,15 +103,15 @@ const MaintenanceCard: React.FC<MaintenanceCardProps> = ({ item }) => {
             <View className="flex-row justify-bewteen items-center gap-2">
               <Image
                 source={icons.house}
-                tintColor={"#5889ec"}
+                tintColor={"#f7bc63"}
                 resizeMode="contain"
               />
               <Text className="text-white font-ssemibold text-xl relative">
-                {item.flatNumber}
+                {item.flat_number}
               </Text>
             </View>
             <Text className="text-gray-300 font-sregular text-lg">
-              Slip No. {item.slipNo}
+              Slip No. {item.slip_number}
             </Text>
             <Text className="text-gray-300 font-sregular text-lg">
               Month of {item.month}
@@ -128,7 +132,7 @@ const MaintenanceCard: React.FC<MaintenanceCardProps> = ({ item }) => {
               <Image
                 source={icons.menu}
                 className="h-[24px]"
-                tintColor={"#5889ec"}
+                tintColor={"#f7bc63"}
               />
             </TouchableOpacity>
           </View>
@@ -137,18 +141,18 @@ const MaintenanceCard: React.FC<MaintenanceCardProps> = ({ item }) => {
         <View className="flex justify-between gap-10 flex-row mt-4">
           <View>
             <Text className="text-white font-smedium text-xl">
-              {item.ownerName}
+              {item.owner_name}
             </Text>
             <View className="flex-row gap-2">
-              <Image source={icons.phone} tintColor={"#72BF78"} />
+              <Image source={icons.phone} tintColor={"#f7bc63"} />
               <Text className="text-gray-300 font-sregular text-lg">
-                {item.ownerNo}
+                {item.owner_phone || "N/A"}
               </Text>
             </View>
           </View>
           <View className="items-start">
             <View className="flex-row gap-2">
-              <Image source={icons.rooms} tintColor={"#5889ec"} />
+              <Image source={icons.rooms} tintColor={"#f7bc63"} />
               <Text className="text-white font-sregular text-xl">
                 {item.rooms}
               </Text>
@@ -157,7 +161,7 @@ const MaintenanceCard: React.FC<MaintenanceCardProps> = ({ item }) => {
               <Image
                 source={icons.dollar}
                 resizeMode="contain"
-                tintColor={"#5889ec"}
+                tintColor={"#f7bc63"}
               />
               <Text className="text-gray-300 font-smedium text-lg">
                 {item.maintenance * item.rooms + totalDues} /-
@@ -177,15 +181,15 @@ const MaintenanceCard: React.FC<MaintenanceCardProps> = ({ item }) => {
               <View className="flex-row justify-bewteen items-center gap-2">
                 <Image
                   source={icons.house}
-                  tintColor={"#5889ec"}
+                  tintColor={"#f7bc63"}
                   resizeMode="contain"
                 />
                 <Text className="text-white font-ssemibold text-xl relative">
-                  {item.flatNumber}
+                  {item.flat_number}
                 </Text>
               </View>
               <Text className="text-gray-300 font-sregular text-lg">
-                Slip No. {item.slipNo}
+                Slip No. {item.slip_number}
               </Text>
               <Text className="text-gray-300 font-sregular text-lg">
                 Month of {item.month}
@@ -196,14 +200,14 @@ const MaintenanceCard: React.FC<MaintenanceCardProps> = ({ item }) => {
                 <Image
                   source={icons.dollar}
                   resizeMode="contain"
-                  tintColor={"#5889ec"}
+                  tintColor={"#f7bc63"}
                 />
                 <Text className="text-gray-300 font-smedium text-lg">
                   {item.maintenance * item.rooms + totalDues} /-
                 </Text>
               </View>
               <View className="flex-row items-center justify-center gap-2">
-                <Image source={icons.rooms} tintColor={"#5889ec"} />
+                <Image source={icons.rooms} tintColor={"#f7bc63"} />
                 <Text className="text-white font-sregular text-xl">
                   {item.rooms}
                 </Text>
@@ -212,32 +216,34 @@ const MaintenanceCard: React.FC<MaintenanceCardProps> = ({ item }) => {
           </View>
         </BottomSheetView>
         <BottomSheetView className="px-6">
-          <Text className="text-white font-ssemibold text-2xl mb-4">
-            Dues Details
-          </Text>
           {dues.length > 0 &&
             dues.map((due: any) => (
-              <BottomSheetView key={due.month} className="p-5">
-                <View className="flex-row gap-10 justify-between items-center">
-                  <View>
-                    <Text className="text-gray-300 font-sregular text-lg">
-                      Month of {due.month}
-                    </Text>
-                  </View>
-                  <View className="items-start">
-                    <View className="flex-row gap-2">
-                      <Image
-                        source={icons.dollar}
-                        resizeMode="contain"
-                        tintColor={"#5889ec"}
-                      />
-                      <Text className="text-gray-300 font-smedium text-lg">
-                        {due.maintenance * item.rooms} /-
+              <>
+                <Text className="text-white font-ssemibold text-2xl mb-4">
+                  Dues Details
+                </Text>
+                <BottomSheetView key={due.month} className="p-5">
+                  <View className="flex-row gap-10 justify-between items-center">
+                    <View>
+                      <Text className="text-gray-300 font-sregular text-lg">
+                        Month of {due.month}
                       </Text>
                     </View>
+                    <View className="items-start">
+                      <View className="flex-row gap-2">
+                        <Image
+                          source={icons.dollar}
+                          resizeMode="contain"
+                          tintColor={"#f7bc63"}
+                        />
+                        <Text className="text-gray-300 font-smedium text-lg">
+                          {due.maintenance * item.rooms} /-
+                        </Text>
+                      </View>
+                    </View>
                   </View>
-                </View>
-              </BottomSheetView>
+                </BottomSheetView>
+              </>
             ))}
         </BottomSheetView>
 

@@ -20,13 +20,11 @@ import {
   BottomSheetTextInput,
   BottomSheetView,
 } from "@gorhom/bottom-sheet";
-import useAppwrite from "@/hooks/useAppwrite";
 import { router } from "expo-router";
 
 const flats = () => {
   const { height } = useWindowDimensions();
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
-  const { createFlat, getFlats } = useAppwrite();
   const [creating, setCreating] = useState(false);
   const [flatData, setFlatData] = useState<any>([]);
   const [flatForm, setFlatForm] = useState({
@@ -38,39 +36,10 @@ const flats = () => {
   const [refreshing, setRefreshing] = useState(false);
 
   const handleFlatCreation = async () => {
-    setCreating(true);
-
-    try {
-      const response = await createFlat(flatForm);
-
-      if (response) {
-        Alert.alert("Success", "Flat created successfully");
-      }
-
-      bottomSheetModalRef.current?.close();
-      router.push("./flats");
-      fetchFlats();
-    } catch (error: any) {
-      Alert.alert("Error", error.message);
-    } finally {
-      setCreating(false);
-      setFlatForm({
-        flatNumber: "",
-        rooms: "",
-        ownerName: "",
-        ownerNo: "",
-      });
-    }
+   console.log("Creating flat...");
   };
   const fetchFlats = async () => {
-    try {
-      const response = await getFlats();
-      setFlatData(response);
-    } catch (error: any) {
-      Alert.alert("Error", error.message);
-    } finally {
-      setCreating(false);
-    }
+    console.log("Fetching flats...");
   };
 
   const onRefresh = async () => {

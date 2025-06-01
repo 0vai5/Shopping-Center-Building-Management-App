@@ -9,7 +9,6 @@ import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { CustomButton, DataTable } from "@/components";
-import useAppwrite from "@/hooks/useAppwrite";
 import { generateTableHTML } from "@/utils/summaryHtmlGenerator.js";
 import { printAsync, printToFileAsync } from "expo-print";
 import { shareAsync } from "expo-sharing";
@@ -22,7 +21,6 @@ const summary = () => {
   const [isToDatePickerVisible, setToDatePickerVisibility] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [summaryData, setSummaryData] = useState<any>([]);
-  const { getSummary } = useAppwrite();
   const [search, setSearch] = useState({
     fromDate: "",
     toDate: "",
@@ -46,48 +44,7 @@ const summary = () => {
   }, []);
 
   const searchHandler = async () => {
-    try {
-      const fromDateObj = new Date(fromDate);
-      const toDateObj = new Date(toDate);
-
-      fromDateObj.setHours(0, 0, 0, 0);
-      toDateObj.setHours(23, 59, 59, 999);
-
-      const summaryResult = await getSummary(fromDateObj, toDateObj);
-      if (summaryResult) {
-        const formattedData = [
-          ...summaryResult.credit.map((item: any) => {
-            let dueAmount = 0;
-            if (item.dues && item.dues.length > 0) {
-              dueAmount = item.dues.reduce((acc: number, due: any) => {
-                return acc + (due.maintenance * item.rooms);
-              }, 0)
-            }
-            
-            return {
-              id: item.$id,
-              title: `Maintenance - Flat ${item.flatNumber}`,
-              credit: (item.maintenance * item.rooms) + dueAmount,
-              debit: 0,
-              hasDues: item.dues && item.dues.length > 0,
-            };
-          }),
-          ...summaryResult.debit.map((item: any) => ({
-            id: item.$id,
-            title: item.expense,
-            credit: 0,
-            debit: item.amount || 0,
-          })),
-        ];
-
-        setSummaryData(formattedData);
-      } else {
-        setSummaryData([]);
-      }
-    } catch (error) {
-      console.error("Error fetching summary:", error);
-      setSummaryData([]);
-    }
+    console.log("Searching for summary data...");
   };
 
   const onRefresh = async () => {

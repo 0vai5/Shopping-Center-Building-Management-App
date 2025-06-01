@@ -1,10 +1,10 @@
 export const generateHTML = (data) => {
-  const { ownerName, ownerNo, flatNumber, slipNo, maintenance, $updatedAt, rooms, dues, month } = data;
+  const { owner_name, owner_phone, flat_number, slip_number, maintenance, updated_at, rooms, dues, month } = data;
   const buildingName = "Dhoraji Housing Relief Trust";
   const subTitle = "Mohallah Committee Shopping Centre";
   const totalDues = dues.reduce((sum, due) => sum + (due.maintenance * rooms), 0);
   const total = maintenance * rooms + totalDues;
-    const date = new Date($updatedAt).toLocaleDateString();
+    const date = new Date(updated_at).toLocaleDateString();
   const htmlContent = `
     <html>
     <head>
@@ -77,11 +77,11 @@ export const generateHTML = (data) => {
           <h2>${subTitle}</h2>
         </div>
         <div class="details">
-          <p><strong>No.:</strong> ${slipNo}</p>
-          <p><strong>Flat No.:</strong> ${flatNumber}</p>
+          <p><strong>No.:</strong> ${slip_number}</p>
+          <p><strong>Flat No.:</strong> ${flat_number}</p>
           <p><strong>Total Rooms:</strong> ${rooms}</p>
           <p><strong>Date:</strong> ${date}</p>
-          <p><strong>Received from Mr./Mrs.:</strong> ${ownerName}</p>
+          <p><strong>Received from Mr./Mrs.:</strong> ${owner_name}</p>
         </div>
         <div class="table-container">
           <table>

@@ -24,6 +24,7 @@ const ProgressSummary: React.FC<ProgressSummaryProps> = ({
           borderRadius={7}
           unfilledColor={"#161616"}
           borderColor={"#161616"}
+          color={"#f7bc63"}
           animated={true}
         />
       </View>

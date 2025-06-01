@@ -3,15 +3,13 @@ import React from "react";
 import { icons } from "@/constants";
 import { router } from "expo-router";
 import { useGlobalContext } from "@/context/GlobalContext";
-import useAppwrite from "@/hooks/useAppwrite";
 
 const Header = () => {
   const { user, setUser, setIsLoggedIn } = useGlobalContext();
-  const { logoutUser } = useAppwrite();
 
   const handleLogout = async () => {
     // Add your logout logic here
-    await logoutUser();
+   console.log("Logging out...");
     setUser(null);
     setIsLoggedIn(false);
     router.push("../(auth)/signin");
@@ -32,7 +30,7 @@ const Header = () => {
             source={icons.logout}
             className="h-[24px]"
             resizeMode="contain"
-            tintColor={"#4583FF"}
+            tintColor={"#f7bc63"}
           />
         </TouchableOpacity>
       </View>

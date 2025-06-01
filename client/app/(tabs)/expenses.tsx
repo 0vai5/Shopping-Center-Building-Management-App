@@ -21,13 +21,11 @@ import {
   BottomSheetTextInput,
   BottomSheetView,
 } from "@gorhom/bottom-sheet";
-import useAppwrite from "@/hooks/useAppwrite";
 import { router } from "expo-router";
 
 const expenses = () => {
   const { height } = useWindowDimensions();
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
-  const { createExpense, getExpenses } = useAppwrite();
   const [creating, setCreating] = useState(false);
   const [expenseForm, setExpenseForm] = useState({
     variable: false,
@@ -41,34 +39,10 @@ const expenses = () => {
   const [refreshing, setRefreshing] = useState(false);
 
   const handleExpenseCreation = async () => {
-    setCreating(true);
-    try {
-      const response = await createExpense(expenseForm);
-
-      bottomSheetModalRef.current?.close();
-      router.push("./expenses");
-      fetchExpenses();
-    } catch (error: any) {
-      Alert.alert("Error", error.message);
-    } finally {
-      setCreating(false);
-      setExpenseForm({
-        variable: false,
-        expense: "",
-        name: "",
-        amount: "",
-        thisMonth: false,
-      });
-    }
+    console.log("Creating Expense", expenseForm);
   };
   const fetchExpenses = async () => {
-    try {
-      const response = await getExpenses();
-
-      setExpenseData(response);
-    } catch (error: any) {
-      Alert.alert("Error Occured", error.message);
-    }
+   console.log("Fetching expenses...");
   };
 
   const onRefresh = async () => {
