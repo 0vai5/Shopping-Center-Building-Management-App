@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "412648734526",
+    "project_id": "shopping-center-building",
+    "storage_bucket": "shopping-center-building.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:412648734526:android:4540cc57ba53589504b66f",
+        "android_client_info": {
+          "package_name": "com.btlnt.shoppingcenter"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyATsoK4h3zUUU41B8iU60SqP3lZuOGNbXU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

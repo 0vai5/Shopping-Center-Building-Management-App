@@ -4,7 +4,6 @@ import { CustomButton, FormField } from "@/components";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Link, Redirect, router } from "expo-router";
 import { useGlobalContext } from "@/context/GlobalContext";
-import { loginUser } from "@/lib/firebase";
 import axios from "axios";
 
 const Signin = () => {
@@ -15,41 +14,31 @@ const Signin = () => {
     email: "",
     password: "",
   });
-  
+
   const handleLogin = async () => {
     if (!form.email || !form.password) {
       Alert.alert("Error", "Please enter both email and password");
       return;
     }
-    
+
     setLoading(true);
     try {
-
-      const response = await loginUser(form.email, form.password);
-
-      if (response) {
-        setUser(response);
-        setIsLoggedIn(true);
-        Alert.alert("Success", "You have successfully logged in!");
-        router.push("../(tabs)/home");
-      } else {
-        Alert.alert("Error", "Login failed. Please check your credentials.");
-      }
-      
+      console.log("Logging in with:", form);
     } catch (error: any) {
       Alert.alert(
-        "Login Failed", 
-        error.message || "An error occurred during login. Please check your credentials and try again."
+        "Login Failed",
+        error.message ||
+          "An error occurred during login. Please check your credentials and try again."
       );
     } finally {
       setLoading(false);
     }
   };
-  
+
   // If already logged in, redirect to home
   // TODO: Change the Redirection
   if (!isLoading && isLoggedIn) {
-    return <Redirect href={"../(tabs)/home"} />
+    return <Redirect href={"../(tabs)/home"} />;
   }
 
   return (

@@ -22,6 +22,7 @@
         "resizeMode": "contain",
         "backgroundColor": "#000"
       },
+      "googleServicesFile": "./google-services.json",
       "package": "com.btlnt.shoppingcenter"
     },
     "web": {
@@ -31,6 +32,8 @@
     },
     "plugins": [
       "expo-router",
+      "@react-native-firebase/app",
+      "@react-native-firebase/auth",
       [
         "expo-splash-screen",
         {
