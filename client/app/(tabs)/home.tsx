@@ -29,15 +29,16 @@ const home = () => {
   const [expenseSlips, setExpenseSlips] = useState<any>([]);
   const [stats, setStats] = useState<StatsData | any>({
     expenseSlipsPaid: {
-      paidDocuments: 0,
+      total: 0,
       percentagePaid: 0,
-      totalDocuments: 0,
+      paid: 0,
+      amountPaid: 0
     },
     maintenanceSlipsPaid: {
       _id: null,
-      paid: 0,
+      totalDocuements: 0,
       percentagePaid: 0,
-      total: 0,
+      paidDocuments: 0,
     },
   });
 
@@ -49,7 +50,15 @@ const home = () => {
   const [refreshing, setRefreshing] = useState(false);
 
   const fetchStats = async () => {
-   console.log("Fetching stats...");
+   try {
+    const {data} = await axios.get(`${process.env.EXPO_PUBLIC_SERVER_URL}/stats/monthly`);
+
+    console.log("Fetched stats:", data.data);
+    setStats(data.data);
+   } catch (error: any) {
+    Alert.alert("Error", error.message || "Failed to fetch stats");
+    console.error("Error fetching stats:", error.message);
+   }
   };
 
   const onRefresh = async () => {
@@ -61,10 +70,24 @@ const home = () => {
   };
 
   const fetchExpenseSlips = async () => {
-  console.log("Fetching expense slips...");
+    try {
+      const { data } = await axios.get(`${process.env.EXPO_PUBLIC_SERVER_URL}/expensesslip/get-expense-slips`);
+
+      setExpenseSlips(data.data);
+    } catch (error: any) {
+      Alert.alert("Error", error.message || "Failed to fetch expense slips");
+      console.error("Error fetching expense slips:", error);
+    }
   };
   const fetchMaintenanceSlips = async () => {
-    console.log("Fetching maintenance slips...");
+    try {
+      const { data } = await axios.get(`${process.env.EXPO_PUBLIC_SERVER_URL}/maintenanceslip/get-maintenance-slips`);
+
+      setMaintenanceSlips(data.data);
+    } catch (error: any) {
+      Alert.alert("Error", error.message || "Failed to fetch expense slips");
+      console.error("Error fetching expense slips:", error);
+    }
   };
 
   useEffect(() => {
@@ -94,7 +117,7 @@ const home = () => {
           <Header />
         </View>
         <View>
-          <SummaryCard amount={stats.maintenanceSlipsPaid.paid} month={`${month} ${year}`} />
+          <SummaryCard amount={stats.maintenanceSlipsPaid.amountPaid || 0} month={`${month} ${year}`} />
         </View>
 
         <View className="flex flex-row justify-between gap-2 w-full p-6">

@@ -10,58 +10,50 @@ const statsController = {
   async getMonthlyStats(req: Request, res: Response) {
     try {
       const maintenanceSlipsPaid = await MaintenanceSlip.aggregate([
-        // Step 1: Join flats
+        {
+          $match: {
+            month: currentMonth,
+            status: "paid",
+          },
+        },
         {
           $lookup: {
             from: "flats",
             localField: "flat_id",
             foreignField: "_id",
-            as: "flat",
+            as: "flatDetails",
           },
         },
         {
-          $unwind: "$flat",
+          $unwind: "$flatDetails",
         },
-        // Step 2: Add a computed field for maintenance * rooms
         {
-          $addFields: {
-            totalAmount: { $multiply: ["$flat.maintenance", "$flat.rooms"] },
-          },
-        },
-        // Step 3: Group to calculate total and paid total
-        {
-          $group: {
-            _id: null,
-            total: { $sum: "$totalAmount" },
-            paid: {
-              $sum: {
-                $cond: [
-                  {
-                    $and: [
-                      { $eq: ["$status", "paid"] },
-                      { $eq: ["$month", currentMonth] },
-                    ],
-                  },
-                  "$totalAmount",
-                  0,
-                ],
-              },
-            },
-          },
-        },
-        // Step 4: Add percentage field
-        {
-          $addFields: {
-            percentagePaid: {
-              $cond: [
-                { $gt: ["$total", 0] },
-                { $multiply: [{ $divide: ["$paid", "$total"] }, 100] },
-                0,
-              ],
-            },
+          $project: {
+            _id: 1,
+            month: 1,
+            status: 1,
+            maintenance: "$flatDetails.maintenance",
+            flat_number: "$flatDetails.flat_number",
+            flat_owner: "$flatDetails.flat_owner",
+            rooms: "$flatDetails.rooms",
+            dues: "$flatDetails.dues",
           },
         },
       ]);
+
+      const totalMaintenancePaid = maintenanceSlipsPaid.reduce((acc, slip) => {
+        const dues = JSON.parse(slip.dues || "[]");
+
+        if (dues.length > 0) {
+          const totalDues = dues.reduce((sum: number, dues: any) => {
+            return sum + dues.maintenance * slip.rooms;
+          });
+
+          return acc + totalDues + slip.maintenance * slip.rooms;
+        }
+
+        return acc + slip.maintenance * slip.rooms;
+      }, 0);
 
       const expenseSlipsPaid = await ExpenseSlip.aggregate([
         {
@@ -115,20 +107,32 @@ const statsController = {
         },
       ]);
 
-      return res.status(200).json(
-        new ApiResponse(200, "Monthly Stats Retrieved Successfully", {
-          maintenanceSlipsPaid: maintenanceSlipsPaid[0] || {
-            total: 0,
-            paid: 0,
-            percentagePaid: 0,
-          },
-          expenseSlipsPaid: expenseSlipsPaid[0] || {
-            totalDocuments: 0,
-            paidDocuments: 0,
-            percentagePaid: 0,
-          },
-        })
-      );
+      const responseData = {
+        maintenanceSlipsPaid: {
+          total: 11,
+          paid: maintenanceSlipsPaid.length,
+          percentagePaid:
+            maintenanceSlipsPaid.length > 0
+              ? (maintenanceSlipsPaid.length / 11) * 100
+              : 0,
+          amountPaid: totalMaintenancePaid,
+        },
+        expenseSlipsPaid: expenseSlipsPaid[0] || {
+          totalDocuments: 0,
+          paidDocuments: 0,
+          percentagePaid: 0,
+        },
+      };
+
+      return res
+        .status(200)
+        .json(
+          new ApiResponse(
+            200,
+            "Monthly Stats Retrieved Successfully",
+            responseData
+          )
+        );
     } catch (error: any) {
       return res
         .status(error.statusCode || 500)
