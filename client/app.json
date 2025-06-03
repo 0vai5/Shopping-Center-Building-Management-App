@@ -1,0 +1,58 @@
+{
+  "expo": {
+    "name": "Shopping Center Building Management App",
+    "slug": "Shopping-Center-Building-Management-App",
+    "version": "2.5.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/building-icon.png",
+    "scheme": "myapp",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "ios": {
+      "supportsTablet": true,
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/building-icon.png",
+        "backgroundColor": "#000"
+      },
+      "package": "com.btlnt.shoppingcenter"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/building-icon.png",
+        "resizeMode": "contain",
+        "backgroundColor": "#000"
+      },
+      "package": "com.btlnt.shoppingcenter"
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "static",
+      "favicon": "./assets/images/Building-Logo.png"
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/images/building-icon.png",
+          "imageWidth": 250,
+          "resizeMode": "contain",
+          "backgroundColor": "#000"
+        }
+      ],
+      "expo-font",
+      "expo-web-browser"
+    ],
+    "experiments": {
+      "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "d4deff52-4dce-4307-b8a3-311872a2c548"
+      }
+    }
+  }
+}

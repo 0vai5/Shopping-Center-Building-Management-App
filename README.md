@@ -24,3 +24,20 @@
 - **PDF Export**: Generate and share PDF reports for maintenance slips and summaries.
 - **Real-Time Updates**: Reflect changes in expenses and maintenance statuses instantly.
 - **Responsive Design**: Optimized for mobile devices with a clean and user-friendly interface.
+
+
+
+
+
+DONE:
+expenseController (editor,delete),
+flatsController (editor, delete),
+userController (delete, get, create)
+expenseController (delete),
+flatsController ( delete),
+expenseSlip (get)
+maintenanceController,(get)
+
+LEFT:
+GenerationController, (create)
+Migration from appwrite to server
