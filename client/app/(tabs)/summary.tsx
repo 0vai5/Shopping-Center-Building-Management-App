@@ -45,7 +45,11 @@ const summary = () => {
 
   const searchHandler = async () => {
     console.log("Searching for summary data...");
+    console.log("From Date:", fromDate);
+    console.log("To Date:", toDate);
   };
+
+  searchHandler()
 
   const onRefresh = async () => {
     setRefreshing(true);

@@ -3,14 +3,14 @@ import React from "react";
 import { icons } from "@/constants";
 import { router } from "expo-router";
 import { useGlobalContext } from "@/context/GlobalContext";
-import { logoutUser } from "@/lib/firebase";
 
 const Header = () => {
   const { user, setUser, setIsLoggedIn } = useGlobalContext();
 
   const handleLogout = async () => {
 
-    const response = await logoutUser();
+    // const response = await logoutUser();
+    console.log("Logging out user:", user?.email);
     setUser(null);
     setIsLoggedIn(false);
     router.push("../(auth)/signin");

@@ -11,7 +11,7 @@ const summaryController = {
     try {
       const { toDate, fromDate } = req.body;
 
-      // To and from dates are isoDateStrings
+      // To and from dates are like Tue Apr 01 2025
 
       if (!toDate || !fromDate) {
         return res
@@ -19,14 +19,19 @@ const summaryController = {
           .json(new ApiResponse(400, "Both toDate and fromDate are required"));
       }
 
+      // conversion to like db format
+
+      const toDateObj = new Date(toDate).toISOString();
+      const fromDateObj = new Date(fromDate).toISOString();
+
       const maintenanceSlips = await MaintenanceSlip.aggregate([
         {
           $match: {
             month: currentMonth,
-            status: "pending",
+            status: "paid",
             updated_at: {
-              $gte: new Date(fromDate),
-              $lte: new Date(toDate),
+              $gte: new Date(fromDateObj),
+              $lte: new Date(toDateObj),
             },
           },
         },
@@ -67,27 +72,28 @@ const summaryController = {
       ]);
 
       const debitAmount = maintenanceSlips.reduce((acc: number, slip: any) => {
-          const due = JSON.parse(slip.dues);
+        const due = JSON.parse(slip.dues);
         if (due && due.length > 0) {
           const dueAmount = due.reduce(
-            (sum: number, item: any) =>
-              sum + (slip.rooms * item.maintenance),
+            (sum: number, item: any) => sum + slip.rooms * item.maintenance,
             0
           );
 
           const slipAmount = slip.rooms * slip.maintenance;
           return acc + dueAmount + slipAmount;
         }
+
+        return acc + slip.rooms * slip.maintenance;
       }, 0);
 
       const expenseSlips = await ExpenseSlip.aggregate([
         {
           $match: {
             month: currentMonth,
-            status: "pending",
+            status: "paid",
             updated_at: {
-              $gte: new Date(fromDate),
-              $lte: new Date(toDate),
+              $gte: new Date(fromDateObj),
+              $lte: new Date(toDateObj),
             },
           },
         },
@@ -118,23 +124,24 @@ const summaryController = {
             credit: 1,
             payee: "$expense.payee",
             name: "$expense.expense_name",
+            amount: "$expense.amount",
           },
         },
       ]);
 
       const creditAmount = expenseSlips.reduce((acc: number, slip: any) => {
-        return acc + slip.expense.amount;
+        return acc + slip.amount;
       }, 0);
 
-      const totalAmount = debitAmount - creditAmount;
+      const totalAmount = debitAmount - (creditAmount || 0);
 
-      return res
-        .status(200)
-        .json(new ApiResponse(200, "Summary fetched Successfully", {
-            debit: maintenanceSlips,
-            credit: expenseSlips,
-            total: totalAmount,
-        }));
+      return res.status(200).json(
+        new ApiResponse(200, "Summary fetched Successfully", {
+          debit: maintenanceSlips,
+          credit: expenseSlips,
+          total: totalAmount,
+        })
+      );
     } catch (error: any) {
       return res
         .status(error.statusCode || 500)

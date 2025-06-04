@@ -75,8 +75,8 @@ const home = () => {
 
       setExpenseSlips(data.data);
     } catch (error: any) {
-      Alert.alert("Error", error.message || "Failed to fetch expense slips");
-      console.error("Error fetching expense slips:", error);
+      // Alert.alert("Error", error.message || "Failed to fetch expense slips");
+      console.error("Error fetching expense slips:", error.message);
     }
   };
   const fetchMaintenanceSlips = async () => {

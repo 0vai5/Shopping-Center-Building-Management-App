@@ -41,8 +41,7 @@ const flats = () => {
     if (
       !flatForm.flat_number ||
       !flatForm.rooms ||
-      !flatForm.owner_name ||
-      !flatForm.owner_phone
+      !flatForm.owner_name 
     ) {
       Alert.alert("Error", "Please fill all fields");
       return;

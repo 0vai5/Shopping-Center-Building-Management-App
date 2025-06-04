@@ -22,6 +22,7 @@ import {
   BottomSheetView,
 } from "@gorhom/bottom-sheet";
 import { router } from "expo-router";
+import axios from "axios";
 
 const expenses = () => {
   const { height } = useWindowDimensions();
@@ -42,7 +43,16 @@ const expenses = () => {
     console.log("Creating Expense", expenseForm);
   };
   const fetchExpenses = async () => {
-   console.log("Fetching expenses...");
+    try {
+      const { data } = await axios.get(
+        `${process.env.EXPO_PUBLIC_SERVER_URL}/expenses/expenses`
+      );
+
+      setExpenseData(data.data);
+    } catch (error: any) {
+      Alert.alert("Error", error.message || "Failed to fetch expenses");
+      console.error("Error fetching expenses:", error.message);
+    }
   };
 
   const onRefresh = async () => {
@@ -115,7 +125,7 @@ const expenses = () => {
                 renderItem={(expense) => <ExpenseCard item={expense.item} />}
                 horizontal
                 showsHorizontalScrollIndicator={false}
-                keyExtractor={(expense) => expense.$id.toString()}
+                keyExtractor={(expense) => expense._id}
               />
             </View>
           </View>
@@ -151,10 +161,10 @@ const expenses = () => {
             <View className="mb-5">
               <BouncyCheckbox
                 size={25}
-                fillColor="#5889ec"
+                fillColor="#f7bc63"
                 unFillColor="#FFFFFF"
                 text="This Month Only"
-                iconStyle={{ borderColor: "#5889ec" }}
+                iconStyle={{ borderColor: "#f7bc63" }}
                 innerIconStyle={{ borderWidth: 2 }}
                 textStyle={{
                   fontFamily: "JosefinSans-Regular",
@@ -168,10 +178,10 @@ const expenses = () => {
             <View className="mb-5">
               <BouncyCheckbox
                 size={25}
-                fillColor="#5889ec"
+                fillColor="#f7bc63"
                 unFillColor="#FFFFFF"
                 text="Variable"
-                iconStyle={{ borderColor: "#5889ec" }}
+                iconStyle={{ borderColor: "#f7bc63" }}
                 innerIconStyle={{ borderWidth: 2 }}
                 textStyle={{
                   fontFamily: "JosefinSans-Regular",
@@ -227,10 +237,10 @@ const ExpenseCard: React.FC<ExpenseCardProps> = ({ item }) => {
         <View className="flex justify-between gap-10 flex-row ">
           <View>
             <Text className="text-white font-ssemibold text-2xl">
-              {item.expense}
+              {item.expense_name}
             </Text>
             <Text className="text-gray-300 font-sregular text-l">
-              {item.name}
+              {item.payee}
             </Text>
           </View>
           <View>
@@ -240,7 +250,7 @@ const ExpenseCard: React.FC<ExpenseCardProps> = ({ item }) => {
               <Image
                 source={icons.menu}
                 className="h-[24px]"
-                tintColor={"#5889ec"}
+                tintColor={"#f7bc63"}
               />
             </TouchableOpacity>
           </View>
@@ -248,9 +258,16 @@ const ExpenseCard: React.FC<ExpenseCardProps> = ({ item }) => {
         <View className="w-[95%] mt-7 mx-auto border-b border-gray-700"></View>
         <View className="flex justify-between gap-10 flex-row mt-4">
           <View>
-            <Text className="text-gray-300 font-smedium text-lg">
-              {item.amount || "Variable"} /-
-            </Text>
+            <View className="flex-row justify-bewteen items-center gap-2">
+              <Image
+                source={icons.dollar}
+                tintColor={"#f7bc63"}
+                resizeMode="contain"
+              />
+              <Text className="text-gray-300 font-smedium text-lg">
+                {item.amount || "Variable"} /-
+              </Text>
+            </View>
           </View>
         </View>
       </View>
@@ -264,11 +281,11 @@ const ExpenseCard: React.FC<ExpenseCardProps> = ({ item }) => {
             <View className="flex-col items-start">
               <View className="flex-row justify-bewteen items-center gap-2">
                 <Text className="text-white font-ssemibold text-xl relative">
-                  {item.expense}
+                  {item.expense_name}
                 </Text>
               </View>
               <View className="flex-row items-center justify-center gap-2">
-                <Image source={icons.dollar} tintColor={"#5889ec"} />
+                <Image source={icons.dollar} tintColor={"#f7bc63"} />
                 <Text className="text-white font-sregular text-xl">
                   {item.amount || "Variable"}
                 </Text>
@@ -277,7 +294,7 @@ const ExpenseCard: React.FC<ExpenseCardProps> = ({ item }) => {
             <View className="items-start">
               <View className="flex-row gap-2">
                 <Text className="text-gray-300 font-smedium text-lg">
-                  {item.name}
+                  {item.payee}
                 </Text>
               </View>
             </View>

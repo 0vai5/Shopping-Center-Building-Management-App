@@ -4,7 +4,7 @@ import asyncHandler from "../utils/asyncHandler";
 
 const summaryRoutes = Router();
 
-summaryRoutes.get(
+summaryRoutes.post(
   "/summary",
   asyncHandler(summaryController.getSummary)
 );

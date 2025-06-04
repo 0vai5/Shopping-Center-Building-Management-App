@@ -16,14 +16,15 @@ const Signin = () => {
   });
 
   const handleLogin = async () => {
-    if (!form.email || !form.password) {
-      Alert.alert("Error", "Please enter both email and password");
-      return;
-    }
+    // if (!form.email || !form.password) {
+    //   Alert.alert("Error", "Please enter both email and password");
+    //   return;
+    // }
 
     setLoading(true);
     try {
       console.log("Logging in with:", form);
+      router.push("../(tabs)/home");
     } catch (error: any) {
       Alert.alert(
         "Login Failed",

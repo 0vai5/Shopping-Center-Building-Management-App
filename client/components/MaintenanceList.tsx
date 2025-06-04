@@ -84,7 +84,7 @@ const MaintenanceCard: React.FC<MaintenanceCardProps> = ({ item }) => {
   const handleStatusUpdate = async () => {
     try {
       const { data } = await axios.post(
-        `http://localhost:5000/api/v1/maintenanceslip/update-maintenance-slip/${item._id}`,
+        `${process.env.EXPO_PUBLIC_SERVER_URL}maintenanceslip/update-maintenance-slip/${item._id}`,
         {
           status: item.status === "pending" ? "paid" : "pending",
         }

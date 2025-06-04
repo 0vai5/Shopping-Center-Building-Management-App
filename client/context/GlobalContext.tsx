@@ -1,4 +1,3 @@
-import { getCurrentUser } from "@/lib/firebase";
 import { GlobalContextProviderProps, GlobalContextType } from "@/types";
 import React, { createContext, useEffect, useState, useContext } from "react";
 
@@ -22,15 +21,7 @@ const GlobalProvider: React.FC<GlobalContextProviderProps> = ({ children }) => {
     const checkAuthStatus = async () => {
       setIsLoading(true);
       try {
-        const user = await getCurrentUser();
-
-        if (user) {
-          setUser(user);
-          setIsLoggedIn(true);
-        } else {
-          setUser(null);
-          setIsLoggedIn(false);
-        }
+       console.log("Checking authentication status...");
 
       } catch (error) {
         console.error("Auth check error:", error);
