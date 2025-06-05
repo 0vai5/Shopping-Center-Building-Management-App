@@ -43,13 +43,6 @@ export interface ProgressSummaryProps {
   progress: number;
 }
 
-export interface StatsData {
-  month: string
-  total: number;
-  maintenancePaid: number;
-  expensesCleared: number;
-  openingAmount: number
-}
 
 export interface GlobalContextType {
   isLoading: boolean;
@@ -64,4 +57,12 @@ export interface GlobalContextType {
 
 export interface GlobalContextProviderProps {
   children: React.ReactNode;
+}
+
+export interface expense {
+  expenseName: string;
+  payee: string;
+  variable: boolean;
+  amount?: number;
+  thisMonth: boolean;
 }

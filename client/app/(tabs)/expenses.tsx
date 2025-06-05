@@ -30,18 +30,41 @@ const expenses = () => {
   const [creating, setCreating] = useState(false);
   const [expenseForm, setExpenseForm] = useState({
     variable: false,
-    expense: "",
-    name: "",
+    expenseName: "",
+    payee: "",
     amount: "",
     thisMonth: false,
   });
 
   const [expenseData, setExpenseData] = useState<any>([]);
   const [refreshing, setRefreshing] = useState(false);
-  const { getExpenses } = useAppwrite()
+  const { getExpenses, createExpense } = useAppwrite();
 
   const handleExpenseCreation = async () => {
-    console.log("Creating Expense", expenseForm);
+    try {
+      if (!expenseForm.expenseName || !expenseForm.payee) {
+        Alert.alert("Error", "Expense name and payee are required.");
+        return;
+      }
+
+      setCreating(true);
+      const response = await createExpense(expenseForm);
+      setCreating(false);
+      setExpenseForm({
+        variable: false,
+        expenseName: "",
+        payee: "",
+        amount: "",
+        thisMonth: false,
+      });
+
+      bottomSheetModalRef.current?.close();
+      Alert.alert("Success", "Expense created successfully!");
+      fetchExpenses();
+    } catch (error: any) {
+      Alert.alert("Error", error.message || "Failed to create expense");
+      console.error("Error creating expense:", error.message);
+    }
   };
   const fetchExpenses = async () => {
     try {
@@ -141,9 +164,9 @@ const expenses = () => {
               <Text className="text-white font-ssemibold text-lg">Expense</Text>
               <BottomSheetTextInput
                 className="px-2 py-3 border-secondary-saturated bg-white rounded-lg text-primary"
-                value={expenseForm.expense}
+                value={expenseForm.expenseName}
                 onChangeText={(e) =>
-                  setExpenseForm({ ...expenseForm, expense: e })
+                  setExpenseForm({ ...expenseForm, expenseName: e })
                 }
               />
             </View>
@@ -151,9 +174,9 @@ const expenses = () => {
               <Text className="text-white font-ssemibold text-lg">Name</Text>
               <BottomSheetTextInput
                 className="px-2 py-3 border-secondary-saturated bg-white rounded-lg text-primary"
-                value={expenseForm.name}
+                value={expenseForm.payee}
                 onChangeText={(e) =>
-                  setExpenseForm({ ...expenseForm, name: e })
+                  setExpenseForm({ ...expenseForm, payee: e })
                 }
               />
             </View>
