@@ -17,6 +17,8 @@ import {
 } from "@gorhom/bottom-sheet";
 import CustomBottomSheetModal from "./CustomBottomSheetModal";
 import { useGlobalContext } from "@/context/GlobalContext";
+import useAppwrite from "@/hooks/useAppwrite"
+import { ActivityIndicator } from "react-native-paper";
 
 // FIXME: Fix the Types after the Appwrite Integration
 // FIXME: When the status is updated there should be somthing that changes the button color in the bottom sheet.
@@ -47,15 +49,32 @@ const ExpenseCardHome: React.FC<ExpenseCardHomeProps> = ({ item }) => {
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
   const cardHeight = screenHeight * 0.4;
   const statusColor = item.status === "pending" ? "bg-red-600" : "bg-green-600";
+  const [isLoading, setIsLoading] = useState(false);
   const [variableValue, setVariableValue] = useState("");
+  const { updateExpenseSlip } = useAppwrite()
   const { setStatusUpdate, statusUpdate } = useGlobalContext();
 
   const handleStatusUpdate = async () => {
+    setIsLoading(true);
     try {
-     console.log("Updating status for:");
+      const status = item.status === "pending" ? "paid" : "pending"
+      const response = await updateExpenseSlip(
+        item.$id,
+        status,
+        variableValue !== "" ? Number(variableValue) : undefined
+      );
+
+      if (response) {
+        Alert.alert("Success", "Expense status updated successfully.");
+        bottomSheetModalRef.current?.close();
+      } else {
+        Alert.alert("Error", "Failed to update expense status.");
+      }
+
     } catch (error) {
       Alert.alert("Error", "Something went wrong. Please try again later.");
     } finally {
+      setIsLoading(false);
       setStatusUpdate(!statusUpdate);
     }
   };
@@ -100,7 +119,7 @@ const ExpenseCardHome: React.FC<ExpenseCardHomeProps> = ({ item }) => {
               tintColor={"#f7bc63"}
             />
             <Text className="text-gray-300 font-smedium text-lg">
-              {item.expense.amount || "Variable"} /-
+              {item.amount || "Variable"} /-
             </Text>
           </View>
         </View>
@@ -149,12 +168,14 @@ const ExpenseCardHome: React.FC<ExpenseCardHomeProps> = ({ item }) => {
           )}
           <BottomSheetView className="p-6 mt-3">
             <TouchableOpacity
-              className={`${statusColor} px-3 py-4 rounded-lg mb-4`}
+              className={`${statusColor} px-3 py-4 rounded-lg mb-4 flex-row items-center justify-center gap-2`}
               onPress={handleStatusUpdate}
+              disabled={isLoading}
             >
               <Text className="text-white text-center font-ssemibold text-xl">
                 {item.status.toUpperCase()}
               </Text>
+              {isLoading && <ActivityIndicator color="white" />}
             </TouchableOpacity>
           </BottomSheetView>
         </BottomSheetView>

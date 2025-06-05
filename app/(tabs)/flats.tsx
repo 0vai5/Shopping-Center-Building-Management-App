@@ -54,7 +54,7 @@ const flats = () => {
         ownerName: "",
         ownerPhone: "",
       });
-      bottomSheetModalRef.current?.dismiss();
+      bottomSheetModalRef.current?.close();
       fetchFlats();
     } catch (error: any) {
       setCreating(false);

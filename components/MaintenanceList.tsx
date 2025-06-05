@@ -7,7 +7,7 @@ import {
   Image,
   Alert,
 } from "react-native";
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { MaintenanceCardProps } from "@/types";
 import { icons } from "@/constants";
 import { CustomBottomSheetModal } from "@/components";
@@ -16,6 +16,8 @@ import { useGlobalContext } from "@/context/GlobalContext";
 import { generateHTML } from "@/utils/htmlGenerator";
 import { printToFileAsync } from "expo-print"; // Fixed import
 import { shareAsync } from "expo-sharing";
+import useAppwrite from "@/hooks/useAppwrite";
+import { ActivityIndicator } from "react-native-paper";
 
 // FIXME: Fix the Types after the Appwrite Integration
 // FIXME: When the status is updated there should be somthing that changes the button color in the bottom sheet.
@@ -38,7 +40,7 @@ const MaintenanceList = ({ maintenanceSlips }: { maintenanceSlips: any }) => {
         )}
         horizontal
         showsHorizontalScrollIndicator={false}
-        keyExtractor={(item: any) => item._id}
+        keyExtractor={(item: any) => item.$id.toString()}
       />
     </View>
   );
@@ -47,12 +49,16 @@ const MaintenanceList = ({ maintenanceSlips }: { maintenanceSlips: any }) => {
 const MaintenanceCard: React.FC<MaintenanceCardProps> = ({ item }) => {
   const screenHeight = Dimensions.get("window").height;
   const cardHeight = screenHeight * 0.4;
+  const [isLoading, setIsLoading] = useState(false);
   const statusColor = item.status === "pending" ? "bg-red-600" : "bg-green-600";
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
   const { setStatusUpdate, statusUpdate } = useGlobalContext();
+  const { updateMaintenanceSlip } = useAppwrite();
 
-  const totalDues = JSON.parse(item.dues || "[]").reduce(
-    (prev: number, due: any) => prev + due.maintenance ,
+  const status = item.status === "pending" ? "paid" : "pending";
+
+  const totalDues = JSON.parse(item.flat.dues || "[]").reduce(
+    (prev: number, due: any) => prev + due.maintenance || 0,
     0
   );
   const dues = item.dues ? JSON.parse(item.dues) : [];
@@ -81,11 +87,23 @@ const MaintenanceCard: React.FC<MaintenanceCardProps> = ({ item }) => {
   };
 
   const handleStatusUpdate = async () => {
+    setIsLoading(true);
     try {
-      console.log("Updating status for:");
+      const response = await updateMaintenanceSlip(
+        item.$id,
+        status
+      );
+
+      if (response) {
+        Alert.alert("Success", "Maintenance status updated successfully.");
+        bottomSheetModalRef.current?.close();
+      } else {
+        Alert.alert("Error", "Failed to update maintenance status.");
+      }
     } catch (error: any) {
       Alert.alert("Error occurred", error.message);
     } finally {
+      setIsLoading(false);
       setStatusUpdate(!statusUpdate);
     }
   };
@@ -158,7 +176,7 @@ const MaintenanceCard: React.FC<MaintenanceCardProps> = ({ item }) => {
                 tintColor={"#f7bc63"}
               />
               <Text className="text-gray-300 font-smedium text-lg">
-                {item.maintenance + totalDues} /-
+                {item.flat.maintenance + totalDues} /-
               </Text>
             </View>
           </View>
@@ -197,7 +215,7 @@ const MaintenanceCard: React.FC<MaintenanceCardProps> = ({ item }) => {
                   tintColor={"#f7bc63"}
                 />
                 <Text className="text-gray-300 font-smedium text-lg">
-                  {item.flat.maintenance + totalDues} /-
+                  {item.flat.maintenance + (totalDues || 0)} /-
                 </Text>
               </View>
               <View className="flex-row items-center justify-center gap-2">
@@ -247,12 +265,14 @@ const MaintenanceCard: React.FC<MaintenanceCardProps> = ({ item }) => {
           </Text>
           <BottomSheetView className="p-6 mt-3">
             <TouchableOpacity
-              className={`${statusColor} px-3 py-4 rounded-lg mb-4`}
+              className={`${statusColor} px-3 py-4 rounded-lg mb-4 flex-row items-center justify-center gap-2`}
               onPress={handleStatusUpdate}
+              disabled={isLoading}
             >
               <Text className="text-white text-center font-ssemibold text-xl">
                 {item.status.toUpperCase()}
               </Text>
+              {isLoading && <ActivityIndicator color="white" />}
             </TouchableOpacity>
           </BottomSheetView>
         </BottomSheetView>

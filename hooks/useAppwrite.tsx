@@ -92,6 +92,7 @@ const useAppwrite = () => {
           expense: response.$id,
           month: getMonth("current"),
           status: "pending",
+          amount: expense.amount || null,
         }
       );
 
@@ -146,12 +147,18 @@ const useAppwrite = () => {
 
       console.log("Flat created successfully:", response);
 
-      const slipNumber = await databases.updateDocument(
+       const slipNumber = await databases.getDocument(
+        config.databaseId!,
+        config.miscID!,
+        "1"
+      );
+
+      const slipNumberUpdated = await databases.updateDocument(
         config.databaseId!,
         config.miscID!,
         "1",
         {
-          slipNumber: (slipNumber: number) => slipNumber + 1,
+          slipNumber: slipNumber.slipNumber + 1,
         }
       );
 
@@ -212,6 +219,47 @@ const useAppwrite = () => {
     }
   };
 
+  const updateMaintenanceSlip = async (slipId: string, status: string) => {
+    try {
+      const response = await databases.updateDocument(
+        config.databaseId!,
+        config.maintenanceID!,
+        slipId,
+        { status }
+      );
+
+      console.log("Maintenance slip updated successfully:", response);
+
+      return response;
+    } catch (error: any) {
+      console.error("Error updating maintenance slip:", error.message);
+      throw new Error(error.message || "Failed to update maintenance slip");
+    }
+  }
+
+  const updateExpenseSlip = async (slipId: string, status: string, amount?: number) => {
+    try {
+      const updateData: any = { status };
+      if (amount !== undefined) {
+        updateData.amount = Number(amount);
+      }
+
+      const response = await databases.updateDocument(
+        config.databaseId!,
+        config.expenseSlipCollectionID!,
+        slipId,
+        updateData
+      );
+
+      console.log("Expense slip updated successfully:", response);
+
+      return response;
+    } catch (error: any) {
+      console.error("Error updating expense slip:", error.message);
+      throw new Error(error.message || "Failed to update expense slip");
+    }
+  }
+
   return {
     loginUser,
     getCurrentUser,
@@ -222,6 +270,8 @@ const useAppwrite = () => {
     createFlat,
     getExpenseSlips,
     getMaintenanceSlips,
+    updateExpenseSlip,
+    updateMaintenanceSlip
   };
 };
 
