@@ -4,10 +4,11 @@ import { CustomButton, FormField } from "@/components";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Link, Redirect, router } from "expo-router";
 import { useGlobalContext } from "@/context/GlobalContext";
-import axios from "axios";
+import useAppwrite from "@/hooks/useAppwrite";
 
 const Signin = () => {
   const { isLoggedIn, isLoading, setIsLoggedIn, setUser } = useGlobalContext();
+  const { loginUser } = useAppwrite();
 
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
@@ -16,14 +17,28 @@ const Signin = () => {
   });
 
   const handleLogin = async () => {
-    // if (!form.email || !form.password) {
-    //   Alert.alert("Error", "Please enter both email and password");
-    //   return;
-    // }
+    if (!form.email || !form.password) {
+      Alert.alert("Error", "Please enter both email and password");
+      return;
+    }
 
     setLoading(true);
     try {
-      console.log("Logging in with:", form);
+      const response = await loginUser(form.email, form.password);
+
+      if (!response) {
+        Alert.alert(
+          "Login Failed",
+          "Invalid email or password. Please try again."
+        );
+        return;
+      }
+
+      setUser(response);
+      setIsLoggedIn(true);
+
+      Alert.alert("Login Successful", "You have successfully logged in.");
+
       router.push("../(tabs)/home");
     } catch (error: any) {
       Alert.alert(

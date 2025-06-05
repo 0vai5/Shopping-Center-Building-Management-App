@@ -22,7 +22,7 @@ import {
   BottomSheetView,
 } from "@gorhom/bottom-sheet";
 import { router } from "expo-router";
-import axios from "axios";
+import useAppwrite from "@/hooks/useAppwrite";
 
 const expenses = () => {
   const { height } = useWindowDimensions();
@@ -38,17 +38,16 @@ const expenses = () => {
 
   const [expenseData, setExpenseData] = useState<any>([]);
   const [refreshing, setRefreshing] = useState(false);
+  const { getExpenses } = useAppwrite()
 
   const handleExpenseCreation = async () => {
     console.log("Creating Expense", expenseForm);
   };
   const fetchExpenses = async () => {
     try {
-      const { data } = await axios.get(
-        `${process.env.EXPO_PUBLIC_SERVER_URL}/expenses/expenses`
-      );
+      const response = await getExpenses();
 
-      setExpenseData(data.data);
+      setExpenseData(response);
     } catch (error: any) {
       Alert.alert("Error", error.message || "Failed to fetch expenses");
       console.error("Error fetching expenses:", error.message);
@@ -125,7 +124,7 @@ const expenses = () => {
                 renderItem={(expense) => <ExpenseCard item={expense.item} />}
                 horizontal
                 showsHorizontalScrollIndicator={false}
-                keyExtractor={(expense) => expense._id}
+                keyExtractor={(expense) => expense.$id.toString()}
               />
             </View>
           </View>
@@ -237,7 +236,7 @@ const ExpenseCard: React.FC<ExpenseCardProps> = ({ item }) => {
         <View className="flex justify-between gap-10 flex-row ">
           <View>
             <Text className="text-white font-ssemibold text-2xl">
-              {item.expense_name}
+              {item.expenseName}
             </Text>
             <Text className="text-gray-300 font-sregular text-l">
               {item.payee}
@@ -281,7 +280,7 @@ const ExpenseCard: React.FC<ExpenseCardProps> = ({ item }) => {
             <View className="flex-col items-start">
               <View className="flex-row justify-bewteen items-center gap-2">
                 <Text className="text-white font-ssemibold text-xl relative">
-                  {item.expense_name}
+                  {item.expenseName}
                 </Text>
               </View>
               <View className="flex-row items-center justify-center gap-2">

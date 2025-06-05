@@ -21,7 +21,6 @@ import {
   BottomSheetView,
 } from "@gorhom/bottom-sheet";
 import { router } from "expo-router";
-import axios from "axios";
 
 const flats = () => {
   const { height } = useWindowDimensions();
@@ -37,33 +36,26 @@ const flats = () => {
   const [refreshing, setRefreshing] = useState(false);
 
   const handleFlatCreation = async () => {
-   try {
-    if (
-      !flatForm.flat_number ||
-      !flatForm.rooms ||
-      !flatForm.owner_name 
-    ) {
-      Alert.alert("Error", "Please fill all fields");
-      return;
-    }
+    try {
+      if (!flatForm.flat_number || !flatForm.rooms || !flatForm.owner_name) {
+        Alert.alert("Error", "Please fill all fields");
+        return;
+      }
 
-    setCreating(true);
-    const { data } = await axios.post(
-      `${process.env.EXPO_PUBLIC_SERVER_URL}/flats/create-flat`,
-      flatForm
-    );
-    setCreating(false);
-    Alert.alert("Success", "Flat created successfully");
-    router.push("./(tabs)/flats");
-    setFlatForm({
-      flat_number: "",
-      rooms: "",
-      owner_name: "",
-      owner_phone: "",
-    });
-    bottomSheetModalRef.current?.dismiss();
-    fetchFlats();
-   } catch (error: any) {
+      setCreating(true);
+      console.log("Creating flat with data:", flatForm);
+      setCreating(false);
+      Alert.alert("Success", "Flat created successfully");
+      router.push("./(tabs)/flats");
+      setFlatForm({
+        flat_number: "",
+        rooms: "",
+        owner_name: "",
+        owner_phone: "",
+      });
+      bottomSheetModalRef.current?.dismiss();
+      fetchFlats();
+    } catch (error: any) {
       setCreating(false);
       Alert.alert("Error", error.message || "Failed to create flat");
       console.error("Error creating flat:", error.message);
@@ -71,10 +63,7 @@ const flats = () => {
   };
   const fetchFlats = async () => {
     try {
-      const {data} =  await axios.get(
-        `${process.env.EXPO_PUBLIC_SERVER_URL}/flats/flats`);
-        setFlatData(data.data);
-
+      console.log("Fetching flats...");
     } catch (error: any) {
       Alert.alert("Error", error.message || "Failed to fetch flats");
       console.error("Error fetching flats:", error.message);
@@ -192,7 +181,9 @@ const flats = () => {
               <BottomSheetTextInput
                 className="px-2 py-3 border-secondary-saturated bg-white rounded-lg text-primary"
                 value={flatForm.owner_name}
-                onChangeText={(e) => setFlatForm({ ...flatForm, owner_name: e })}
+                onChangeText={(e) =>
+                  setFlatForm({ ...flatForm, owner_name: e })
+                }
               />
             </View>
             <View>
@@ -203,7 +194,9 @@ const flats = () => {
                 className="px-2 py-3 border-secondary-saturated bg-white rounded-lg text-primary"
                 value={flatForm.owner_phone}
                 keyboardType="phone-pad"
-                onChangeText={(e) => setFlatForm({ ...flatForm, owner_phone: e })}
+                onChangeText={(e) =>
+                  setFlatForm({ ...flatForm, owner_phone: e })
+                }
               />
             </View>
             <View className="mt-5">

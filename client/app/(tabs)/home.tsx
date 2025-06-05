@@ -19,7 +19,6 @@ import { ProgressSummary } from "@/components";
 import { useWindowDimensions } from "react-native";
 import { StatsData } from "@/types";
 import { useGlobalContext } from "@/context/GlobalContext";
-import axios from "axios";
 import { Redirect } from "expo-router";
 const home = () => {
   const { height } = useWindowDimensions();
@@ -32,7 +31,7 @@ const home = () => {
       total: 0,
       percentagePaid: 0,
       paid: 0,
-      amountPaid: 0
+      amountPaid: 0,
     },
     maintenanceSlipsPaid: {
       _id: null,
@@ -50,15 +49,12 @@ const home = () => {
   const [refreshing, setRefreshing] = useState(false);
 
   const fetchStats = async () => {
-   try {
-    const {data} = await axios.get(`${process.env.EXPO_PUBLIC_SERVER_URL}/stats/monthly`);
-
-    console.log("Fetched stats:", data.data);
-    setStats(data.data);
-   } catch (error: any) {
-    Alert.alert("Error", error.message || "Failed to fetch stats");
-    console.error("Error fetching stats:", error.message);
-   }
+    try {
+      console.log("Fetching stats...");
+    } catch (error: any) {
+      Alert.alert("Error", error.message || "Failed to fetch stats");
+      console.error("Error fetching stats:", error.message);
+    }
   };
 
   const onRefresh = async () => {
@@ -71,19 +67,15 @@ const home = () => {
 
   const fetchExpenseSlips = async () => {
     try {
-      const { data } = await axios.get(`${process.env.EXPO_PUBLIC_SERVER_URL}/expensesslip/get-expense-slips`);
-
-      setExpenseSlips(data.data);
+      console.log("Fetching expense slips...");
     } catch (error: any) {
-      // Alert.alert("Error", error.message || "Failed to fetch expense slips");
+      Alert.alert("Error", error.message || "Failed to fetch expense slips");
       console.error("Error fetching expense slips:", error.message);
     }
   };
   const fetchMaintenanceSlips = async () => {
     try {
-      const { data } = await axios.get(`${process.env.EXPO_PUBLIC_SERVER_URL}/maintenanceslip/get-maintenance-slips`);
-
-      setMaintenanceSlips(data.data);
+      console.log("Fetching maintenance slips...");
     } catch (error: any) {
       Alert.alert("Error", error.message || "Failed to fetch expense slips");
       console.error("Error fetching expense slips:", error);
@@ -96,8 +88,8 @@ const home = () => {
     fetchMaintenanceSlips();
   }, [statusUpdate]);
 
-  if(!isLoggedIn && !user) {
-    return <Redirect href={"../"} />
+  if (!isLoggedIn && !user) {
+    return <Redirect href={"../"} />;
   }
 
   return (
@@ -117,7 +109,10 @@ const home = () => {
           <Header />
         </View>
         <View>
-          <SummaryCard amount={stats.maintenanceSlipsPaid.amountPaid || 0} month={`${month} ${year}`} />
+          <SummaryCard
+            amount={stats.maintenanceSlipsPaid.amountPaid || 0}
+            month={`${month} ${year}`}
+          />
         </View>
 
         <View className="flex flex-row justify-between gap-2 w-full p-6">

@@ -16,7 +16,6 @@ import { useGlobalContext } from "@/context/GlobalContext";
 import { generateHTML } from "@/utils/htmlGenerator";
 import { printToFileAsync } from "expo-print"; // Fixed import
 import { shareAsync } from "expo-sharing";
-import axios from "axios";
 
 // FIXME: Fix the Types after the Appwrite Integration
 // FIXME: When the status is updated there should be somthing that changes the button color in the bottom sheet.
@@ -83,12 +82,7 @@ const MaintenanceCard: React.FC<MaintenanceCardProps> = ({ item }) => {
 
   const handleStatusUpdate = async () => {
     try {
-      const { data } = await axios.post(
-        `${process.env.EXPO_PUBLIC_SERVER_URL}maintenanceslip/update-maintenance-slip/${item._id}`,
-        {
-          status: item.status === "pending" ? "paid" : "pending",
-        }
-      );
+      console.log("Updating status for:");
     } catch (error: any) {
       Alert.alert("Error occurred", error.message);
     } finally {

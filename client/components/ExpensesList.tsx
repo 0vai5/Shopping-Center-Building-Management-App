@@ -17,7 +17,6 @@ import {
 } from "@gorhom/bottom-sheet";
 import CustomBottomSheetModal from "./CustomBottomSheetModal";
 import { useGlobalContext } from "@/context/GlobalContext";
-import axios from "axios";
 
 // FIXME: Fix the Types after the Appwrite Integration
 // FIXME: When the status is updated there should be somthing that changes the button color in the bottom sheet.
@@ -53,12 +52,7 @@ const ExpenseCardHome: React.FC<ExpenseCardHomeProps> = ({ item }) => {
 
   const handleStatusUpdate = async () => {
     try {
-      const { data } = await axios.post(
-        `${process.env.EXPO_PUBLIC_SERVER_URL}expensesslip/update-expense-slip/${item._id}`,
-        {
-          status: item.status === "pending" ? "paid" : "pending",
-        }
-      );
+     console.log("Updating status for:");
     } catch (error) {
       Alert.alert("Error", "Something went wrong. Please try again later.");
     } finally {
