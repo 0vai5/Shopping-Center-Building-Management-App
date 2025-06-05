@@ -66,3 +66,11 @@ export interface expense {
   amount?: number;
   thisMonth: boolean;
 }
+
+export interface flat {
+  flatNumber: string;
+  ownerName: string;
+  ownerPhone?: string;
+  rooms: number;
+  maintenance?: number
+}

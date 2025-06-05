@@ -9,6 +9,8 @@ const appwriteConfig = {
   expenseSlipCollectionID:
     process.env.EXPO_PUBLIC_APPWRITE_EXPENSESLIP_COLLECTION_ID,
   androidPlatformID: process.env.EXPO_PUBLIC_APPWRITE_ANDROID_PLATFORM_ID,
+  flatsCollectionID: process.env.EXPO_PUBLIC_APPWRITE_FLATS_COLLECTION_ID,
+  maintenanceID: process.env.EXPO_PUBLIC_APPWRITE_MAINTENANCE_ID,
 };
 
 const client = new Client()

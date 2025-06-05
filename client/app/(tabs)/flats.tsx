@@ -21,37 +21,38 @@ import {
   BottomSheetView,
 } from "@gorhom/bottom-sheet";
 import { router } from "expo-router";
+import useAppwrite from "@/hooks/useAppwrite";
 
 const flats = () => {
   const { height } = useWindowDimensions();
+  const { getFlats, createFlat } = useAppwrite();
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
   const [creating, setCreating] = useState(false);
   const [flatData, setFlatData] = useState<any>([]);
   const [flatForm, setFlatForm] = useState({
-    flat_number: "",
+    flatNumber: "",
     rooms: "",
-    owner_name: "",
-    owner_phone: "",
+    ownerName: "",
+    ownerPhone: "",
   });
   const [refreshing, setRefreshing] = useState(false);
 
   const handleFlatCreation = async () => {
     try {
-      if (!flatForm.flat_number || !flatForm.rooms || !flatForm.owner_name) {
+      if (!flatForm.flatNumber || !flatForm.rooms || !flatForm.ownerName) {
         Alert.alert("Error", "Please fill all fields");
         return;
       }
 
       setCreating(true);
-      console.log("Creating flat with data:", flatForm);
+      const response = await createFlat(flatForm);
       setCreating(false);
       Alert.alert("Success", "Flat created successfully");
-      router.push("./(tabs)/flats");
       setFlatForm({
-        flat_number: "",
+        flatNumber: "",
         rooms: "",
-        owner_name: "",
-        owner_phone: "",
+        ownerName: "",
+        ownerPhone: "",
       });
       bottomSheetModalRef.current?.dismiss();
       fetchFlats();
@@ -63,7 +64,9 @@ const flats = () => {
   };
   const fetchFlats = async () => {
     try {
-      console.log("Fetching flats...");
+      const response = await getFlats();
+
+      setFlatData(response);
     } catch (error: any) {
       Alert.alert("Error", error.message || "Failed to fetch flats");
       console.error("Error fetching flats:", error.message);
@@ -140,7 +143,7 @@ const flats = () => {
                 renderItem={(flat) => <FlatCard item={flat.item} />}
                 horizontal
                 showsHorizontalScrollIndicator={false}
-                keyExtractor={(flat) => flat._id}
+                keyExtractor={(flat) => flat.$id.toString()}
               />
             </View>
           </View>
@@ -159,9 +162,9 @@ const flats = () => {
               </Text>
               <BottomSheetTextInput
                 className="px-2 py-3 border-secondary-saturated bg-white rounded-lg text-primary"
-                value={flatForm.flat_number}
+                value={flatForm.flatNumber}
                 onChangeText={(e) =>
-                  setFlatForm({ ...flatForm, flat_number: e })
+                  setFlatForm({ ...flatForm, flatNumber: e })
                 }
               />
             </View>
@@ -180,10 +183,8 @@ const flats = () => {
               </Text>
               <BottomSheetTextInput
                 className="px-2 py-3 border-secondary-saturated bg-white rounded-lg text-primary"
-                value={flatForm.owner_name}
-                onChangeText={(e) =>
-                  setFlatForm({ ...flatForm, owner_name: e })
-                }
+                value={flatForm.ownerName}
+                onChangeText={(e) => setFlatForm({ ...flatForm, ownerName: e })}
               />
             </View>
             <View>
@@ -192,10 +193,10 @@ const flats = () => {
               </Text>
               <BottomSheetTextInput
                 className="px-2 py-3 border-secondary-saturated bg-white rounded-lg text-primary"
-                value={flatForm.owner_phone}
+                value={flatForm.ownerPhone}
                 keyboardType="phone-pad"
                 onChangeText={(e) =>
-                  setFlatForm({ ...flatForm, owner_phone: e })
+                  setFlatForm({ ...flatForm, ownerPhone: e })
                 }
               />
             </View>
@@ -234,7 +235,7 @@ const FlatCard: React.FC<FlatCardProps> = ({ item }) => {
                 resizeMode="contain"
               />
               <Text className="text-white font-ssemibold text-xl relative">
-                {item.flat_number}
+                {item.flatNumber}
               </Text>
             </View>
             <View className="flex-row justify-bewteen items-center gap-2">
@@ -260,12 +261,12 @@ const FlatCard: React.FC<FlatCardProps> = ({ item }) => {
         <View className="flex justify-between gap-10 flex-row mt-4">
           <View>
             <Text className="text-gray-300 font-smedium text-lg">
-              {item.owner_name}
+              {item.ownerName}
             </Text>
             <View className="flex-row justify-center items-center gap-2">
               <Image source={icons.phone} tintColor={"#72BF78"} />
               <Text className="text-gray-300 font-sregular text-lg">
-                {item.owner_phone}
+                {item.ownerPhone}
               </Text>
             </View>
           </View>
@@ -286,7 +287,7 @@ const FlatCard: React.FC<FlatCardProps> = ({ item }) => {
                   resizeMode="contain"
                 />
                 <Text className="text-white font-ssemibold text-xl relative">
-                  {item.flat_number}
+                  {item.flatNumber}
                 </Text>
               </View>
               <View className="flex-row items-center justify-center gap-2">
@@ -299,7 +300,7 @@ const FlatCard: React.FC<FlatCardProps> = ({ item }) => {
             <View className="items-start">
               <View className="flex-row gap-2">
                 <Text className="text-gray-300 font-smedium text-lg">
-                  {item.owner_name}
+                  {item.ownerName}
                 </Text>
               </View>
               <View className="flex-row justify-bewteen items-center gap-2">
@@ -309,7 +310,7 @@ const FlatCard: React.FC<FlatCardProps> = ({ item }) => {
                   resizeMode="contain"
                 />
                 <Text className="text-white font-ssemibold text-xl relative">
-                  {item.owner_phone}
+                  {item.ownerPhone}
                 </Text>
               </View>
             </View>
