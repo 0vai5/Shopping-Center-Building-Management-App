@@ -10,7 +10,7 @@ import { icons } from "@/constants";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { CustomBottomSheetModalProps } from "@/types";
 
-const snapPoints = ["50%", "75%"];
+const snapPoints = ["60%", "90%"];
 
 const CustomBottomSheetModal = forwardRef<
   BottomSheetModal,
@@ -40,17 +40,15 @@ const CustomBottomSheetModal = forwardRef<
         backgroundStyle={{ backgroundColor: "#2c2c2e" }}
         handleIndicatorStyle={{ backgroundColor: "white" }}
         ref={ref}
-        index={2}
+        index={1}
         snapPoints={snapPoints}
         enablePanDownToClose
       >
-        <BottomSheetScrollView>
-          <BottomSheetView className="px-6">
-            <TouchableOpacity onPress={handleClose}>
-              <Image source={icons.cross} className="self-end" />
-            </TouchableOpacity>
-          </BottomSheetView>
-          <BottomSheetView className="p-8">{children}</BottomSheetView>
+        <BottomSheetScrollView className="px-6">
+          <TouchableOpacity onPress={handleClose}>
+            <Image source={icons.cross} className="self-end" />
+          </TouchableOpacity>
+          {children}
         </BottomSheetScrollView>
       </BottomSheetModal>
     </SafeAreaView>

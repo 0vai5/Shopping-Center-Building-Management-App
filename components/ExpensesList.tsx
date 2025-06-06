@@ -10,7 +10,7 @@ import {
 import React, { useEffect, useRef, useState } from "react";
 import { icons, expenseSlips } from "@/constants";
 import { ExpenseCardHomeProps } from "@/types";
-import {
+import BottomSheet, {
   BottomSheetModal,
   BottomSheetTextInput,
   BottomSheetView,
@@ -126,34 +126,39 @@ const ExpenseCardHome: React.FC<ExpenseCardHomeProps> = ({ item }) => {
       </View>
 
       <CustomBottomSheetModal ref={bottomSheetModalRef}>
-        <BottomSheetView>
+        <View>
           <Text className="text-white font-ssemibold text-2xl mb-4">
             Expense Details
           </Text>
-          <BottomSheetView className="p-6 mt-3">
-            <Text className="text-gray-300 font-smedium text-lg">
-              {item.expense.expenseName}
-            </Text>
-            <Text className="text-gray-300 font-smedium text-lg">
-              {item.expense.payee}
-            </Text>
+        </View>
+        <View>
+          <View className="flex-row items-center justify-between mb-4">
+            <View>
+
+              <Text className="text-gray-300 font-smedium text-lg">
+                {item.expense.expenseName}
+              </Text>
+              <Text className="text-gray-300 font-smedium text-lg">
+                {item.expense.payee}
+              </Text>
+            </View>
 
             {!item.expense.variable && (
               <View className="flex-row gap-2">
                 <Image
                   source={icons.dollar}
                   resizeMode="contain"
-                  tintColor={"#5889ec"}
+                  tintColor={"#f7bc63"}
                 />
                 <Text className="text-gray-300 font-smedium text-lg">
                   {item.expense.amount} /-
                 </Text>
               </View>
             )}
-          </BottomSheetView>
-        </BottomSheetView>
+          </View>
+        </View>
 
-        <BottomSheetView>
+        <View className="">
           <Text className="text-white font-ssemibold text-2xl mb-4">
             Update Expense Status
           </Text>
@@ -166,19 +171,22 @@ const ExpenseCardHome: React.FC<ExpenseCardHomeProps> = ({ item }) => {
               onChangeText={(e) => setVariableValue(e)}
             />
           )}
-          <BottomSheetView className="p-6 mt-3">
+          <View className="p-6 mt-3">
             <TouchableOpacity
               className={`${statusColor} px-3 py-4 rounded-lg mb-4 flex-row items-center justify-center gap-2`}
               onPress={handleStatusUpdate}
               disabled={isLoading}
             >
-              <Text className="text-white text-center font-ssemibold text-xl">
-                {item.status.toUpperCase()}
-              </Text>
-              {isLoading && <ActivityIndicator color="white" />}
+              {isLoading ? (
+                <ActivityIndicator size="small" color="#fff" />
+              ) : (
+                <Text className="text-white font-sbold text-lg capitalize">
+                  Mark as {item.status}
+                </Text>
+              )}
             </TouchableOpacity>
-          </BottomSheetView>
-        </BottomSheetView>
+          </View>
+        </View>
       </CustomBottomSheetModal>
     </>
   );

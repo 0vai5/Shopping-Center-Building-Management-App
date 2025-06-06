@@ -6,12 +6,13 @@ import {
   TouchableOpacity,
   Image,
   Alert,
+  ScrollView,
 } from "react-native";
 import React, { useRef, useState } from "react";
 import { dueObj, MaintenanceCardProps, MaintenanceSlip } from "@/types";
 import { icons } from "@/constants";
 import { CustomBottomSheetModal } from "@/components";
-import { BottomSheetModal, BottomSheetView } from "@gorhom/bottom-sheet";
+import { BottomSheetModal, BottomSheetScrollView, BottomSheetView } from "@gorhom/bottom-sheet";
 import { useGlobalContext } from "@/context/GlobalContext";
 import { generateHTML } from "@/utils/htmlGenerator";
 import { printToFileAsync } from "expo-print"; // Fixed import
@@ -182,8 +183,9 @@ const MaintenanceCard: React.FC<MaintenanceCardProps> = ({ item }) => {
         </View>
       </View>
 
+
       <CustomBottomSheetModal ref={bottomSheetModalRef}>
-        <BottomSheetView className="p-5">
+        <BottomSheetScrollView className="p-4">
           <Text className="text-white font-ssemibold text-2xl mb-4">
             Maintenance Details
           </Text>
@@ -195,7 +197,7 @@ const MaintenanceCard: React.FC<MaintenanceCardProps> = ({ item }) => {
                   tintColor={"#f7bc63"}
                   resizeMode="contain"
                 />
-                <Text className="text-white font-ssemibold text-xl relative">
+                <Text className="text-white font-ssemibold text-xl">
                   {item.flat.flatNumber}
                 </Text>
               </View>
@@ -217,7 +219,7 @@ const MaintenanceCard: React.FC<MaintenanceCardProps> = ({ item }) => {
                   {item.flat.maintenance + (totalDues || 0)} /-
                 </Text>
               </View>
-              <View className="flex-row items-center justify-center gap-2">
+              <View className="flex-row items-center gap-2">
                 <Image source={icons.rooms} tintColor={"#f7bc63"} />
                 <Text className="text-white font-sregular text-xl">
                   {item.flat.rooms}
@@ -225,86 +227,56 @@ const MaintenanceCard: React.FC<MaintenanceCardProps> = ({ item }) => {
               </View>
             </View>
           </View>
-        </BottomSheetView>
-        <BottomSheetView key={"1"} className="px-6">
 
           {dues.length > 0 && (
-            <Text className="text-white font-ssemibold text-2xl mb-4">
-              Dues Details
-            </Text>
+            <>
+              <Text className="text-white font-ssemibold text-2xl mt-6 mb-4">
+                Dues Details
+              </Text>
+              {dues.map((due: dueObj, index: number) => (
+                <View key={index} className="flex-row bg-black p-2 rounded-sm justify-between mb-3">
+                  <Text className="text-gray-300 font-sregular text-lg">
+                    Month of {due.month}
+                  </Text>
+                  <Text className="text-gray-300 font-sregular text-lg">
+                    {due.maintenance} /-
+                  </Text>
+                </View>
+              ))}
+            </>
           )}
 
-
-          {dues.length > 0 &&
-            dues.map((due: any, index: number) => (
-              <BottomSheetView key={index} className="p-5">
-                <View className="flex-row gap-10 justify-between items-center">
-                  <View>
-                    <Text className="text-gray-300 font-sregular text-lg">
-                      Month of {due.month}
-                    </Text>
-                  </View>
-                  <View className="items-start">
-                    <View className="flex-row gap-2">
-                      <Image
-                        source={icons.dollar}
-                        resizeMode="contain"
-                        tintColor={"#f7bc63"}
-                      />
-                      <Text className="text-gray-300 font-smedium text-lg">
-                        {due.maintenance} /-
-                      </Text>
-                    </View>
-                  </View>
-                </View>
-              </BottomSheetView>
-            ))
-          }
-
-        </BottomSheetView>
-
-        <BottomSheetView className="p-5">
-          <Text className="text-white font-ssemibold text-2xl mb-4">
+          <Text className="text-white font-ssemibold text-2xl mt-6 mb-4">
             Update Maintenance Status
           </Text>
-          <BottomSheetView className="p-6 mt-3">
-            <TouchableOpacity
-              className={`${statusColor} px-3 py-4 rounded-lg mb-4 flex-row items-center justify-center gap-2`}
-              onPress={handleStatusUpdate}
-              disabled={isLoading}
-            >
-              {isLoading ? (
-                <ActivityIndicator color="#fff" />
-              ) : (
-                <Text className="text-white font-sbold text-sm uppercase">{item.status}</Text>
-              )}
 
-            </TouchableOpacity>
-          </BottomSheetView>
-        </BottomSheetView>
+          <TouchableOpacity
+            className={`${statusColor} px-3 py-4 rounded-lg mb-4 flex-row items-center justify-center gap-2`}
+            onPress={handleStatusUpdate}
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <ActivityIndicator size="small" color="#fff" />
+            ) : (
+              <Text className="text-white font-sbold text-lg capitalize">
+                Mark as {status}
+              </Text>
+            )}
+          </TouchableOpacity>
 
-        {/* TODO: When the Button is Pressed a pdf will be generated of the maintenance slip and then sent to the recipient. */}
+          {item.status === "paid" && (
+              
 
-        {item.status === "paid" && (
-          <BottomSheetView className="mt-10">
-            <View className="flex justify-between items-center gap-3 flex-row">
-              <TouchableOpacity
-                onPress={handleSharing}
-                className="px-3 py-3 bg-blue-600 rounded-lg flex-row gap-2 items-center"
-              >
-                <Image
-                  source={icons.upload}
-                  className="h-[24px] w-[24px]"
-                  tintColor={"#ffffff"}
-                />
-                <Text className="text-center text-white font-sbold">
-                  Share Image
-                </Text>
-              </TouchableOpacity>
-            </View>
-          </BottomSheetView>
-        )}
+          <TouchableOpacity
+            className="bg-primary px-3 py-4 rounded-lg flex-row items-center justify-center gap-2"
+            onPress={handleSharing}
+          >
+            <Text className="text-white font-sbold text-lg">Share Slip</Text>
+          </TouchableOpacity>
+          )}
+        </BottomSheetScrollView>
       </CustomBottomSheetModal>
+
     </>
   );
 };

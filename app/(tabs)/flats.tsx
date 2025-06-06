@@ -14,7 +14,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { CustomBottomSheetModal, CustomButton } from "@/components";
 import { icons } from "@/constants";
-import { FlatCardProps } from "@/types";
+import { dueObj, FlatCardProps } from "@/types";
 import {
   BottomSheetModal,
   BottomSheetScrollView,
@@ -84,7 +84,7 @@ const flats = () => {
     fetchFlats();
   }, []);
 
-  
+
 
 
 
@@ -207,8 +207,9 @@ const flats = () => {
             <View className="mt-5">
               <CustomButton
                 title="Create Flat"
-                textStyles="text-white"
+                textStyles="text-black"
                 width="150px"
+                containerStyles="bg-secondary-saturated"
                 loader={creating}
                 handlePress={handleFlatCreation}
               />
@@ -278,7 +279,7 @@ const FlatCard: React.FC<FlatCardProps> = ({ item }) => {
       </View>
 
       <CustomBottomSheetModal ref={bottomSheetModalRef}>
-        <BottomSheetView className="p-5">
+        <View className="p-5">
           <Text className="text-white font-ssemibold text-2xl mb-4">
             Flat Details
           </Text>
@@ -319,37 +320,25 @@ const FlatCard: React.FC<FlatCardProps> = ({ item }) => {
               </View>
             </View>
           </View>
-        </BottomSheetView>
+        </View>
         <BottomSheetScrollView>
           {dues.length > 0 && (
-            <Text className="text-white font-ssemibold text-2xl mb-4">
-              Dues Details
-            </Text>
-          )}
-
-          {dues.length > 0 && dues.map((due: any, index: number) => (
-              <BottomSheetView key={index} className="p-5">
-                <View className="flex-row gap-10 justify-between items-center">
-                  <View>
-                    <Text className="text-gray-300 font-sregular text-lg">
-                      Month of {due.month}
-                    </Text>
-                  </View>
-                  <View className="items-start">
-                    <View className="flex-row gap-2">
-                      <Image
-                        source={icons.dollar}
-                        resizeMode="contain"
-                        tintColor={"#f7bc63"}
-                      />
-                      <Text className="text-gray-300 font-smedium text-lg">
-                        {due.maintenance} /-
-                      </Text>
-                    </View>
-                  </View>
+            <>
+              <Text className="text-white font-ssemibold text-2xl mt-6 mb-4">
+                Dues Details
+              </Text>
+              {dues.map((due: dueObj, index: number) => (
+                <View key={index} className="bg-black p-2 rounded-sm flex-row justify-between mb-3">
+                  <Text className="text-gray-300 font-sregular text-lg">
+                    Month of {due.month}
+                  </Text>
+                  <Text className="text-gray-300 font-sregular text-lg">
+                    {due.maintenance} /-
+                  </Text>
                 </View>
-              </BottomSheetView>
-          ))}
+              ))}
+            </>
+          )}
         </BottomSheetScrollView>
       </CustomBottomSheetModal>
     </>

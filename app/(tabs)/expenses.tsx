@@ -232,8 +232,9 @@ const expenses = () => {
             <View className="mt-5">
               <CustomButton
                 title="Create Expense"
-                textStyles="text-white"
+                textStyles="text-black"
                 width="150px"
+                containerStyles="bg-secondary-saturated"
                 handlePress={handleExpenseCreation}
                 loader={creating}
               />
