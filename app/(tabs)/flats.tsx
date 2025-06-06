@@ -327,9 +327,9 @@ const FlatCard: React.FC<FlatCardProps> = ({ item }) => {
             </Text>
           )}
 
-          {dues.length > 0 && dues.map((due: any) => (
+          {dues.length > 0 && dues.map((due: any, index: number) => (
             <>
-              <BottomSheetView key={due.month} className="p-5">
+              <BottomSheetView key={index} className="p-5">
                 <View className="flex-row gap-10 justify-between items-center">
                   <View>
                     <Text className="text-gray-300 font-sregular text-lg">

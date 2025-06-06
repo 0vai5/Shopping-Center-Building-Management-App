@@ -11,7 +11,6 @@ const Header = () => {
 
   const handleLogout = async () => {
     const response = await logoutUser();
-    console.log("Logging out user:", user?.email);
     setUser(null);
     setIsLoggedIn(false);
     router.push("../(auth)/signin");

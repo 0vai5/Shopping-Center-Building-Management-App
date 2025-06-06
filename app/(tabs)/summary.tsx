@@ -51,13 +51,9 @@ const summary = () => {
   }, []);
 
   const searchHandler = async () => {
-    console.log("Searching for summary data...");
-    console.log("From Date:", fromDate);
-    console.log("To Date:", toDate);
 
     try {
       const response = await getSummary(fromDate.toISOString(), toDate.toISOString());
-      console.log("Summary data fetched successfully:", response);
       setSummaryData(response || {
         summary: [],
         total: 0,

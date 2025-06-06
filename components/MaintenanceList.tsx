@@ -8,7 +8,7 @@ import {
   Alert,
 } from "react-native";
 import React, { useRef, useState } from "react";
-import { MaintenanceCardProps } from "@/types";
+import { dueObj, MaintenanceCardProps, MaintenanceSlip } from "@/types";
 import { icons } from "@/constants";
 import { CustomBottomSheetModal } from "@/components";
 import { BottomSheetModal, BottomSheetView } from "@gorhom/bottom-sheet";
@@ -22,7 +22,7 @@ import { ActivityIndicator } from "react-native-paper";
 // FIXME: Fix the Types after the Appwrite Integration
 // FIXME: When the status is updated there should be somthing that changes the button color in the bottom sheet.
 
-const MaintenanceList = ({ maintenanceSlips }: { maintenanceSlips: any }) => {
+const MaintenanceList = ({ maintenanceSlips }: { maintenanceSlips: MaintenanceSlip[] }) => {
   return (
     <View className="flex p-6">
       {maintenanceSlips && maintenanceSlips.length === 0 && (
@@ -50,6 +50,7 @@ const MaintenanceCard: React.FC<MaintenanceCardProps> = ({ item }) => {
   const screenHeight = Dimensions.get("window").height;
   const cardHeight = screenHeight * 0.4;
   const [isLoading, setIsLoading] = useState(false);
+  const [currentStatus, setCurrentStatus] = useState(item.status);
   const statusColor = item.status === "pending" ? "bg-red-600" : "bg-green-600";
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
   const { setStatusUpdate, statusUpdate } = useGlobalContext();
@@ -57,11 +58,9 @@ const MaintenanceCard: React.FC<MaintenanceCardProps> = ({ item }) => {
 
   const status = item.status === "pending" ? "paid" : "pending";
 
-  const totalDues = JSON.parse(item.flat.dues || "[]").reduce(
-    (prev: number, due: any) => prev + (due.maintenance || 0),
-    0
-  );
   const dues = item.flat.dues ? JSON.parse(item.flat.dues) : [];
+  const totalDues = dues.reduce((prev: number, due: dueObj) => prev + (due.maintenance || 0), 0);
+
 
   const handleSharing = async () => {
     try {
@@ -112,7 +111,7 @@ const MaintenanceCard: React.FC<MaintenanceCardProps> = ({ item }) => {
       <View className={`bg-lessBlack p-5 mr-10 rounded-xl h-[${cardHeight}]`}>
         <View className="flex justify-between gap-10 flex-row">
           <View>
-            <View className="flex-row justify-bewteen items-center gap-2">
+            <View className="flex-row justify-start items-center gap-2">
               <Image
                 source={icons.house}
                 tintColor={"#f7bc63"}
@@ -190,7 +189,7 @@ const MaintenanceCard: React.FC<MaintenanceCardProps> = ({ item }) => {
           </Text>
           <View className="flex-row gap-10 justify-between items-center">
             <View>
-              <View className="flex-row justify-bewteen items-center gap-2">
+              <View className="flex-row justify-start items-center gap-2">
                 <Image
                   source={icons.house}
                   tintColor={"#f7bc63"}
@@ -227,7 +226,7 @@ const MaintenanceCard: React.FC<MaintenanceCardProps> = ({ item }) => {
             </View>
           </View>
         </BottomSheetView>
-        <BottomSheetView className="px-6">
+        <BottomSheetView key={"1"} className="px-6">
 
           {dues.length > 0 && (
             <Text className="text-white font-ssemibold text-2xl mb-4">
@@ -237,32 +236,31 @@ const MaintenanceCard: React.FC<MaintenanceCardProps> = ({ item }) => {
 
 
           {dues.length > 0 &&
-
             dues.map((due: any, index: number) => (
-              <>
-                <BottomSheetView key={index} className="p-5">
-                  <View className="flex-row gap-10 justify-between items-center">
-                    <View>
-                      <Text className="text-gray-300 font-sregular text-lg">
-                        Month of {due.month}
+              <BottomSheetView key={index} className="p-5">
+                <View className="flex-row gap-10 justify-between items-center">
+                  <View>
+                    <Text className="text-gray-300 font-sregular text-lg">
+                      Month of {due.month}
+                    </Text>
+                  </View>
+                  <View className="items-start">
+                    <View className="flex-row gap-2">
+                      <Image
+                        source={icons.dollar}
+                        resizeMode="contain"
+                        tintColor={"#f7bc63"}
+                      />
+                      <Text className="text-gray-300 font-smedium text-lg">
+                        {due.maintenance} /-
                       </Text>
                     </View>
-                    <View className="items-start">
-                      <View className="flex-row gap-2">
-                        <Image
-                          source={icons.dollar}
-                          resizeMode="contain"
-                          tintColor={"#f7bc63"}
-                        />
-                        <Text className="text-gray-300 font-smedium text-lg">
-                          {due.maintenance} /-
-                        </Text>
-                      </View>
-                    </View>
                   </View>
-                </BottomSheetView>
-              </>
-            ))}
+                </View>
+              </BottomSheetView>
+            ))
+          }
+
         </BottomSheetView>
 
         <BottomSheetView className="p-5">
@@ -275,10 +273,12 @@ const MaintenanceCard: React.FC<MaintenanceCardProps> = ({ item }) => {
               onPress={handleStatusUpdate}
               disabled={isLoading}
             >
-              <Text className="text-white text-center font-ssemibold text-xl">
-                {item.status.toUpperCase()}
-              </Text>
-              {isLoading && <ActivityIndicator color="white" />}
+              {isLoading ? (
+                <ActivityIndicator color="#fff" />
+              ) : (
+                <Text className="text-white font-sbold text-sm uppercase">{item.status}</Text>
+              )}
+
             </TouchableOpacity>
           </BottomSheetView>
         </BottomSheetView>

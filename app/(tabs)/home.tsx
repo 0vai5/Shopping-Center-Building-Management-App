@@ -48,7 +48,6 @@ const home = () => {
   const fetchStats = async () => {
     try {
       const response = await getStats();
-      console.log("Stats fetched successfully:", response);
 
       setStats(response);
 
@@ -68,9 +67,7 @@ const home = () => {
 
   const fetchExpenseSlips = async () => {
     try {
-      console.log("Fetching expense slips...");
       const response = await getExpenseSlips();
-      console.log("Expense slips fetched successfully:", response);
       setExpenseSlips(response);
     } catch (error: any) {
       Alert.alert("Error", error.message || "Failed to fetch expense slips");
@@ -115,7 +112,6 @@ const home = () => {
         Alert.alert("Success", "Expense slips generated successfully");
       }
 
-      console.log("Expense slips generated successfully:", response);
 
       fetchExpenseSlips();
 

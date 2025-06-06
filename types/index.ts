@@ -75,3 +75,23 @@ export interface flat {
   rooms: number;
   maintenance?: number
 }
+
+export interface MaintenanceSlip {
+  $id: string;
+  slipNumber: string;
+  month: string;
+  status: "pending" | "paid";
+  flat: {
+    flatNumber: string;
+    ownerName: string;
+    ownerPhone?: string;
+    maintenance: number;
+    rooms: number;
+    dues?: string;
+  };
+}
+
+export interface dueObj {
+  month: string;
+  maintenance: number;
+}

@@ -13,7 +13,6 @@ const useAppwrite = () => {
         password
       );
 
-      console.log("Login successful:", response);
 
       return response;
     } catch (error) {
@@ -26,7 +25,6 @@ const useAppwrite = () => {
     try {
       const user = await account.get();
 
-      console.log("Current user:", user);
 
       return user;
     } catch (error) {
@@ -39,7 +37,6 @@ const useAppwrite = () => {
     try {
       const response = await account.deleteSession("current");
 
-      console.log("Logout successful:", response);
       return response;
     } catch (error) {
       console.error("Logout failed:", error);
@@ -82,7 +79,6 @@ const useAppwrite = () => {
         expense
       );
 
-      console.log("Expense created successfully:", response);
 
       const expenseSlipCreation = await databases.createDocument(
         config.databaseId!,
@@ -145,7 +141,6 @@ const useAppwrite = () => {
         flatObj
       );
 
-      console.log("Flat created successfully:", response);
 
       const slipNumber = await databases.getDocument(
         config.databaseId!,
@@ -176,7 +171,6 @@ const useAppwrite = () => {
         maintenanceSlipData
       );
 
-      console.log("Maintenance slip created successfully:", maintenanceSlip);
 
       return {
         flat: response,
@@ -228,7 +222,6 @@ const useAppwrite = () => {
         { status }
       );
 
-      console.log("Maintenance slip updated successfully:", response);
 
       return response;
     } catch (error: any) {
@@ -251,7 +244,6 @@ const useAppwrite = () => {
         updateData
       );
 
-      console.log("Expense slip updated successfully:", response);
 
       return response;
     } catch (error: any) {
@@ -266,7 +258,7 @@ const useAppwrite = () => {
       const currentMonth = getMonth("current");
 
       if (!expenses || expenses.length === 0) {
-        console.log("No expenses found to generate slips for the current month.");
+        throw new Error("No expenses found to generate slips for the current month");
         return;
       }
 
@@ -317,7 +309,7 @@ const useAppwrite = () => {
       const previousMonth = getMonth("previous");
 
       if (!flats || flats.length === 0) {
-        console.log("No flats found to generate maintenance slips for the current month.");
+        throw new Error("No flats found to generate maintenance slips for the current month");
         return;
       }
 
@@ -363,7 +355,6 @@ const useAppwrite = () => {
         );
 
         if (existingSlipOfCurrentMonth.total > 0) {
-          console.log(`⚠️ Maintenance slip for flat ${flat.flatNumber} already exists for ${currentMonth}. Skipping.`);
           continue;
         }
 
@@ -390,7 +381,6 @@ const useAppwrite = () => {
           );
 
         } catch (err: any) {
-          console.error(`❌ Failed to create slip for flat ${flat.flatNumber}:`, err.message);
           continue;
         }
 
@@ -402,7 +392,6 @@ const useAppwrite = () => {
         );
       }
 
-      console.log("\n✅ All maintenance slips generated successfully for the current month.");
       return { message: "Maintenance slips generated successfully" };
 
     } catch (error: any) {
