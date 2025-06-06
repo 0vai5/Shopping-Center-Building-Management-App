@@ -8,7 +8,7 @@ import useAppwrite from "@/hooks/useAppwrite";
 
 const Signin = () => {
   const { isLoggedIn, isLoading, setIsLoggedIn, setUser } = useGlobalContext();
-  const { loginUser } = useAppwrite();
+  const { loginUser, getCurrentUser } = useAppwrite();
 
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
@@ -34,7 +34,8 @@ const Signin = () => {
         return;
       }
 
-      setUser(response);
+      const user = await getCurrentUser()
+      setUser(user);
       setIsLoggedIn(true);
 
       Alert.alert("Login Successful", "You have successfully logged in.");
@@ -44,7 +45,7 @@ const Signin = () => {
       Alert.alert(
         "Login Failed",
         error.message ||
-          "An error occurred during login. Please check your credentials and try again."
+        "An error occurred during login. Please check your credentials and try again."
       );
     } finally {
       setLoading(false);
