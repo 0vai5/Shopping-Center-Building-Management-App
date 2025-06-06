@@ -311,105 +311,143 @@ const useAppwrite = () => {
 
 
   const generateMaintenanceSlips = async () => {
-  try {
-    const flats = await getFlats();
-    const currentMonth = getMonth("current");
-    const previousMonth = getMonth("previous");
+    try {
+      const flats = await getFlats();
+      const currentMonth = getMonth("current");
+      const previousMonth = getMonth("previous");
 
-    if (!flats || flats.length === 0) {
-      console.log("No flats found to generate maintenance slips for the current month.");
-      return;
-    }
-
-    const previousMonthSlips = await databases.listDocuments(
-      config.databaseId!,
-      config.maintenanceID!,
-      [
-        Query.equal("month", previousMonth),
-        Query.equal("status", "pending"),
-      ]
-    );
-
-    for (const flat of flats) {
-
-      const previousMonthSlipOfFlat = previousMonthSlips.documents.find(
-        (slip: any) => slip.flat?.$id === flat.$id
-      );
-
-      if (previousMonthSlipOfFlat) {
-        const dues = JSON.parse(flat.dues || "[]");
-        const newDue = {
-          month: previousMonth,
-          maintenance: flat.maintenance
-        };
-
-        await databases.updateDocument(
-          config.databaseId!,
-          config.flatsCollectionID!,
-          flat.$id,
-          {
-            dues: JSON.stringify([...dues, newDue]),
-          }
-        );
+      if (!flats || flats.length === 0) {
+        console.log("No flats found to generate maintenance slips for the current month.");
+        return;
       }
 
-      const existingSlipOfCurrentMonth = await databases.listDocuments(
+      const previousMonthSlips = await databases.listDocuments(
         config.databaseId!,
         config.maintenanceID!,
         [
-          Query.equal("month", currentMonth),
-          Query.equal("flat", flat.$id),
+          Query.equal("month", previousMonth),
+          Query.equal("status", "pending"),
         ]
       );
 
-      if (existingSlipOfCurrentMonth.total > 0) {
-        console.log(`⚠️ Maintenance slip for flat ${flat.flatNumber} already exists for ${currentMonth}. Skipping.`);
-        continue;
-      }
+      for (const flat of flats) {
 
-      const slipNumberDoc = await databases.getDocument(
-        config.databaseId!,
-        config.miscID!,
-        "1"
-      );
-
-      const slipNumber = slipNumberDoc.slipNumber + 1;
-      const maintenanceSlipData = {
-        month: currentMonth,
-        flat: flat.$id,
-        status: "pending",
-        slipNumber,
-      };
-
-      try {
-        const maintenanceSlip = await databases.createDocument(
-          config.databaseId!,
-          config.maintenanceID!,
-          ID.unique(),
-          maintenanceSlipData
+        const previousMonthSlipOfFlat = previousMonthSlips.documents.find(
+          (slip: any) => slip.flat?.$id === flat.$id
         );
 
-      } catch (err: any) {
-        console.error(`❌ Failed to create slip for flat ${flat.flatNumber}:`, err.message);
-        continue;
+        if (previousMonthSlipOfFlat) {
+          const dues = JSON.parse(flat.dues || "[]");
+          const newDue = {
+            month: previousMonth,
+            maintenance: flat.maintenance
+          };
+
+          await databases.updateDocument(
+            config.databaseId!,
+            config.flatsCollectionID!,
+            flat.$id,
+            {
+              dues: JSON.stringify([...dues, newDue]),
+            }
+          );
+        }
+
+        const existingSlipOfCurrentMonth = await databases.listDocuments(
+          config.databaseId!,
+          config.maintenanceID!,
+          [
+            Query.equal("month", currentMonth),
+            Query.equal("flat", flat.$id),
+          ]
+        );
+
+        if (existingSlipOfCurrentMonth.total > 0) {
+          console.log(`⚠️ Maintenance slip for flat ${flat.flatNumber} already exists for ${currentMonth}. Skipping.`);
+          continue;
+        }
+
+        const slipNumberDoc = await databases.getDocument(
+          config.databaseId!,
+          config.miscID!,
+          "1"
+        );
+
+        const slipNumber = slipNumberDoc.slipNumber + 1;
+        const maintenanceSlipData = {
+          month: currentMonth,
+          flat: flat.$id,
+          status: "pending",
+          slipNumber,
+        };
+
+        try {
+          const maintenanceSlip = await databases.createDocument(
+            config.databaseId!,
+            config.maintenanceID!,
+            ID.unique(),
+            maintenanceSlipData
+          );
+
+        } catch (err: any) {
+          console.error(`❌ Failed to create slip for flat ${flat.flatNumber}:`, err.message);
+          continue;
+        }
+
+        await databases.updateDocument(
+          config.databaseId!,
+          config.miscID!,
+          "1",
+          { slipNumber }
+        );
       }
 
-      await databases.updateDocument(
-        config.databaseId!,
-        config.miscID!,
-        "1",
-        { slipNumber }
-      );
+      console.log("\n✅ All maintenance slips generated successfully for the current month.");
+      return { message: "Maintenance slips generated successfully" };
+
+    } catch (error: any) {
+      console.error("❌ Error generating maintenance slips:", error.message);
+      throw new Error(error.message || "Failed to generate maintenance slips");
     }
+  };
 
-    console.log("\n✅ All maintenance slips generated successfully for the current month.");
-    return { message: "Maintenance slips generated successfully" };
+  const getStats = async () => {
+    try {
+      const expenseSlips = await getExpenseSlips();
+      const maintenanceSlips = await getMaintenanceSlips();
+      const paidMaintenanceSlips = maintenanceSlips.filter((slip: any) => slip.status === "paid");
+      const paidExpenseSlips = expenseSlips.filter((slip: any) => slip.status === "paid");
 
-  } catch (error: any) {
-    console.error("❌ Error generating maintenance slips:", error.message);
-    throw new Error(error.message || "Failed to generate maintenance slips");
+
+      const expensePercentage = expenseSlips.length > 0 ? (paidExpenseSlips.length / expenseSlips.length) * 100 : 0;
+      const maintenancePercentage = maintenanceSlips.length > 0 ? (paidMaintenanceSlips.length / maintenanceSlips.length) * 100 : 0;
+
+
+      const paidMaintenanceSlipsTotal = paidMaintenanceSlips.reduce((total: number, slip: any) => {
+        const dues = JSON.parse(slip.flat.dues || "[]");
+        if (!dues || dues.length === 0) {
+          return total + slip.flat.maintenance;
+        }
+        const totalDues = dues.reduce((sum: number, due: any) => sum + (due.maintenance || 0), 0);
+
+        return total + (totalDues + slip.flat.maintenance)
+
+      }, 0);
+
+
+      return {
+        expensePercentage: expensePercentage.toFixed(0),
+        maintenancePercentage: maintenancePercentage.toFixed(0),
+        totalMaintenanceReceived: paidMaintenanceSlipsTotal
+      }
+
+
+
+    } catch (error: any) {
+      console.error("Error fetching stats:", error.message);
+      throw new Error(error.message || "Failed to fetch stats");
+    }
   }
-};
 
 
 
@@ -427,6 +465,7 @@ const useAppwrite = () => {
     updateMaintenanceSlip,
     generateExpenseSlips,
     generateMaintenanceSlips,
+    getStats
   };
 };
 

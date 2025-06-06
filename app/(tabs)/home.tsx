@@ -27,22 +27,13 @@ const home = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { isLoggedIn, user } = useGlobalContext();
   const [maintenanceSlips, setMaintenanceSlips] = useState<any>([]);
-  const { getExpenseSlips, getMaintenanceSlips, generateExpenseSlips, generateMaintenanceSlips } = useAppwrite();
+  const { getExpenseSlips, getMaintenanceSlips, generateExpenseSlips, generateMaintenanceSlips, getStats } = useAppwrite();
   const [expenseSlips, setExpenseSlips] = useState<any>([]);
   const [buttonDisabled, setButtonDisabled] = useState([true, true]);
   const [stats, setStats] = useState<any | any>({
-    expenseSlipsPaid: {
-      total: 0,
-      percentagePaid: 0,
-      paid: 0,
-      amountPaid: 0,
-    },
-    maintenanceSlipsPaid: {
-      _id: null,
-      totalDocuements: 0,
-      percentagePaid: 0,
-      paidDocuments: 0,
-    },
+    expensePercentage: 0,
+    maintenancePercentage: 0,
+    totalMaintenanceReceived: 0
   });
 
 
@@ -56,7 +47,11 @@ const home = () => {
 
   const fetchStats = async () => {
     try {
-      console.log("Fetching stats...");
+      const response = await getStats();
+      console.log("Stats fetched successfully:", response);
+
+      setStats(response);
+
     } catch (error: any) {
       Alert.alert("Error", error.message || "Failed to fetch stats");
       console.error("Error fetching stats:", error.message);
@@ -97,14 +92,14 @@ const home = () => {
 
       const response = await generateMaintenanceSlips();
 
-      if(response) {
+      if (response) {
         Alert.alert("Success", "Maintenance slips generated successfully");
       }
 
       console.log("Maintenance slips generated successfully:", response);
 
       fetchMaintenanceSlips();
-    } catch (error:any) {
+    } catch (error: any) {
       Alert.alert("Error", error.message || "Failed to generate maintenance slips");
       console.error("Error generating maintenance slips:", error.message);
     } finally {
@@ -118,7 +113,7 @@ const home = () => {
 
       const response = await generateExpenseSlips();
 
-      if(response) {
+      if (response) {
         Alert.alert("Success", "Expense slips generated successfully");
       }
 
@@ -136,16 +131,20 @@ const home = () => {
   };
 
   const generationButtonDisabled = async () => {
-    if(expenseSlips.length >= 3 && maintenanceSlips.length >= 11) {
-      setButtonDisabled([false, false]);
+    if (expenseSlips.length >= 3) {
+      setButtonDisabled([buttonDisabled[0], false]);
     }
 
-    if(expenseSlips.length < 3) {
-      setButtonDisabled([true, buttonDisabled[1]]);
+    if (maintenanceSlips.length >= 11) {
+      setButtonDisabled([false, buttonDisabled[1]]);
     }
 
-    if(maintenanceSlips.length < 11) {
+    if (expenseSlips.length < 3) {
       setButtonDisabled([buttonDisabled[0], true]);
+    }
+
+    if (maintenanceSlips.length < 11) {
+      setButtonDisabled([true, buttonDisabled[1]]);
     }
   }
 
@@ -178,7 +177,7 @@ const home = () => {
         </View>
         <View>
           <SummaryCard
-            amount={stats.maintenanceSlipsPaid.amountPaid || 0}
+            amount={stats.totalMaintenanceReceived || 0}
             month={`${month} ${year}`}
           />
         </View>
@@ -187,13 +186,13 @@ const home = () => {
           <View className="flex-1">
             <ProgressSummary
               title={"Maintenance Received"}
-              progress={stats.maintenanceSlipsPaid.percentagePaid}
+              progress={stats.maintenancePercentage}
             />
           </View>
           <View className="flex-1">
             <ProgressSummary
               title={"Expenses Cleared"}
-              progress={stats.expenseSlipsPaid.percentagePaid}
+              progress={stats.expensePercentage}
             />
           </View>
         </View>
