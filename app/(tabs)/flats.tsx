@@ -328,7 +328,6 @@ const FlatCard: React.FC<FlatCardProps> = ({ item }) => {
           )}
 
           {dues.length > 0 && dues.map((due: any, index: number) => (
-            <>
               <BottomSheetView key={index} className="p-5">
                 <View className="flex-row gap-10 justify-between items-center">
                   <View>
@@ -350,7 +349,6 @@ const FlatCard: React.FC<FlatCardProps> = ({ item }) => {
                   </View>
                 </View>
               </BottomSheetView>
-            </>
           ))}
         </BottomSheetScrollView>
       </CustomBottomSheetModal>

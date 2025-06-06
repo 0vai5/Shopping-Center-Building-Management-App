@@ -124,23 +124,13 @@ const home = () => {
     }
   };
 
-  const generationButtonDisabled = async () => {
-    if (expenseSlips.length >= 3) {
-      setButtonDisabled([buttonDisabled[0], false]);
-    }
+  const generationButtonDisabled = () => {
+    const disableMaintenance = maintenanceSlips.length >= 11 ? false : true;
+    const disableExpense = expenseSlips.length >= 3 ? false : true;
 
-    if (maintenanceSlips.length >= 11) {
-      setButtonDisabled([false, buttonDisabled[1]]);
-    }
+    setButtonDisabled([disableMaintenance, disableExpense]);
+  };
 
-    if (expenseSlips.length < 3) {
-      setButtonDisabled([buttonDisabled[0], true]);
-    }
-
-    if (maintenanceSlips.length < 11) {
-      setButtonDisabled([true, buttonDisabled[1]]);
-    }
-  }
 
   useEffect(() => {
     fetchStats();
@@ -148,6 +138,11 @@ const home = () => {
     fetchMaintenanceSlips();
     generationButtonDisabled();
   }, [statusUpdate]);
+
+  useEffect(() => {
+    generationButtonDisabled();
+  }, [maintenanceSlips, expenseSlips]);
+
 
   if (!isLoggedIn && !user) {
     return <Redirect href={"../"} />;
