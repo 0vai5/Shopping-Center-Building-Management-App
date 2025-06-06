@@ -36,7 +36,7 @@ const MaintenanceList = ({ maintenanceSlips }: { maintenanceSlips: any }) => {
         data={maintenanceSlips}
         numColumns={1}
         renderItem={({ item }: { item: any }) => (
-          <MaintenanceCard item={item} key={item?.$id.toString()} />
+          <MaintenanceCard item={item} />
         )}
         horizontal
         showsHorizontalScrollIndicator={false}

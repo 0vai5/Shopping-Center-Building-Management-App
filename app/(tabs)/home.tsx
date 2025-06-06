@@ -96,8 +96,6 @@ const home = () => {
         Alert.alert("Success", "Maintenance slips generated successfully");
       }
 
-      console.log("Maintenance slips generated successfully:", response);
-
       fetchMaintenanceSlips();
     } catch (error: any) {
       Alert.alert("Error", error.message || "Failed to generate maintenance slips");

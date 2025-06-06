@@ -449,6 +449,68 @@ const useAppwrite = () => {
     }
   }
 
+ const getSummary = async (fromDate: string, toDate: string) => {
+  try {
+    
+    const expenseSlips = await databases.listDocuments(
+      config.databaseId!,
+      config.expenseSlipCollectionID!,
+      [
+        Query.greaterThanEqual("$updatedAt", fromDate),
+        Query.lessThanEqual("$updatedAt", toDate),
+        Query.equal("status", "paid"),
+      ]
+    );
+
+    const maintenanceSlips = await databases.listDocuments(
+      config.databaseId!,
+      config.maintenanceID!,
+      [
+        Query.greaterThanEqual("$updatedAt", fromDate),
+        Query.lessThanEqual("$updatedAt", toDate),
+        Query.equal("status", "paid"),
+      ]
+    );
+
+    const updatedExpenseSlips = expenseSlips.documents.map((slip: any) => {
+      const amount = slip.amount || 0;
+      return {
+        title: `Paid to ${slip.expense?.expenseName ?? "Unknown"}`,
+        amount,
+        debit: amount,
+        credit: "-"
+      };
+    });
+
+    const updatedMaintenanceSlips = maintenanceSlips.documents.map((slip: any) => {
+      const dues = JSON.parse(slip.flat?.dues || "[]");
+      const additionalDues = dues.reduce((sum: number, due: any) => sum + (due.maintenance || 0), 0);
+      const base = slip.flat?.maintenance || 0;
+      const totalAmount = base + additionalDues;
+
+      return {
+        title: `Received from Flat ${slip.flat?.flatNumber ?? "Unknown"}`,
+        amount: totalAmount,
+        credit: totalAmount,
+        debit: "-"
+      };
+    });
+
+    const totalCredits = updatedMaintenanceSlips.reduce((sum: number, slip) => sum + (slip.amount || 0), 0);
+    const totalDebits = updatedExpenseSlips.reduce((sum: number, slip) => sum + (slip.amount || 0), 0);
+
+    const total = totalCredits - totalDebits;
+
+    return {
+      summary: [...updatedExpenseSlips, ...updatedMaintenanceSlips],
+      total: total || 0
+    };
+  } catch (error: any) {
+    console.error("Error fetching summary:", error.message);
+    throw new Error(error.message || "Failed to fetch summary");
+  }
+};
+
 
 
   return {
@@ -465,7 +527,8 @@ const useAppwrite = () => {
     updateMaintenanceSlip,
     generateExpenseSlips,
     generateMaintenanceSlips,
-    getStats
+    getStats,
+    getSummary
   };
 };
 

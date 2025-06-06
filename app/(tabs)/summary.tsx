@@ -4,6 +4,7 @@ import {
   ScrollView,
   Dimensions,
   RefreshControl,
+  Alert,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -12,15 +13,21 @@ import { CustomButton, DataTable } from "@/components";
 import { generateTableHTML } from "@/utils/summaryHtmlGenerator.js";
 import { printAsync, printToFileAsync } from "expo-print";
 import { shareAsync } from "expo-sharing";
+import useAppwrite from "@/hooks/useAppwrite";
 
 const summary = () => {
   const { height } = Dimensions.get("window");
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
-  const [fromDate, setFromDate] = useState(new Date(2025, 3, 1).toDateString());
-  const [toDate, setToDate] = useState(new Date().toDateString());
+  const [fromDate, setFromDate] = useState(new Date(2025, 3, 1));
+  const [toDate, setToDate] = useState(new Date());
+
   const [isToDatePickerVisible, setToDatePickerVisibility] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
-  const [summaryData, setSummaryData] = useState<any>([]);
+  const [summaryData, setSummaryData] = useState<any>({
+    summary: [],
+    total: 0,
+  });
+  const { getSummary } = useAppwrite()
   const [search, setSearch] = useState({
     fromDate: "",
     toDate: "",
@@ -28,14 +35,14 @@ const summary = () => {
 
   const handleConfirmFromDate = (date: any) => {
     setSearch({ ...search, fromDate: date });
-    setFromDate(date.toDateString());
+    setFromDate(date);
     setDatePickerVisibility(false);
   };
 
   const handleConfirmToDate = (date: any) => {
     setSearch({ ...search, toDate: date });
 
-    setToDate(date.toDateString());
+    setToDate(date);
     setToDatePickerVisibility(false);
   };
 
@@ -47,10 +54,20 @@ const summary = () => {
     console.log("Searching for summary data...");
     console.log("From Date:", fromDate);
     console.log("To Date:", toDate);
+
+    try {
+      const response = await getSummary(fromDate.toISOString(), toDate.toISOString());
+      console.log("Summary data fetched successfully:", response);
+      setSummaryData(response || {
+        summary: [],
+        total: 0,
+      });
+    } catch (error: any) {
+      console.error("Error fetching summary data:", error.message);
+      Alert.alert("Error", "Failed to fetch summary data. Please try again later.");
+    }
+
   };
-
-  searchHandler()
-
   const onRefresh = async () => {
     setRefreshing(true);
     await searchHandler();
@@ -58,7 +75,7 @@ const summary = () => {
   };
 
   const handleExport = async () => {
-    const htmlContent = generateTableHTML(summaryData, fromDate, toDate);
+    const htmlContent = generateTableHTML(summaryData, fromDate.toDateString(), toDate.toDateString());
     const { uri } = await printToFileAsync({
       html: htmlContent,
       base64: false,
@@ -96,7 +113,7 @@ const summary = () => {
               className="text-white font-sbold text-xl"
               onPress={() => setDatePickerVisibility(true)}
             >
-              {fromDate}
+              {fromDate.toDateString()}
             </Text>
           </View>
           <DateTimePickerModal
@@ -117,7 +134,7 @@ const summary = () => {
               className="text-white font-sbold text-xl"
               onPress={() => setToDatePickerVisibility(true)}
             >
-              {toDate}
+              {toDate.toDateString()}
             </Text>
           </View>
           <DateTimePickerModal
