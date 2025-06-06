@@ -147,7 +147,7 @@ const useAppwrite = () => {
 
       console.log("Flat created successfully:", response);
 
-       const slipNumber = await databases.getDocument(
+      const slipNumber = await databases.getDocument(
         config.databaseId!,
         config.miscID!,
         "1"
@@ -260,6 +260,159 @@ const useAppwrite = () => {
     }
   }
 
+  const generateExpenseSlips = async () => {
+    try {
+      const expenses = await getExpenses();
+      const currentMonth = getMonth("current");
+
+      if (!expenses || expenses.length === 0) {
+        console.log("No expenses found to generate slips for the current month.");
+        return;
+      }
+
+      for (const expense of expenses) {
+        // Check if an expense slip already exists for this expense and current month
+        const existingSlips = await databases.listDocuments(
+          config.databaseId!,
+          config.expenseSlipCollectionID!,
+          [
+            Query.equal("expense", expense.$id),
+            Query.equal("month", currentMonth),
+          ]
+        );
+
+        if (existingSlips.total > 0) {
+          continue;
+        }
+
+        const expenseSlipData = {
+          month: currentMonth,
+          expense: expense.$id,
+          status: "pending",
+          amount: expense.amount || null,
+        };
+
+        const expenseSlip = await databases.createDocument(
+          config.databaseId!,
+          config.expenseSlipCollectionID!,
+          ID.unique(),
+          expenseSlipData
+        );
+
+      }
+
+      return { message: "Expense slips generated successfully" };
+
+    } catch (error: any) {
+      console.error("Error generating expense slips:", error.message);
+      throw new Error(error.message || "Failed to generate expense slips");
+    }
+  };
+
+
+  const generateMaintenanceSlips = async () => {
+  try {
+    const flats = await getFlats();
+    const currentMonth = getMonth("current");
+    const previousMonth = getMonth("previous");
+
+    if (!flats || flats.length === 0) {
+      console.log("No flats found to generate maintenance slips for the current month.");
+      return;
+    }
+
+    const previousMonthSlips = await databases.listDocuments(
+      config.databaseId!,
+      config.maintenanceID!,
+      [
+        Query.equal("month", previousMonth),
+        Query.equal("status", "pending"),
+      ]
+    );
+
+    for (const flat of flats) {
+
+      const previousMonthSlipOfFlat = previousMonthSlips.documents.find(
+        (slip: any) => slip.flat?.$id === flat.$id
+      );
+
+      if (previousMonthSlipOfFlat) {
+        const dues = JSON.parse(flat.dues || "[]");
+        const newDue = {
+          month: previousMonth,
+          maintenance: flat.maintenance
+        };
+
+        await databases.updateDocument(
+          config.databaseId!,
+          config.flatsCollectionID!,
+          flat.$id,
+          {
+            dues: JSON.stringify([...dues, newDue]),
+          }
+        );
+      }
+
+      const existingSlipOfCurrentMonth = await databases.listDocuments(
+        config.databaseId!,
+        config.maintenanceID!,
+        [
+          Query.equal("month", currentMonth),
+          Query.equal("flat", flat.$id),
+        ]
+      );
+
+      if (existingSlipOfCurrentMonth.total > 0) {
+        console.log(`⚠️ Maintenance slip for flat ${flat.flatNumber} already exists for ${currentMonth}. Skipping.`);
+        continue;
+      }
+
+      const slipNumberDoc = await databases.getDocument(
+        config.databaseId!,
+        config.miscID!,
+        "1"
+      );
+
+      const slipNumber = slipNumberDoc.slipNumber + 1;
+      const maintenanceSlipData = {
+        month: currentMonth,
+        flat: flat.$id,
+        status: "pending",
+        slipNumber,
+      };
+
+      try {
+        const maintenanceSlip = await databases.createDocument(
+          config.databaseId!,
+          config.maintenanceID!,
+          ID.unique(),
+          maintenanceSlipData
+        );
+
+      } catch (err: any) {
+        console.error(`❌ Failed to create slip for flat ${flat.flatNumber}:`, err.message);
+        continue;
+      }
+
+      await databases.updateDocument(
+        config.databaseId!,
+        config.miscID!,
+        "1",
+        { slipNumber }
+      );
+    }
+
+    console.log("\n✅ All maintenance slips generated successfully for the current month.");
+    return { message: "Maintenance slips generated successfully" };
+
+  } catch (error: any) {
+    console.error("❌ Error generating maintenance slips:", error.message);
+    throw new Error(error.message || "Failed to generate maintenance slips");
+  }
+};
+
+
+
   return {
     loginUser,
     getCurrentUser,
@@ -271,7 +424,9 @@ const useAppwrite = () => {
     getExpenseSlips,
     getMaintenanceSlips,
     updateExpenseSlip,
-    updateMaintenanceSlip
+    updateMaintenanceSlip,
+    generateExpenseSlips,
+    generateMaintenanceSlips,
   };
 };
 

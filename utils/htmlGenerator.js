@@ -1,10 +1,11 @@
 export const generateHTML = (data) => {
-  const { owner_name, owner_phone, flat_number, slip_number, maintenance, updated_at, rooms, dues, month } = data;
+  const {  slipNumber, $updatedAt,  dues, month } = data;
+  const {flatNumber, ownerPhone, ownerName, rooms, maintenance} = data.flat
   const buildingName = "Dhoraji Housing Relief Trust";
   const subTitle = "Mohallah Committee Shopping Centre";
-  const totalDues = dues.reduce((sum, due) => sum + (due.maintenance * rooms), 0);
-  const total = maintenance * rooms + totalDues;
-    const date = new Date(updated_at).toLocaleDateString();
+  const totalDues = dues.reduce((sum, due) => sum + (due.maintenance), 0);
+  const total = maintenance + totalDues;
+    const date = new Date($updatedAt).toLocaleDateString();
   const htmlContent = `
     <html>
     <head>
@@ -77,11 +78,11 @@ export const generateHTML = (data) => {
           <h2>${subTitle}</h2>
         </div>
         <div class="details">
-          <p><strong>No.:</strong> ${slip_number}</p>
-          <p><strong>Flat No.:</strong> ${flat_number}</p>
+          <p><strong>No.:</strong> ${slipNumber}</p>
+          <p><strong>Flat No.:</strong> ${flatNumber}</p>
           <p><strong>Total Rooms:</strong> ${rooms}</p>
           <p><strong>Date:</strong> ${date}</p>
-          <p><strong>Received from Mr./Mrs.:</strong> ${owner_name}</p>
+          <p><strong>Received from Mr./Mrs.:</strong> ${ownerName}</p>
         </div>
         <div class="table-container">
           <table>
@@ -94,7 +95,7 @@ export const generateHTML = (data) => {
             <tbody>
               <tr>
                 <td>Maintenance Charges - ${month}</td>
-                <td>${maintenance * rooms} Rs.</td>
+                <td>${maintenance} Rs.</td>
               </tr>
               ${
                 dues.length > 0
@@ -103,7 +104,7 @@ export const generateHTML = (data) => {
                         (due) => `
                         <tr>
                           <td>Maintenance Charges - ${due.month}</td>
-                          <td>${due.maintenance * rooms} Rs.</td>
+                          <td>${due.maintenance} Rs.</td>
                         </tr>`
                       )
                       .join("")

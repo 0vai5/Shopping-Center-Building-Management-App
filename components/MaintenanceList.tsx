@@ -58,10 +58,10 @@ const MaintenanceCard: React.FC<MaintenanceCardProps> = ({ item }) => {
   const status = item.status === "pending" ? "paid" : "pending";
 
   const totalDues = JSON.parse(item.flat.dues || "[]").reduce(
-    (prev: number, due: any) => prev + due.maintenance || 0,
+    (prev: number, due: any) => prev + (due.maintenance || 0),
     0
   );
-  const dues = item.dues ? JSON.parse(item.dues) : [];
+  const dues = item.flat.dues ? JSON.parse(item.flat.dues) : [];
 
   const handleSharing = async () => {
     try {
@@ -228,13 +228,19 @@ const MaintenanceCard: React.FC<MaintenanceCardProps> = ({ item }) => {
           </View>
         </BottomSheetView>
         <BottomSheetView className="px-6">
+
+          {dues.length > 0 && (
+            <Text className="text-white font-ssemibold text-2xl mb-4">
+              Dues Details
+            </Text>
+          )}
+
+
           {dues.length > 0 &&
-            dues.map((due: any) => (
+
+            dues.map((due: any, index: number) => (
               <>
-                <Text className="text-white font-ssemibold text-2xl mb-4">
-                  Dues Details
-                </Text>
-                <BottomSheetView key={due.month} className="p-5">
+                <BottomSheetView key={index} className="p-5">
                   <View className="flex-row gap-10 justify-between items-center">
                     <View>
                       <Text className="text-gray-300 font-sregular text-lg">

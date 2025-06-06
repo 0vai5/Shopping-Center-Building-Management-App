@@ -27,8 +27,9 @@ const home = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { isLoggedIn, user } = useGlobalContext();
   const [maintenanceSlips, setMaintenanceSlips] = useState<any>([]);
-  const { getExpenseSlips, getMaintenanceSlips } = useAppwrite();
+  const { getExpenseSlips, getMaintenanceSlips, generateExpenseSlips, generateMaintenanceSlips } = useAppwrite();
   const [expenseSlips, setExpenseSlips] = useState<any>([]);
+  const [buttonDisabled, setButtonDisabled] = useState([true, true]);
   const [stats, setStats] = useState<any | any>({
     expenseSlipsPaid: {
       total: 0,
@@ -43,6 +44,8 @@ const home = () => {
       paidDocuments: 0,
     },
   });
+
+
 
   const month = new Date().toLocaleString("default", {
     month: "long",
@@ -88,13 +91,69 @@ const home = () => {
       console.error("Error fetching expense slips:", error);
     }
   };
-  const handleMaintenanceSlipGeneration = async () => {};
-  const handleExpenseSlipGeneration = async () => {};
+  const handleMaintenanceSlipGeneration = async () => {
+    try {
+      setIsLoading(true);
+
+      const response = await generateMaintenanceSlips();
+
+      if(response) {
+        Alert.alert("Success", "Maintenance slips generated successfully");
+      }
+
+      console.log("Maintenance slips generated successfully:", response);
+
+      fetchMaintenanceSlips();
+    } catch (error:any) {
+      Alert.alert("Error", error.message || "Failed to generate maintenance slips");
+      console.error("Error generating maintenance slips:", error.message);
+    } finally {
+      setIsLoading(false);
+      setStatusUpdate(!statusUpdate);
+    }
+  };
+  const handleExpenseSlipGeneration = async () => {
+    try {
+      setIsLoading(true);
+
+      const response = await generateExpenseSlips();
+
+      if(response) {
+        Alert.alert("Success", "Expense slips generated successfully");
+      }
+
+      console.log("Expense slips generated successfully:", response);
+
+      fetchExpenseSlips();
+
+    } catch (error: any) {
+      Alert.alert("Error", error.message || "Failed to generate expense slips");
+      console.error("Error generating expense slips:", error.message);
+    } finally {
+      setIsLoading(false);
+      setStatusUpdate(!statusUpdate);
+    }
+  };
+
+  const generationButtonDisabled = async () => {
+    if(expenseSlips.length >= 3 && maintenanceSlips.length >= 11) {
+      setButtonDisabled([false, false]);
+    }
+
+    if(expenseSlips.length < 3) {
+      setButtonDisabled([true, buttonDisabled[1]]);
+    }
+
+    if(maintenanceSlips.length < 11) {
+      setButtonDisabled([buttonDisabled[0], true]);
+    }
+  }
 
   useEffect(() => {
     fetchStats();
     fetchExpenseSlips();
     fetchMaintenanceSlips();
+    generationButtonDisabled();
   }, [statusUpdate]);
 
   if (!isLoggedIn && !user) {
@@ -145,11 +204,11 @@ const home = () => {
               Maintenance
             </Text>
             <View>
-              {new Date().getDate() === 1 && (
+              {buttonDisabled[0] && (
                 <CustomButton
                   title="Generate"
                   textStyles="text-black"
-                  handlePress={handleExpenseSlipGeneration}
+                  handlePress={handleMaintenanceSlipGeneration}
                   containerStyles="bg-secondary-base"
                   loader={isLoading}
                   activityColor="black"
@@ -164,7 +223,7 @@ const home = () => {
           <View className="flex justify-between flex-row p-6">
             <Text className="text-white text-3xl font-ssemibold">Expense</Text>
             <View>
-              {new Date().getDate() === 1 && (
+              {buttonDisabled[1] && (
                 <CustomButton
                   title="Generate"
                   textStyles="text-black"
