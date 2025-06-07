@@ -24,6 +24,7 @@ export interface CustomButtonProps {
   loader?: boolean;
   width?: string;
   activityColor?: string;
+  activeOpacity?: number;
 }
 
 export interface CustomBottomSheetModalProps {
@@ -37,6 +38,8 @@ export interface FormFieldProps {
   inputStyles?: string;
   value: string;
   handleChange?: (e: any) => void;
+  handler?: () => void;
+  returnKeyType?: "done" | "next" | "go" | "search" | "send";
 }
 
 export interface ProgressSummaryProps {

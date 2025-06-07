@@ -212,6 +212,7 @@ const flats = () => {
                 containerStyles="bg-secondary-saturated"
                 loader={creating}
                 handlePress={handleFlatCreation}
+                activeOpacity={0.8} 
               />
             </View>
           </View>

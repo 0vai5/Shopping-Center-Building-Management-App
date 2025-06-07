@@ -53,6 +53,7 @@ const ExpenseCardHome: React.FC<ExpenseCardHomeProps> = ({ item }) => {
   const [variableValue, setVariableValue] = useState("");
   const { updateExpenseSlip } = useAppwrite()
   const { setStatusUpdate, statusUpdate } = useGlobalContext();
+  const status = item.status === "pending" ? "paid" : "pending";
 
   const handleStatusUpdate = async () => {
     setIsLoading(true);
@@ -169,6 +170,8 @@ const ExpenseCardHome: React.FC<ExpenseCardHomeProps> = ({ item }) => {
               keyboardType="numeric"
               placeholder="Enter the Amount"
               onChangeText={(e) => setVariableValue(e)}
+              returnKeyType="done"
+              onSubmitEditing={handleStatusUpdate}
             />
           )}
           <View className="p-6 mt-3">
@@ -181,7 +184,7 @@ const ExpenseCardHome: React.FC<ExpenseCardHomeProps> = ({ item }) => {
                 <ActivityIndicator size="small" color="#fff" />
               ) : (
                 <Text className="text-white font-sbold text-lg capitalize">
-                  Mark as {item.status}
+                  Mark as {status}
                 </Text>
               )}
             </TouchableOpacity>

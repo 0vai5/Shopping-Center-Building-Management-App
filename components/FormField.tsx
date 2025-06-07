@@ -19,6 +19,7 @@ const FormField: React.FC<FormFieldProps> = ({
   inputStyles,
   value,
   handleChange,
+  handler
 }) => {
   const [showPassword, setShowPassword] = useState(true);
   return (
@@ -34,6 +35,8 @@ const FormField: React.FC<FormFieldProps> = ({
           secureTextEntry={showPassword && title === "Password"}
           value={value}
           onChangeText={handleChange}
+          returnKeyType="done"
+          onSubmitEditing={handler}
         />
         {title === "Password" && (
           <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>

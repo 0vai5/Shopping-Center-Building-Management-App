@@ -237,6 +237,7 @@ const expenses = () => {
                 containerStyles="bg-secondary-saturated"
                 handlePress={handleExpenseCreation}
                 loader={creating}
+                activeOpacity={0.8}
               />
             </View>
           </View>

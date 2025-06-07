@@ -36,6 +36,8 @@ const CustomBottomSheetModal = forwardRef<
   return (
     <SafeAreaView>
       <BottomSheetModal
+        keyboardBehavior="interactive"
+        keyboardBlurBehavior="restore"
         backdropComponent={renderBackdrop}
         backgroundStyle={{ backgroundColor: "#2c2c2e" }}
         handleIndicatorStyle={{ backgroundColor: "white" }}
@@ -44,7 +46,7 @@ const CustomBottomSheetModal = forwardRef<
         snapPoints={snapPoints}
         enablePanDownToClose
       >
-        <BottomSheetScrollView className="px-6">
+        <BottomSheetScrollView className="px-6" keyboardShouldPersistTaps="handled">
           <TouchableOpacity onPress={handleClose}>
             <Image source={icons.cross} className="self-end" />
           </TouchableOpacity>

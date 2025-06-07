@@ -59,6 +59,7 @@ const index: React.FC = () => {
                   router.push("./(auth)/signin");
                 }}
                 textStyles="text-white"
+                activeOpacity={0.8}
               />
             </View>
           </View>

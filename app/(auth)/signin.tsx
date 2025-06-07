@@ -78,6 +78,7 @@ const Signin = () => {
                   keypad="email-address"
                   value={form.email}
                   handleChange={(e) => setForm({ ...form, email: e })}
+                  returnKeyType="next"
                 />
               </View>
               <View>
@@ -86,6 +87,8 @@ const Signin = () => {
                   keypad="default"
                   value={form.password}
                   handleChange={(e) => setForm({ ...form, password: e })}
+                  returnKeyType="done"
+                  handler={handleLogin}
                 />
               </View>
               <CustomButton
@@ -95,6 +98,7 @@ const Signin = () => {
                 textStyles="text-black font-ssemibold text-base"
                 handlePress={handleLogin}
                 loader={loading}
+                activeOpacity={0.8}
               />
             </View>
           </View>

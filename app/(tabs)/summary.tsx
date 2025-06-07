@@ -20,7 +20,7 @@ const summary = () => {
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [fromDate, setFromDate] = useState(new Date(2025, 3, 1));
   const [toDate, setToDate] = useState(new Date());
-
+  const [isLoading, setIsLoading] = useState(false);
   const [isToDatePickerVisible, setToDatePickerVisibility] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [summaryData, setSummaryData] = useState<any>({
@@ -51,7 +51,7 @@ const summary = () => {
   }, []);
 
   const searchHandler = async () => {
-
+    setIsLoading(true);
     try {
       const response = await getSummary(fromDate.toISOString(), toDate.toISOString());
       setSummaryData(response || {
@@ -62,6 +62,8 @@ const summary = () => {
       console.error("Error fetching summary data:", error.message);
       Alert.alert("Error", "Failed to fetch summary data. Please try again later.");
     }
+
+    setIsLoading(false);
 
   };
   const onRefresh = async () => {
@@ -150,6 +152,8 @@ const summary = () => {
             textStyles="text-white"
             handlePress={searchHandler}
             width="w-full"
+            loader={isLoading}
+            activeOpacity={0.8}
             containerStyles="bg-secondary-saturated rounded-lg py-4 px-10"
           />
         </View>

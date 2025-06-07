@@ -200,6 +200,7 @@ const home = () => {
                   containerStyles="bg-secondary-base"
                   loader={isLoading}
                   activityColor="black"
+                  activeOpacity={0.8}
                 />
               )}
             </View>
@@ -219,6 +220,7 @@ const home = () => {
                   containerStyles="bg-secondary-base"
                   loader={isLoading}
                   activityColor="black"
+                  activeOpacity={0.8}
                 />
               )}
             </View>

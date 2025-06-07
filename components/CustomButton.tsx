@@ -9,12 +9,13 @@ const CustomButton: React.FC<CustomButtonProps> = ({
   containerStyles,
   loader,
   width,
-  activityColor = "white"
+  activityColor = "white",
+  activeOpacity = 0.7,
 }) => {
   return (
     <TouchableOpacity
       onPress={handlePress}
-      activeOpacity={0.7}
+      activeOpacity={activeOpacity}
       className={`${containerStyles} w-[${width || "100%"}] py-4 px-10 rounded-lg `}
       disabled={loader}
     >
